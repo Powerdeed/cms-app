@@ -1,20 +1,20 @@
 "use client";
 
 import { useContext } from "react";
-import { MediaAssetsContext } from "../context/MediaAssetsContext";
+import { MediaAssetsStateContext } from "../context/MediaAssetsStateContext";
 import { MediaAssetsProcessingContext } from "../context/MediaAssetsProcessingContext";
 import { MediaAssetsErrorsContext } from "../context/MediaAssetsErrorsContext";
 
-export default function useError() {
-  const mediaAssetsContext = useContext(MediaAssetsContext);
+export default function useAssetsError() {
+  const mediaAssetsState = useContext(MediaAssetsStateContext);
   const processingContext = useContext(MediaAssetsProcessingContext);
   const errorContext = useContext(MediaAssetsErrorsContext);
 
-  if (!mediaAssetsContext || !processingContext || !errorContext) {
+  if (!mediaAssetsState || !processingContext || !errorContext) {
     throw new Error("useMediaAssets must be used within a MediaAssetsProvider");
   }
 
-  const { file, assetMode } = mediaAssetsContext;
+  const { file, assetMode } = mediaAssetsState;
 
   const { compressing, isSupportedFile, setIsSupportedFile, targetFileTypes } =
     processingContext;

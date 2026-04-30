@@ -9,7 +9,7 @@ import { Asset } from "../types/mediaAssets.types";
 
 import { ICON_COLORS } from "../constants/iconColors";
 
-import useMediaAssets from "../hooks/useMediaAssets";
+import useMediaAssets from "../hooks/useAssets";
 
 type AssetCardProps = {
   asset: Asset;

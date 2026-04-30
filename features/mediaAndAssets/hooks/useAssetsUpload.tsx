@@ -4,22 +4,22 @@ import { useContext } from "react";
 
 import { Asset } from "../types/mediaAssets.types";
 
-import { MediaAssetsContext } from "../context/MediaAssetsContext";
+import { MediaAssetsStateContext } from "../context/MediaAssetsStateContext";
 import { MediaAssetsProcessingContext } from "../context/MediaAssetsProcessingContext";
 import { MediaAssetsErrorsContext } from "../context/MediaAssetsErrorsContext";
-import useAssetEditing from "./useAssetEditing";
+import useAssetEditing from "./useAssetsEditing";
 
-export default function useAssetUpload() {
-  const mediaAssetsContext = useContext(MediaAssetsContext);
+export default function useAssetsUpload() {
+  const mediaAssetsState = useContext(MediaAssetsStateContext);
   const processingContext = useContext(MediaAssetsProcessingContext);
   const errorContext = useContext(MediaAssetsErrorsContext);
 
-  if (!mediaAssetsContext || !processingContext || !errorContext) {
+  if (!mediaAssetsState || !processingContext || !errorContext) {
     throw new Error("useMediaAssets must be used within a MediaAssetsProvider");
   }
 
   const { setMediaAssets, currentAsset, setCurrentAsset, file, setAssetMode } =
-    mediaAssetsContext;
+    mediaAssetsState;
 
   const { setErrorUploadingFile } = errorContext;
 

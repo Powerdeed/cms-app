@@ -43,4 +43,6 @@ type MediaAssetsState = {
   setCopying: Dispatch<SetStateAction<boolean>>;
 };
 
-export const MediaAssetsContext = createContext<MediaAssetsState | null>(null);
+export const MediaAssetsStateContext = createContext<MediaAssetsState | null>(
+  null,
+);

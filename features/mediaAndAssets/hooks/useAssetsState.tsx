@@ -2,7 +2,7 @@
 
 import { useContext, useMemo } from "react";
 
-import { MediaAssetsContext } from "../context/MediaAssetsContext";
+import { MediaAssetsStateContext } from "../context/MediaAssetsStateContext";
 
 import { MediaAssetsProcessingContext } from "../context/MediaAssetsProcessingContext";
 import { MediaAssetsErrorsContext } from "../context/MediaAssetsErrorsContext";
@@ -16,14 +16,14 @@ import {
 
 import { Asset } from "../types/mediaAssets.types";
 
-export default function useMediaAssetsState() {
-  const mediaAssetsContext = useContext(MediaAssetsContext);
+export default function useAssetsState() {
+  const mediaAssetsState = useContext(MediaAssetsStateContext);
   const processingContext = useContext(MediaAssetsProcessingContext);
   const errorContext = useContext(MediaAssetsErrorsContext);
   const searchContext = useContext(MediaAssetsSearchContext);
 
   if (
-    !mediaAssetsContext ||
+    !mediaAssetsState ||
     !processingContext ||
     !errorContext ||
     !searchContext
@@ -31,7 +31,7 @@ export default function useMediaAssetsState() {
     throw new Error("useMediaAssets must be used within a MediaAssetsProvider");
   }
 
-  const { file, fileName } = mediaAssetsContext;
+  const { file, fileName } = mediaAssetsState;
 
   const fileType = fileName !== "" ? mediaType(fileName) : "image";
 
@@ -52,7 +52,7 @@ export default function useMediaAssetsState() {
   );
 
   return {
-    ...mediaAssetsContext,
+    ...mediaAssetsState,
     ...processingContext,
     ...errorContext,
     ...searchContext,

@@ -1,7 +1,7 @@
 "use client";
 
 import Button from "@global components/ui/Button";
-import useMediaAssets from "../hooks/useMediaAssets";
+import useMediaAssets from "../hooks/useAssets";
 
 export default function AssetHandlingError() {
   const { actions } = useMediaAssets();

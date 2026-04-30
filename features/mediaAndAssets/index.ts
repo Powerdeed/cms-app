@@ -8,7 +8,7 @@ export * from "./constants/pageMeta";
 export * from "./constants/assetUsagePaths";
 export * from "./constants/supportedAssetTypes";
 
-export * from "./hooks/useMediaAssets";
+export * from "./hooks/useAssets";
 
 export * from "./services/mediaAssets";
 

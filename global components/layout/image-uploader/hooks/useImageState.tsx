@@ -5,10 +5,7 @@ import { useContext, useMemo } from "react";
 import { Asset } from "@features/mediaAndAssets";
 
 import { imageContext } from "../context/ImageContext";
-import { MediaAssetsContext } from "@features/mediaAndAssets/context/MediaAssetsContext";
-import { MediaAssetsProcessingContext } from "@features/mediaAndAssets/context/MediaAssetsProcessingContext";
-import { MediaAssetsErrorsContext } from "@features/mediaAndAssets/context/MediaAssetsErrorsContext";
-import { MediaAssetsSearchContext } from "@features/mediaAndAssets/context/MediaAssetsSearchContext";
+import { MediaAssetsStateContext } from "@features/mediaAndAssets/context/MediaAssetsStateContext";
 
 import {
   getCurrentDateFormatted,
@@ -18,18 +15,9 @@ import {
 
 export default function useImageState() {
   const imageState = useContext(imageContext);
-  const mediaAssetsContext = useContext(MediaAssetsContext);
-  const processingContext = useContext(MediaAssetsProcessingContext);
-  const errorContext = useContext(MediaAssetsErrorsContext);
-  const searchContext = useContext(MediaAssetsSearchContext);
+  const mediaAssetsContext = useContext(MediaAssetsStateContext);
 
-  if (
-    !imageState ||
-    !mediaAssetsContext ||
-    !processingContext ||
-    !errorContext ||
-    !searchContext
-  ) {
+  if (!imageState || !mediaAssetsContext) {
     throw new Error("Context must be used within a Provider");
   }
 

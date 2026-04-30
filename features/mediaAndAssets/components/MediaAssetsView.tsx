@@ -19,7 +19,7 @@ import CompressingAsset from "../components/CompressingAsset";
 import { getTotalUsedSpace, toCamelCase } from "../utils/conversions";
 
 // hooks
-import useMediaAssets from "../hooks/useMediaAssets";
+import useMediaAssets from "../hooks/useAssets";
 
 // constants
 import { PAGE_META } from "../constants/pageMeta";

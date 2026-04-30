@@ -13,7 +13,7 @@ import Loader from "@global components/ui/Loader";
 // constants
 import { AssetUsagePaths } from "../constants/assetUsagePaths";
 
-import useMediaAssets from "../hooks/useMediaAssets";
+import useMediaAssets from "../hooks/useAssets";
 
 const fieldsToReview: (keyof Asset)[] = [
   "type",

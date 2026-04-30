@@ -2,19 +2,19 @@
 
 import { useContext, useEffect } from "react";
 
-import { MediaAssetsContext } from "../context/MediaAssetsContext";
+import { MediaAssetsStateContext } from "../context/MediaAssetsStateContext";
 import { MediaAssetsProcessingContext } from "../context/MediaAssetsProcessingContext";
 
-import useMediaAssetsState from "./useMediaAssetsState";
+import useMediaAssetsState from "./useAssetsState";
 
 import { Asset } from "../types/mediaAssets.types";
-import useError from "./useError";
+import useError from "./useAssetsError";
 
-export default function useAssetEditing() {
-  const mediaAssetsContext = useContext(MediaAssetsContext);
+export default function useAssetsEditing() {
+  const mediaAssetsState = useContext(MediaAssetsStateContext);
   const processingContext = useContext(MediaAssetsProcessingContext);
 
-  if (!mediaAssetsContext || !processingContext) {
+  if (!mediaAssetsState || !processingContext) {
     throw new Error("useMediaAssets must be used within a MediaAssetsProvider");
   }
 
@@ -32,7 +32,7 @@ export default function useAssetEditing() {
     setFirstPathArr,
     secondPath,
     setSecondPath,
-  } = mediaAssetsContext;
+  } = mediaAssetsState;
 
   const { setIsSupportedFile, targetFileTypes } = processingContext;
 

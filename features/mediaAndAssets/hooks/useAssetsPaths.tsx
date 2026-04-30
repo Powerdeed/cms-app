@@ -4,9 +4,9 @@ import { useEffect } from "react";
 import { AssetUsagePaths, usagePaths } from "../constants/assetUsagePaths";
 
 import { Asset } from "../types/mediaAssets.types";
-import useMediaAssetsState from "./useMediaAssetsState";
+import useMediaAssetsState from "./useAssetsState";
 
-export default function useAssetPaths() {
+export default function useAssetsPaths() {
   const {
     firstPath,
     assetCategory,

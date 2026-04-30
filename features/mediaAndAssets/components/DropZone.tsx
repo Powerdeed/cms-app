@@ -11,7 +11,7 @@ import {
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import useMediaAssets from "../hooks/useMediaAssets";
+import useMediaAssets from "../hooks/useAssets";
 
 export default function DropZone() {
   const mediaDropRef = useRef<HTMLDivElement | null>(null);

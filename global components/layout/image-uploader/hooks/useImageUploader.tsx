@@ -1,6 +1,6 @@
 "use client";
 
-import useError from "@features/mediaAndAssets/hooks/useError";
+import useError from "@features/mediaAndAssets/hooks/useAssetsError";
 import useImagePaths from "./useImagePaths";
 import useImageState from "./useImageState";
 import useImageHandlers from "./useImageHandlers";

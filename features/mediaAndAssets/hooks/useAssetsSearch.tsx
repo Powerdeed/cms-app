@@ -4,11 +4,11 @@ import { useContext, useEffect } from "react";
 
 import { getMediaAssets } from "../services/mediaAssets";
 
-import { MediaAssetsContext } from "../context/MediaAssetsContext";
+import { MediaAssetsStateContext } from "../context/MediaAssetsStateContext";
 import { MediaAssetsSearchContext } from "../context/MediaAssetsSearchContext";
 
 export default function useAssetsSearchToolBar() {
-  const assetsContext = useContext(MediaAssetsContext);
+  const assetsContext = useContext(MediaAssetsStateContext);
   const assetsSearchContext = useContext(MediaAssetsSearchContext);
 
   if (!assetsContext || !assetsSearchContext)
@@ -26,7 +26,7 @@ export default function useAssetsSearchToolBar() {
         getMediaAssets().filter((asset) => asset.type === targetAssetType),
       );
     }
-  }, [targetAssetType]);
+  }, [setMediaAssets, targetAssetType]);
 
   useEffect(() => {
     const query = searchQuery.toLowerCase();
@@ -38,7 +38,7 @@ export default function useAssetsSearchToolBar() {
           asset.usage.toLowerCase().includes(query),
       ),
     );
-  }, [searchQuery]);
+  }, [searchQuery, setMediaAssets]);
 
   return {};
 }

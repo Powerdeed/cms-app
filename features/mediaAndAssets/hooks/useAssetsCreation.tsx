@@ -2,21 +2,21 @@
 
 import { useContext } from "react";
 
-import useMediaAssetsState from "./useMediaAssetsState";
-import useAssetPaths from "./useAssetPaths";
+import useMediaAssetsState from "./useAssetsState";
+import useAssetPaths from "./useAssetsPaths";
 
 import { Asset } from "../types/mediaAssets.types";
 
-import { MediaAssetsContext } from "../context/MediaAssetsContext";
+import { MediaAssetsStateContext } from "../context/MediaAssetsStateContext";
 
-export default function useAssetCreation() {
-  const mediaAssetsContext = useContext(MediaAssetsContext);
+export default function useAssetsCreation() {
+  const mediaAssetsState = useContext(MediaAssetsStateContext);
 
-  if (!mediaAssetsContext) {
+  if (!mediaAssetsState) {
     throw new Error("useMediaAssets must be used within a MediaAssetsProvider");
   }
 
-  const { setCurrentAsset, setAssetMode } = mediaAssetsContext;
+  const { setCurrentAsset, setAssetMode } = mediaAssetsState;
 
   const { updatePathSetters } = useAssetPaths();
   const { newEmptyAsset } = useMediaAssetsState();

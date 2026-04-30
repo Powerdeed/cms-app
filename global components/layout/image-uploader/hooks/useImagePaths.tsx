@@ -1,10 +1,10 @@
 "use client";
 
 import { useContext } from "react";
-import { MediaAssetsContext } from "@features/mediaAndAssets/context/MediaAssetsContext";
+import { MediaAssetsStateContext } from "@features/mediaAndAssets/context/MediaAssetsStateContext";
 
 export default function useImagePaths() {
-  const mediaAssetState = useContext(MediaAssetsContext);
+  const mediaAssetState = useContext(MediaAssetsStateContext);
 
   if (!mediaAssetState)
     throw new Error("MediaAssetsContext context must be withing a provider.");

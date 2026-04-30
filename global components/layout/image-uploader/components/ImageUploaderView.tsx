@@ -5,7 +5,7 @@ import { useEffect } from "react";
 
 // hooks
 import useImageUploader from "../hooks/useImageUploader";
-import useMediaAssets from "@features/mediaAndAssets/hooks/useMediaAssets";
+import useMediaAssets from "@features/mediaAndAssets/hooks/useAssets";
 
 //  components
 import DropZone from "@features/mediaAndAssets/components/DropZone";

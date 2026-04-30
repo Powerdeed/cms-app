@@ -23,7 +23,7 @@ export default function Nav() {
   } = useNav();
 
   return (
-    <nav className="fixed w-[calc(100vw-260px)] h-15 top-0 left-65 flex gap-2.5 items-center border-b border-(--terciary-grey) backdrop-blur shadow-[0_4px_6px_-1px_rgba(51,51,51,0.1)] py-2.5 px-5 text-style__body">
+    <nav className="fixed w-[calc(100vw-260px)] h-15 top-0 left-65 flex gap-2.5 items-center border-b border-(--terciary-grey) backdrop-blur shadow-[0_4px_6px_-1px_rgba(51,51,51,0.1)] py-2.5 px-5 text-style__body z-1">
       <SearchBar
         val={searchQuery}
         placeholder="Search leads, services, content..."

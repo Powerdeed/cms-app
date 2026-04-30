@@ -4,16 +4,16 @@ import { useContext } from "react";
 
 import { Asset } from "../types/mediaAssets.types";
 
-import { MediaAssetsContext } from "../context/MediaAssetsContext";
+import { MediaAssetsStateContext } from "../context/MediaAssetsStateContext";
 
-export default function useAssetClipboard() {
-  const mediaAssetsContext = useContext(MediaAssetsContext);
+export default function useAssetsClipboard() {
+  const mediaAssetsState = useContext(MediaAssetsStateContext);
 
-  if (!mediaAssetsContext) {
+  if (!mediaAssetsState) {
     throw new Error("useMediaAssets must be used within a MediaAssetsProvider");
   }
 
-  const { currentAsset, setCopying } = mediaAssetsContext;
+  const { currentAsset, setCopying } = mediaAssetsState;
 
   const handleCopyAssetPath = async (key: keyof Asset) => {
     if (!currentAsset) return;

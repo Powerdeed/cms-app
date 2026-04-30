@@ -9,7 +9,7 @@ import Loader from "@global components/ui/Loader";
 import { InputArea } from "@global components/layout/FormWrapper";
 
 // hooks
-import useMediaAssets from "@features/mediaAndAssets/hooks/useMediaAssets";
+import useMediaAssets from "@features/mediaAndAssets/hooks/useAssets";
 // import useImageUploader from "../hooks/useImageUploader";
 
 export default function ImageUploaderFileEditor({
