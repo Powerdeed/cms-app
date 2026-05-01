@@ -29,6 +29,7 @@ export default function MediaAssetsProviderState({
   const [secondPath, setSecondPath] = useState("");
   const [hasFeaturePath, setHasFeaturePath] = useState(false);
   const [featurePath, setFeaturePath] = useState("");
+  const [uploadedFile, setUploadedFile] = useState("");
 
   return (
     <MediaAssetsStateContext.Provider
@@ -63,6 +64,8 @@ export default function MediaAssetsProviderState({
         setHasFeaturePath,
         featurePath,
         setFeaturePath,
+        uploadedFile,
+        setUploadedFile,
       }}
     >
       {children}

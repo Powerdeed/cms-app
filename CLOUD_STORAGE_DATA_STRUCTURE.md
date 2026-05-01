@@ -7,11 +7,11 @@ The Media & Assets UI currently expects an array of objects with this structure:
 ```typescript
 interface Asset {
   id: number | string;
-  name: string;           // File name with extension
-  type: string;           // 'image', 'document', 'diagram', etc.
-  size: string;           // Human-readable size (e.g., "2.4 MB")
-  usage: string;          // Where/how the asset is used
-  uploadDate: string;     // ISO date string or formatted date
+  name: string; // File name with extension
+  type: string; // 'image', 'document', 'diagram', etc.
+  size: string; // Human-readable size (e.g., "2.4 MB")
+  usage: string; // Where/how the asset is used
+  uploadDate: string; // ISO date string or formatted date
 }
 ```
 
@@ -87,22 +87,23 @@ When you fetch files from Google Cloud Storage, each file object includes metada
 ```typescript
 // Raw response from Google Cloud Storage API
 interface GCSFileMetadata {
-  name: string;                    // Full path: "projects/metro-bridge/hero-image.jpg"
-  bucket: string;                  // "ptr-command-center-assets"
-  generation: string;              // Version identifier
-  metageneration: string;          // Metadata version
-  contentType: string;             // "image/jpeg", "application/pdf", etc.
-  timeCreated: string;             // ISO timestamp: "2026-01-15T10:30:00.000Z"
-  updated: string;                 // ISO timestamp
-  storageClass: string;            // "STANDARD", "NEARLINE", etc.
-  size: string;                    // Size in bytes: "2457600"
-  md5Hash: string;                 // Hash for integrity
-  mediaLink: string;               // Download URL
-  metadata?: {                     // Custom metadata you can add
-    usage?: string;                // "Metro Bridge Project"
-    category?: string;             // "projects", "website", etc.
-    tags?: string;                 // "bridge,infrastructure,featured"
-    usedIn?: string;               // "homepage-hero,project-123"
+  name: string; // Full path: "projects/metro-bridge/hero-image.jpg"
+  bucket: string; // "ptr-command-center-assets"
+  generation: string; // Version identifier
+  metageneration: string; // Metadata version
+  contentType: string; // "image/jpeg", "application/pdf", etc.
+  timeCreated: string; // ISO timestamp: "2026-01-15T10:30:00.000Z"
+  updated: string; // ISO timestamp
+  storageClass: string; // "STANDARD", "NEARLINE", etc.
+  size: string; // Size in bytes: "2457600"
+  md5Hash: string; // Hash for integrity
+  mediaLink: string; // Download URL
+  metadata?: {
+    // Custom metadata you can add
+    usage?: string; // "Metro Bridge Project"
+    category?: string; // "projects", "website", etc.
+    tags?: string; // "bridge,infrastructure,featured"
+    usedIn?: string; // "homepage-hero,project-123"
   };
 }
 ```
@@ -116,34 +117,34 @@ Here's how you'd transform Google Cloud Storage data to match the UI structure:
 ```typescript
 // Helper function to convert bytes to human-readable size
 function formatFileSize(bytes: number): string {
-  if (bytes === 0) return '0 Bytes';
+  if (bytes === 0) return "0 Bytes";
   const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const sizes = ["Bytes", "KB", "MB", "GB"];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
+  return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + " " + sizes[i];
 }
 
 // Helper function to determine asset type from content type
 function getAssetType(contentType: string): string {
-  if (contentType.startsWith('image/')) {
-    if (contentType === 'image/svg+xml') return 'diagram';
-    return 'image';
+  if (contentType.startsWith("image/")) {
+    if (contentType === "image/svg+xml") return "diagram";
+    return "image";
   }
-  if (contentType === 'application/pdf' || contentType.includes('document')) {
-    return 'document';
+  if (contentType === "application/pdf" || contentType.includes("document")) {
+    return "document";
   }
-  return 'file';
+  return "file";
 }
 
 // Helper function to extract file name from full path
 function getFileName(fullPath: string): string {
-  return fullPath.split('/').pop() || fullPath;
+  return fullPath.split("/").pop() || fullPath;
 }
 
 // Helper function to format date
 function formatDate(isoDate: string): string {
   const date = new Date(isoDate);
-  return date.toISOString().split('T')[0]; // Returns "2026-01-15"
+  return date.toISOString().split("T")[0]; // Returns "2026-01-15"
 }
 
 // Main transformation function
@@ -153,12 +154,12 @@ function transformGCSToAssets(gcsFiles: GCSFileMetadata[]): Asset[] {
     name: getFileName(file.name),
     type: getAssetType(file.contentType),
     size: formatFileSize(parseInt(file.size)),
-    usage: file.metadata?.usage || file.metadata?.usedIn || 'Not specified',
+    usage: file.metadata?.usage || file.metadata?.usedIn || "Not specified",
     uploadDate: formatDate(file.timeCreated),
     // Additional fields you might want to include:
     url: file.mediaLink,
     fullPath: file.name,
-    category: file.name.split('/')[0], // 'projects', 'website', etc.
+    category: file.name.split("/")[0], // 'projects', 'website', etc.
     contentType: file.contentType,
   }));
 }
@@ -180,30 +181,32 @@ interface AssetFolder {
 
 function organizeAssetsByFolder(gcsFiles: GCSFileMetadata[]): AssetFolder {
   const root: AssetFolder = {
-    name: 'root',
-    path: '',
+    name: "root",
+    path: "",
     assets: [],
-    subfolders: []
+    subfolders: [],
   };
 
-  gcsFiles.forEach(file => {
-    const pathParts = file.name.split('/');
+  gcsFiles.forEach((file) => {
+    const pathParts = file.name.split("/");
     const fileName = pathParts.pop();
-    
+
     let currentFolder = root;
-    let currentPath = '';
+    let currentPath = "";
 
     // Navigate/create folder structure
-    pathParts.forEach(folderName => {
-      currentPath += (currentPath ? '/' : '') + folderName;
-      
-      let subfolder = currentFolder.subfolders.find(f => f.name === folderName);
+    pathParts.forEach((folderName) => {
+      currentPath += (currentPath ? "/" : "") + folderName;
+
+      let subfolder = currentFolder.subfolders.find(
+        (f) => f.name === folderName,
+      );
       if (!subfolder) {
         subfolder = {
           name: folderName,
           path: currentPath,
           assets: [],
-          subfolders: []
+          subfolders: [],
         };
         currentFolder.subfolders.push(subfolder);
       }
@@ -217,7 +220,7 @@ function organizeAssetsByFolder(gcsFiles: GCSFileMetadata[]): AssetFolder {
         name: fileName,
         type: getAssetType(file.contentType),
         size: formatFileSize(parseInt(file.size)),
-        usage: file.metadata?.usage || 'Not specified',
+        usage: file.metadata?.usage || "Not specified",
         uploadDate: formatDate(file.timeCreated),
         url: file.mediaLink,
         fullPath: file.name,
@@ -234,35 +237,41 @@ function organizeAssetsByFolder(gcsFiles: GCSFileMetadata[]): AssetFolder {
 ## Example: Firebase Cloud Storage Usage
 
 ```typescript
-import { getStorage, ref, listAll, getMetadata, getDownloadURL } from 'firebase/storage';
+import {
+  getStorage,
+  ref,
+  listAll,
+  getMetadata,
+  getDownloadURL,
+} from "firebase/storage";
 
 async function fetchAllAssets(): Promise<Asset[]> {
   const storage = getStorage();
-  const storageRef = ref(storage, '/'); // Root or specific folder
-  
+  const storageRef = ref(storage, "/"); // Root or specific folder
+
   try {
     // List all items (files and folders)
     const result = await listAll(storageRef);
-    
+
     const assetPromises = result.items.map(async (itemRef) => {
       const metadata = await getMetadata(itemRef);
       const downloadURL = await getDownloadURL(itemRef);
-      
+
       return {
         id: itemRef.fullPath,
         name: itemRef.name,
-        type: getAssetType(metadata.contentType || ''),
+        type: getAssetType(metadata.contentType || ""),
         size: formatFileSize(metadata.size),
-        usage: metadata.customMetadata?.usage || 'Not specified',
+        usage: metadata.customMetadata?.usage || "Not specified",
         uploadDate: formatDate(metadata.timeCreated),
         url: downloadURL,
         fullPath: itemRef.fullPath,
       };
     });
-    
+
     return await Promise.all(assetPromises);
   } catch (error) {
-    console.error('Error fetching assets:', error);
+    console.error("Error fetching assets:", error);
     return [];
   }
 }
@@ -271,25 +280,25 @@ async function fetchAllAssets(): Promise<Asset[]> {
 async function fetchAssetsFromFolder(folderPath: string): Promise<Asset[]> {
   const storage = getStorage();
   const folderRef = ref(storage, folderPath);
-  
+
   const result = await listAll(folderRef);
-  
+
   const assetPromises = result.items.map(async (itemRef) => {
     const metadata = await getMetadata(itemRef);
     const downloadURL = await getDownloadURL(itemRef);
-    
+
     return {
       id: itemRef.fullPath,
       name: itemRef.name,
-      type: getAssetType(metadata.contentType || ''),
+      type: getAssetType(metadata.contentType || ""),
       size: formatFileSize(metadata.size),
-      usage: metadata.customMetadata?.usage || 'Not specified',
+      usage: metadata.customMetadata?.usage || "Not specified",
       uploadDate: formatDate(metadata.timeCreated),
       url: downloadURL,
       fullPath: itemRef.fullPath,
     };
   });
-  
+
   return await Promise.all(assetPromises);
 }
 ```
@@ -301,30 +310,35 @@ async function fetchAssetsFromFolder(folderPath: string): Promise<Asset[]> {
 When uploading files to Google Cloud Storage, add custom metadata to track usage:
 
 ```typescript
-import { getStorage, ref, uploadBytes, uploadBytesResumable } from 'firebase/storage';
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  uploadBytesResumable,
+} from "firebase/storage";
 
 async function uploadWithMetadata(file: File, path: string, usage: string) {
   const storage = getStorage();
   const storageRef = ref(storage, path);
-  
+
   const metadata = {
     customMetadata: {
-      usage: usage,                              // "Metro Bridge Project"
-      category: path.split('/')[0],              // "projects"
-      uploadedBy: 'admin@powerdeed.tech',        // User who uploaded
-      tags: 'bridge,infrastructure,featured',    // Searchable tags
-      usedIn: 'homepage-projects,project-detail' // Where it's referenced
-    }
+      usage: usage, // "Metro Bridge Project"
+      category: path.split("/")[0], // "projects"
+      uploadedBy: "admin@powerdeed.tech", // User who uploaded
+      tags: "bridge,infrastructure,featured", // Searchable tags
+      usedIn: "homepage-projects,project-detail", // Where it's referenced
+    },
   };
-  
+
   await uploadBytes(storageRef, file, metadata);
 }
 
 // Example usage:
 uploadWithMetadata(
-  imageFile, 
-  'projects/metro-bridge/hero-image.jpg',
-  'Metro Bridge Project - Hero Image'
+  imageFile,
+  "projects/metro-bridge/hero-image.jpg",
+  "Metro Bridge Project - Hero Image",
 );
 ```
 
@@ -336,13 +350,13 @@ Here's how you'd integrate this into your Media & Assets component:
 
 ```typescript
 // In your MediaAssets component
-import { useEffect, useState } from 'react';
-import { fetchAllAssets } from './cloudStorageService';
+import { useEffect, useState } from "react";
+import { fetchAllAssets } from "./cloudStorageService";
 
 export function MediaAssets() {
   const [assets, setAssets] = useState<Asset[]>([]);
   const [loading, setLoading] = useState(true);
-  
+
   useEffect(() => {
     async function loadAssets() {
       setLoading(true);
@@ -350,15 +364,15 @@ export function MediaAssets() {
         const fetchedAssets = await fetchAllAssets();
         setAssets(fetchedAssets);
       } catch (error) {
-        console.error('Failed to load assets:', error);
+        console.error("Failed to load assets:", error);
       } finally {
         setLoading(false);
       }
     }
-    
+
     loadAssets();
   }, []);
-  
+
   // Rest of your component code...
   // Use `assets` instead of `mockAssets`
 }

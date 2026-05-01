@@ -29,6 +29,15 @@ api.interceptors.response.use(
 );
 
 api.interceptors.request.use((config) => {
+  if (
+    typeof FormData !== "undefined" &&
+    config.data instanceof FormData &&
+    config.headers
+  ) {
+    delete config.headers["Content-Type"];
+    delete config.headers["content-type"];
+  }
+
   if (typeof window !== "undefined") {
     const token = localStorage.getItem("accessToken");
     if (token) {

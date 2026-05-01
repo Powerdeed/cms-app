@@ -26,33 +26,35 @@ export default function ImageUploaderView({
   targetFileTypes: FileType[];
 }) {
   const { state } = useMediaAssets();
-  const { imageUploaderState, actions } = useImageUploader();
+  const { imageUploaderState, imageUploaderActions } = useImageUploader();
 
   useEffect(() => {
     const initializer = () => {
       state.setAssetMode("new");
       state.setTargetFileTypes(targetFileTypes);
-      actions.pathSetter(path);
+      imageUploaderActions.pathSetter(path);
     };
 
     initializer();
-  }, [targetFileTypes, path, state, actions, imageUploaderState]);
+  }, [targetFileTypes, path, state, imageUploaderActions, imageUploaderState]);
 
   return (
     <div>
       {/* Ready to upload */}
-      {actions.popUpToDisplay.dropZone && <DropZone />}
+      {imageUploaderActions.popUpToDisplay.dropZone && <DropZone />}
 
       {/* Compressing */}
-      {actions.popUpToDisplay.compressing && <CompressingAsset />}
+      {imageUploaderActions.popUpToDisplay.compressing && <CompressingAsset />}
 
       {/* Editor */}
-      {actions.popUpToDisplay.assetMediaEditor && (
+      {imageUploaderActions.popUpToDisplay.assetMediaEditor && (
         <ImageUploaderFileEditor changeFunc={changeFunc} />
       )}
 
       {/* Error */}
-      {actions.popUpToDisplay.assetHandlingError && <AssetHandlingError />}
+      {imageUploaderActions.popUpToDisplay.assetHandlingError && (
+        <AssetHandlingError />
+      )}
     </div>
   );
 }

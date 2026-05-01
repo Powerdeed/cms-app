@@ -7,6 +7,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import "../global components/icons/icons";
 import Nav from "@global components/layout/nav/Nav";
 import SideBar from "@global components/layout/SideBar";
+import GlobalProvider from "@global utils/context/GlobalProvider";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta-sans",
@@ -50,11 +51,14 @@ export default function RootLayout({
         className={`${plusJakartaSans.variable} ${openSans.variable} antialiased flex flex-col min-h-screen`}
       >
         <SpeedInsights />
-        <Nav />
 
-        <SideBar />
+        <GlobalProvider>
+          <Nav />
 
-        {children}
+          <SideBar />
+
+          {children}
+        </GlobalProvider>
       </body>
     </html>
   );

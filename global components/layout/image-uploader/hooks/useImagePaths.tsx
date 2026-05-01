@@ -1,6 +1,7 @@
 "use client";
 
 import { useContext } from "react";
+
 import { MediaAssetsStateContext } from "@features/mediaAndAssets/context/MediaAssetsStateContext";
 
 export default function useImagePaths() {

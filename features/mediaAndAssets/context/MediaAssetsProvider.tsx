@@ -4,6 +4,7 @@ import MediaAssetsErrorsProvider from "./MediaAssetsErrorsProvider";
 import MediaAssetsProcessingProvider from "./MediaAssetsProcessingProvider";
 import MediaAssetsProviderState from "./MediaAssetsProviderStates";
 import MediaAssetsSearchProvider from "./MediaAssetsSearchProvider";
+import MediaAssetsUploadingProvider from "./MediaAssetsUploadingProvider";
 
 export default function MediaAssetsProvider({
   children,
@@ -15,7 +16,9 @@ export default function MediaAssetsProvider({
       <MediaAssetsProviderState>
         <MediaAssetsErrorsProvider>
           <MediaAssetsProcessingProvider>
-            {children}
+            <MediaAssetsUploadingProvider>
+              {children}
+            </MediaAssetsUploadingProvider>
           </MediaAssetsProcessingProvider>
         </MediaAssetsErrorsProvider>
       </MediaAssetsProviderState>

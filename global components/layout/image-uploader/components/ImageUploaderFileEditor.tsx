@@ -10,7 +10,10 @@ import { InputArea } from "@global components/layout/FormWrapper";
 
 // hooks
 import useMediaAssets from "@features/mediaAndAssets/hooks/useAssets";
-// import useImageUploader from "../hooks/useImageUploader";
+import useImageUploader from "../hooks/useImageUploader";
+
+// utils
+import { removeExtensionName } from "../utils/removeExtensionName";
 
 export default function ImageUploaderFileEditor({
   changeFunc,
@@ -18,11 +21,11 @@ export default function ImageUploaderFileEditor({
   changeFunc: (val: string) => void;
 }) {
   const { state, actions } = useMediaAssets();
-  // const { imageUploaderState } = useImageUploader();
+  const { imageUploaderState, imageUploaderActions } = useImageUploader();
 
   // console.log(imageUploaderState.newEmptyAsset);
 
-  const currentAsset = state.currentAsset;
+  const currentAsset = imageUploaderState.newEmptyAsset;
   if (!currentAsset) return;
 
   return (
@@ -41,7 +44,7 @@ export default function ImageUploaderFileEditor({
       <div className="vertical-layout__inner">
         <InputArea
           label={`Rename your file? (optional), don't include the "${currentAsset.contentType}" file extension name`}
-          val={state.fileName.split(".").slice(0, -1).join(".")}
+          val={removeExtensionName(state.fileName)}
           changeFunc={(val) =>
             state.setFileName(`${val}${currentAsset.contentType}`)
           }
@@ -54,7 +57,10 @@ export default function ImageUploaderFileEditor({
         type="submit"
         className="flex-1"
         buttonText="Add Image"
-        clickAction={() => changeFunc(currentAsset.name)}
+        clickAction={() => {
+          changeFunc(currentAsset.name);
+          imageUploaderActions.assetUploadingHandler();
+        }}
       >
         {state.uploadingStatus && <Loader />}
       </Button>

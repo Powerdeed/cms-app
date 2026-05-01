@@ -37,6 +37,8 @@ type MediaAssetsState = {
   setHasFeaturePath: Dispatch<SetStateAction<boolean>>;
   featurePath: string;
   setFeaturePath: Dispatch<SetStateAction<string>>;
+  uploadedFile: string;
+  setUploadedFile: Dispatch<SetStateAction<string>>;
 
   // clipBoard states
   copying: boolean;
