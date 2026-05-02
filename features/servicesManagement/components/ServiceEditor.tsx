@@ -4,11 +4,11 @@ import Button, { ButtonRed, DeleteIconBtn } from "@global components/ui/Button";
 import Loader from "@global components/ui/Loader";
 import { InputArea } from "@global components/layout/FormWrapper";
 import Toggle from "@global components/ui/Toggle";
-import ImageUploader from "@global components/layout/image-uploader/components/ImageUploader";
+import { FileUploader } from "@global components/layout/file-uploader";
 
 import useService from "../hooks/useService";
 
-import { toPascalCase } from "@global utils/conversions/toPascalCase";
+import { toPascalCase } from "@globals";
 
 export default function ServiceEditor() {
   const { state, actions } = useService();
@@ -45,7 +45,7 @@ export default function ServiceEditor() {
               </div>
             ))}
 
-            <ImageUploader
+            <FileUploader
               targetFileTypes={["image"]}
               path={`service/${state.selectedService.name}`}
               changeFunc={(val) => actions.addNewServiceImage(val)}

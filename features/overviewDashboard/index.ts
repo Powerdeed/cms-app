@@ -1,11 +1,32 @@
-export * from "./hooks/useCount";
-export * from "./hooks/useGraphs";
+// feature
+export { default as OverviewDashboard } from "./OverviewDashboard";
+export * from "./OverviewDashboard";
 
-export * from "./services/web-activities";
+// components
+export * from "./components/OverviewDashboardView";
 
+// constants
 export * from "./constants/PageMetaData";
 export * from "./constants/sectionAccentColors";
 export * from "./constants/visibleCountIncrement";
 
-export * from "./types/stats.types";
+// context
+export * from "./context/overviewContext";
+export { default as overviewProvider } from "./context/overviewProvider";
+export { default as OverviewProvider } from "./context/overviewProvider";
+export * from "./context/overviewProvider";
+
+// hooks
+export { default as useCount } from "./hooks/useCount";
+export * from "./hooks/useCount";
+export { default as useGraphs } from "./hooks/useGraphs";
+export * from "./hooks/useGraphs";
+export { default as useOverviewDashboard } from "./hooks/useOverviewDashboard";
+export * from "./hooks/useOverviewDashboard";
+
+// services
+export * from "./services/web-activities";
+
+// types
 export * from "./types/recentActivities.types";
+export * from "./types/stats.types";

@@ -5,23 +5,23 @@ import { use, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 // utils
-import { convertLinkToLabel } from "@global utils/conversions/urlConversions";
+import { convertLinkToLabel } from "@globals";
 
 // constants
 import { MenuLabels } from "@lib/constants/NAV_MENU_AND_LABELS";
 
 // features
-import SettingsAndUsers from "@features/settingsAndUser/SettingsAndUsers";
-import Customization from "@features/customization/Customization";
-import DataAndReports from "@features/dataAndReports/DataAndReports";
-import SchedulingAndVisibility from "@features/schedulingAndVisiblity/SchedulingAndVisibility";
-import MediaAndAssets from "@features/mediaAndAssets/MediaAndAssets";
-import ArticlesAndInsights from "@features/articlesAndInsights/ArticlesAndInsights";
-import WebsiteContent from "@features/webisteContent/WebsiteContent";
-import Projects from "@features/projects/Projects";
-import ServicesManagement from "@features/servicesManagement/ServicesManagement";
-import LeadsAndInquiries from "@features/leadsAndInquiries/LeadsAndInquiries";
-import OverviewDashboard from "@features/overviewDashboard/OverviewDashboard";
+import { SettingsAndUsers } from "@features/settingsAndUser";
+import { Customization } from "@features/customization";
+import { DataAndReports } from "@features/dataAndReports";
+import { SchedulingAndVisibility } from "@features/schedulingAndVisiblity";
+import { MediaAndAssets } from "@features/mediaAndAssets";
+import { ArticlesAndInsights } from "@features/articlesAndInsights";
+import { WebsiteContent } from "@features/webisteContent";
+import { Projects } from "@features/projects";
+import { ServicesManagement } from "@features/servicesManagement";
+import { LeadsAndInquiries } from "@features/leadsAndInquiries";
+import { OverviewDashboard } from "@features/overviewDashboard";
 
 // component
 import { ChartProvider } from "@global components/layout/charts/context/ChartProvider";

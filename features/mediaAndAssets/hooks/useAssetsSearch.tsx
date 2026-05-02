@@ -6,27 +6,32 @@ import { getMediaAssets } from "../services/mediaAssets";
 
 import { MediaAssetsStateContext } from "../context/MediaAssetsStateContext";
 import { MediaAssetsSearchContext } from "../context/MediaAssetsSearchContext";
+import { FileUploaderStateContext } from "@global components/layout/file-uploader";
 
 export default function useAssetsSearchToolBar() {
   const assetsContext = useContext(MediaAssetsStateContext);
+  const fileUploaderState = useContext(FileUploaderStateContext);
   const assetsSearchContext = useContext(MediaAssetsSearchContext);
 
-  if (!assetsContext || !assetsSearchContext)
+  if (!assetsContext || !fileUploaderState || !assetsSearchContext)
     throw new Error("context must be used within a provider");
 
-  const { targetAssetType, setMediaAssets } = assetsContext;
+  const { setMediaAssets } = assetsContext;
+  const { targetFileType } = fileUploaderState;
 
   const { searchQuery } = assetsSearchContext;
 
   useEffect(() => {
-    if (targetAssetType === "All") {
+    if (targetFileType === "All") {
       setMediaAssets(getMediaAssets());
     } else {
       setMediaAssets(
-        getMediaAssets().filter((asset) => asset.type === targetAssetType),
+        getMediaAssets().filter(
+          (asset) => (asset.assetType ?? asset.type) === targetFileType,
+        ),
       );
     }
-  }, [setMediaAssets, targetAssetType]);
+  }, [setMediaAssets, targetFileType]);
 
   useEffect(() => {
     const query = searchQuery.toLowerCase();
@@ -35,7 +40,9 @@ export default function useAssetsSearchToolBar() {
       getMediaAssets().filter(
         (asset) =>
           asset.name.toLowerCase().includes(query) ||
-          asset.usage.toLowerCase().includes(query),
+          (asset.classification?.usage ?? asset.usage ?? "")
+            .toLowerCase()
+            .includes(query),
       ),
     );
   }, [searchQuery, setMediaAssets]);

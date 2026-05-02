@@ -1,6 +1,6 @@
 "use client";
 
-import useContactPage from "@features/webisteContent/hooks/contactpage/useContactPage";
+import { useContactPage } from "@features/webisteContent";
 import FormWrapper, { InputArea } from "@global components/layout/FormWrapper";
 
 export default function ContactLocation() {

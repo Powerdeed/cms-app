@@ -1,6 +1,6 @@
 "use client";
 
-import { testimonialsContext } from "@features/webisteContent/context/homepage/testimonialsContext";
+import { testimonialsContext } from "@features/webisteContent";
 import { homepageContext } from "../../context/homepage/homepageContext";
 
 import { useContext } from "react";

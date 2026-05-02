@@ -11,7 +11,7 @@ import { AboutUs } from "../../types/aboutPage.types";
 import {
   isStringArray,
   isStringMatrix,
-} from "../../../../global utils/helper functions/typeCheckers";
+} from "../../../../globals/helper functions/typeCheckers";
 
 export default function useAboutEditor() {
   const aboutpageState = useContext(aboutpageContext);

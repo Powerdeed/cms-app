@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ReactNode, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import SearchBar from "@global components/ui/SearchBar";
@@ -9,10 +9,20 @@ import { SeparatorLine } from "../FormWrapper";
 import "@global components/icons/icons";
 
 import useNav from "./hooks/useNav";
+import { globalContext } from "@globals";
+import { useGlobals } from "@globals";
 
 export default function Nav() {
+  const {} = useGlobals();
+
+  const globalStates = useContext(globalContext);
+
+  if (!globalStates)
+    throw new Error("Global context must be within a provider");
+
+  const { user } = globalStates;
+
   const {
-    user,
     searchQuery,
     setSearchQuery,
     profileOptions,

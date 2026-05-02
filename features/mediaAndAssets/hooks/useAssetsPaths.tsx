@@ -14,10 +14,10 @@ export default function useAssetsPaths() {
     setSecondPath,
     setFirstPathArr,
     setAssetCategory,
-    setFileName,
     setSecondPaths,
     setAssetUsagePaths,
     hasFeaturePath,
+    setFileName,
   } = useMediaAssetsState();
 
   useEffect(() => {
@@ -83,11 +83,12 @@ export default function useAssetsPaths() {
   }, [assetCategory, firstPath, hasFeaturePath, setSecondPaths]);
 
   const updatePathSetters = (asset?: Asset) => {
-    const paths = asset?.fullPath.split("/").slice(0, -1);
+    const assetPath = asset?.storage?.objectName ?? asset?.fullPath ?? "";
+    const paths = assetPath.split("/").slice(0, -1);
     const category = paths ? paths[0] : "";
     const firstPath = paths ? paths[1] : "";
     const secondPath = paths ? paths[2] : "";
-    const name = asset?.fullPath.split("/").pop() ?? "";
+    const name = assetPath.split("/").pop() ?? "";
     const usage = firstPath
       ? `${firstPath}${secondPath ? `/${secondPath}` : ""}`
       : "";

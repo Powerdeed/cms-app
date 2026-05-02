@@ -1,14 +1,55 @@
+import { FileType } from "@global components/layout/file-uploader";
+
+export type { FileType };
+
+export type AssetStatus = "active" | "archived" | "deleted";
+
+export interface AssetRelationship {
+  entityType: string;
+  entityId: string;
+  field: string;
+  role: string;
+}
+
 export interface Asset {
   id: string;
-  name: string; // File name with extension
-  type: "image" | "document" | "diagram"; // 'image', 'document', 'diagram', etc.
-  size: string; // Human-readable size (e.g., "2.4 MB")
-  usage: string; // Where/how the asset is used
-  uploadDate: string; // ISO date string or formatted date
-  url: string; // ISO date string or formatted date
-  fullPath: string; // ISO date string or formatted date
-  category: string; // ISO date string or formatted date
-  contentType: string; // ISO date string or formatted date
+  name: string;
+  originalName?: string;
+  assetType?: FileType;
+  mimeType?: string;
+  size: number | string;
+  storage?: {
+    provider: "gcs";
+    bucket: string;
+    objectName: string;
+    generation: string;
+    publicUrl: string;
+  };
+  classification?: {
+    category: string;
+    usage: string;
+    tags: string[];
+  };
+  display?: {
+    alt: string;
+    caption: string;
+    title: string;
+  };
+  relationships?: AssetRelationship[];
+  status?: AssetStatus;
+  createdBy?: string;
+  updatedBy?: string;
+  createdAt?: string;
+  updatedAt?: string;
+
+  // Temporary compatibility fields for the existing sample asset data/UI.
+  type?: FileType;
+  usage?: string;
+  uploadDate?: string;
+  url?: string;
+  fullPath?: string;
+  category?: string;
+  contentType?: string;
 }
 
 export interface GCSFileMetadata {

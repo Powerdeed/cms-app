@@ -8,7 +8,7 @@ import { InputArea } from "@global components/layout/FormWrapper";
 import useProjects from "../hooks/useProjects";
 
 import { companyServices } from "@lib/constants/COMPANY_PROVISIONS";
-import ImageUploader from "@global components/layout/image-uploader/components/ImageUploader";
+import { FileUploader } from "@global components/layout/file-uploader";
 
 export default function EditProject() {
   const { state, actions } = useProjects();
@@ -95,7 +95,7 @@ export default function EditProject() {
               />
             </div>
           ))}
-          <ImageUploader
+          <FileUploader
             targetFileTypes={["image"]}
             path={`projects/${state.selectedCategory}/${state.selectedProject.name}`}
             changeFunc={(val) =>

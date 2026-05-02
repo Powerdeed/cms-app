@@ -1,22 +1,14 @@
 "use client";
 
-import { logOutUser } from "@app/login/services/authUser";
-import { ApiError } from "@lib/api/utils/apiError";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-interface User {
-  _id: string;
-  name: string;
-  email: string;
-  password: string;
-  role: string;
-}
+import { logOutUser } from "@app/login/services/authUser";
+import { ApiError } from "@lib/api/utils/apiError";
 
 export default function useNav() {
   const router = useRouter();
 
-  const [user, setUser] = useState<User | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [profileOptions, setProfileOptions] = useState(false);
   const [openNotifications, setOpenNotifications] = useState(false);
@@ -35,20 +27,7 @@ export default function useNav() {
     }
   };
 
-  useEffect(() => {
-    const getUser = () => {
-      const storedUser = localStorage.getItem("user");
-
-      const user: User | null = storedUser ? JSON.parse(storedUser) : null;
-
-      setUser(user);
-    };
-
-    getUser();
-  }, []);
-
   return {
-    user,
     searchQuery,
     setSearchQuery,
     profileOptions,

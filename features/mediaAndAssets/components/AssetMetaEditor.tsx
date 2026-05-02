@@ -4,8 +4,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 // services
-import { Asset } from "../types/mediaAssets.types";
-
 // components
 import Button, { ButtonLight } from "@global components/ui/Button";
 import Loader from "@global components/ui/Loader";
@@ -15,48 +13,50 @@ import { AssetUsagePaths } from "../constants/assetUsagePaths";
 
 import useMediaAssets from "../hooks/useAssets";
 
-const fieldsToReview: (keyof Asset)[] = [
-  "type",
-  "size",
-  "fullPath",
-  "contentType",
-];
-
 export default function AssetMetaEditor() {
   const { state, actions } = useMediaAssets();
-  const currentAsset = state.currentAsset;
+  const targetAsset = state.targetAsset;
 
-  if (!currentAsset) return;
+  if (!targetAsset) return;
+
+  const fileExtension = state.fileName.includes(".")
+    ? `.${state.fileName.split(".").pop()}`
+    : "";
+  const assetPath = targetAsset.storage?.objectName ?? "";
+  const fieldsToReview = [
+    ["assetType", targetAsset.assetType],
+    ["size", targetAsset.size],
+    ["objectName", assetPath],
+    ["mimeType", targetAsset.mimeType],
+  ];
 
   return (
     <form
-      onSubmit={(e) =>
-        state.assetMode === "new"
-          ? actions.handleSubmitMediaAsset(e, currentAsset)
-          : actions.handleUpdateCurrentAsset(e)
-      }
+      onSubmit={(e) => {
+        e.preventDefault();
+
+        if (state.assetMode === "new") {
+          actions.handleSubmitMediaAsset(targetAsset);
+        } else {
+          actions.handleUpdateTargetAsset();
+        }
+      }}
       className="feature-container-vertical h-fit text-style__body"
     >
       {"Edit file meta data before uploading (areas with '*' must be updated)."}
 
       <div className="grid grid-cols-2 gap-2.5">
-        {Object.entries(currentAsset).map(([key, value]) => {
-          if (fieldsToReview.includes(key as keyof Asset)) {
-            return (
-              <MetaWrapper key={key} meta={key} val={value}>
-                {key === "fullPath" && (
-                  <FontAwesomeIcon
-                    icon={["fas", state.copying ? "check" : "copy"]}
-                    className="cursor-pointer"
-                    onClick={() => actions.handleCopyAssetPath(key)}
-                  />
-                )}
-              </MetaWrapper>
-            );
-          }
-
-          return null;
-        })}
+        {fieldsToReview.map(([key, value]) => (
+          <MetaWrapper key={key} meta={String(key)} val={String(value ?? "")}>
+            {key === "objectName" && (
+              <FontAwesomeIcon
+                icon={["fas", state.copying ? "check" : "copy"]}
+                className="cursor-pointer"
+                onClick={() => actions.handleCopyAssetPath(assetPath)}
+              />
+            )}
+          </MetaWrapper>
+        ))}
 
         <div className="flex gap-2.5 items-center">
           <div className="w-55">
@@ -67,7 +67,7 @@ export default function AssetMetaEditor() {
             placeholder="Rename file"
             value={state.fileName.split(".").slice(0, -1).join(".")}
             onChange={(e) =>
-              state.setFileName(`${e.target.value}${currentAsset.contentType}`)
+              state.setFileName(`${e.target.value}${fileExtension}`)
             }
             className="w-full input-style field-sizing-content"
           />

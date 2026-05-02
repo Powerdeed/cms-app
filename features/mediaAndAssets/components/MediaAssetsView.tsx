@@ -1,8 +1,5 @@
 "use client";
 
-// modules
-import { useEffect } from "react";
-
 // components
 import FormWrapper from "@global components/layout/FormWrapper";
 import Button, { ButtonLight } from "@global components/ui/Button";
@@ -28,11 +25,6 @@ import { supportedAssetTypes } from "../constants/supportedAssetTypes";
 export function MediaAssetsView() {
   const { state, actions } = useMediaAssets();
 
-  useEffect(
-    () => state.setTargetFileTypes(["image", "diagram", "document"]),
-    [],
-  );
-
   return (
     <div className="relative page-layout">
       <FormWrapper
@@ -41,7 +33,7 @@ export function MediaAssetsView() {
         subtitleChildren={
           <Button
             buttonText="Upload Files"
-            clickAction={() => actions.handleCurrentAsset("new")}
+            clickAction={() => actions.handleTargetAsset("new")}
           />
         }
       >
@@ -57,9 +49,7 @@ export function MediaAssetsView() {
               key={category}
               buttonText={category}
               clickAction={() =>
-                state.setTargetAssetType(
-                  category as typeof state.targetAssetType,
-                )
+                state.setTargetFileType(category as typeof state.targetFileType)
               }
             />
           ))}
@@ -67,7 +57,7 @@ export function MediaAssetsView() {
 
         <div className="feature-container-vertical">
           <FormWrapper
-            subtitle={`${state.targetAssetType === "All" ? "All Assets" : `${toCamelCase(state.targetAssetType)}s`} (${state.mediaAssets.length})`}
+            subtitle={`${state.targetFileType === "All" ? "All Assets" : `${toCamelCase(state.targetFileType)}s`} (${state.mediaAssets.length})`}
             subtitleChildren={
               <div className="text-(terciary-grey) text-style__small-text">
                 Total Storage: {getTotalUsedSpace()} MB
@@ -83,7 +73,7 @@ export function MediaAssetsView() {
         </div>
       </FormWrapper>
 
-      {state.currentAsset && (
+      {state.assetMode && (
         <div
           className="asset-handling-interface"
           onClick={() => actions.handleResetAssetStates("cancel")}

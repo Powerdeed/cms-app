@@ -2,21 +2,31 @@
 
 import { useContext } from "react";
 import { MediaAssetsStateContext } from "../context/MediaAssetsStateContext";
-import { MediaAssetsProcessingContext } from "../context/MediaAssetsProcessingContext";
-import { MediaAssetsErrorsContext } from "../context/MediaAssetsErrorsContext";
+import {
+  FileUploaderErrorContext,
+  FileUploaderProcessingContext,
+  FileUploaderStateContext,
+} from "@global components/layout/file-uploader";
 
 export default function useAssetsError() {
   const mediaAssetsState = useContext(MediaAssetsStateContext);
-  const processingContext = useContext(MediaAssetsProcessingContext);
-  const errorContext = useContext(MediaAssetsErrorsContext);
+  const fileUploaderState = useContext(FileUploaderStateContext);
+  const processingContext = useContext(FileUploaderProcessingContext);
+  const errorContext = useContext(FileUploaderErrorContext);
 
-  if (!mediaAssetsState || !processingContext || !errorContext) {
+  if (
+    !mediaAssetsState ||
+    !fileUploaderState ||
+    !processingContext ||
+    !errorContext
+  ) {
     throw new Error("useMediaAssets must be used within a MediaAssetsProvider");
   }
 
-  const { file, assetMode } = mediaAssetsState;
+  const { assetMode } = mediaAssetsState;
+  const { file, targetFileTypes } = fileUploaderState;
 
-  const { compressing, isSupportedFile, setIsSupportedFile, targetFileTypes } =
+  const { compressing, isSupportedFile, setIsSupportedFile } =
     processingContext;
 
   const {

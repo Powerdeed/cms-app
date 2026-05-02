@@ -1,7 +1,3 @@
-import { Asset } from "../types/mediaAssets.types";
+import { FileType } from "@global components/layout/file-uploader";
 
-export const supportedAssetTypes: Asset["type"][] = [
-  "document",
-  "diagram",
-  "image",
-];
+export const supportedAssetTypes: FileType[] = ["document", "diagram", "image"];

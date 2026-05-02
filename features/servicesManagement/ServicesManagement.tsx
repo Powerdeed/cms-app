@@ -1,13 +1,13 @@
 import ServiceProvider from "./context/serviceProvider";
 import { ServicesManagementView } from "./components/ServicesManagantView";
-import MediaAssetsProvider from "@features/mediaAndAssets/context/MediaAssetsProvider";
+import { FileUploaderProvider } from "@global components/layout/file-uploader";
 
 export default function ServicesManagement() {
   return (
-    <MediaAssetsProvider>
+    <FileUploaderProvider>
       <ServiceProvider>
         <ServicesManagementView />
       </ServiceProvider>
-    </MediaAssetsProvider>
+    </FileUploaderProvider>
   );
 }

@@ -8,15 +8,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconName } from "@fortawesome/fontawesome-svg-core";
 
 // Conversions
-import { convertLabelToLink } from "@global utils/conversions/urlConversions";
-import { convertLinkToLabel } from "@global utils/conversions/urlConversions";
+import { convertLabelToLink } from "@globals";
+import { convertLinkToLabel } from "@globals";
 
 // Constants
 import { menuItems } from "@lib/constants/NAV_MENU_AND_LABELS";
 import { COMPANY_NAME } from "@lib/constants/COMPANY_NAME";
 
 // Context
-import { globalContext } from "@global utils/context/GlobalContext";
+import { globalContext } from "@globals";
 
 const titleMeta = {
   title: "PTR Command Center",

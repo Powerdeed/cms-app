@@ -8,7 +8,7 @@ import {
 import {
   inquiryTrendsData,
   trafficSourceData,
-} from "@features/overviewDashboard/services/web-activities";
+} from "@features/overviewDashboard";
 
 export default function useGraphs() {
   const lContext = useContext(LineContext);

@@ -2,7 +2,7 @@
 
 import { useContext, useEffect } from "react";
 
-import { homepageContext } from "@features/webisteContent/context/homepage/homepageContext";
+import { homepageContext } from "@features/webisteContent";
 
 import { getHomePageData, updateHomePageData } from "../../services/homepage";
 

@@ -2,8 +2,6 @@
 
 import { useContext } from "react";
 
-import { Asset } from "../types/mediaAssets.types";
-
 import { MediaAssetsStateContext } from "../context/MediaAssetsStateContext";
 
 export default function useAssetsClipboard() {
@@ -13,15 +11,17 @@ export default function useAssetsClipboard() {
     throw new Error("useMediaAssets must be used within a MediaAssetsProvider");
   }
 
-  const { currentAsset, setCopying } = mediaAssetsState;
+  const { targetAsset, setCopying } = mediaAssetsState;
 
-  const handleCopyAssetPath = async (key: keyof Asset) => {
-    if (!currentAsset) return;
+  const handleCopyAssetPath = async (value?: string) => {
+    if (!targetAsset) return;
 
     setCopying(true);
 
     try {
-      await navigator.clipboard.writeText(String(currentAsset[key]));
+      await navigator.clipboard.writeText(
+        value ?? targetAsset.storage?.objectName ?? targetAsset.fullPath ?? "",
+      );
 
       setTimeout(() => {
         setCopying(false);

@@ -1,6 +1,6 @@
 "use client";
 
-import { Homepage } from "@features/webisteContent/types/homePage.types";
+import { Homepage } from "@features/webisteContent";
 
 import { createContext, Dispatch } from "react";
 

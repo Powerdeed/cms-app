@@ -17,21 +17,29 @@ type AssetCardProps = {
 
 export default function AssetCard({ asset }: AssetCardProps) {
   const { state, actions } = useMediaAssets();
+  const assetType = asset.assetType ?? asset.type ?? "image";
+  const assetUsage = asset.classification?.usage ?? asset.usage ?? "";
+  const uploadDate =
+    asset.createdAt ?? asset.uploadDate ?? new Date().toISOString();
+  const readableSize =
+    typeof asset.size === "number"
+      ? `${(asset.size / 1000000).toFixed(2)} MB`
+      : asset.size;
 
   return (
     <div
       className="p-5 vertical-layout__inner border border-(--terciary-grey)/40 hover:border-(--secondary-blue) hover:bg-(--secondary-blue)/5 rounded-[10px]"
       onClick={() => {
         state.setAssetMode("existing");
-        actions.handleCurrentAsset("existing", asset);
+        actions.handleTargetAsset("existing", asset);
       }}
     >
       <div className="vertical-layout__inner">
         <div className="flex gap-2.5 h-12">
           <div>
             <FontAwesomeIcon
-              icon={["fas", asset.type === "document" ? "file-lines" : "image"]}
-              className={`text-style__heading p-3 bg-(--terciary-grey)/30 rounded-[10px] ${ICON_COLORS[asset.type]}`}
+              icon={["fas", assetType === "document" ? "file-lines" : "image"]}
+              className={`text-style__heading p-3 bg-(--terciary-grey)/30 rounded-[10px] ${ICON_COLORS[assetType]}`}
             />
           </div>
 
@@ -41,24 +49,24 @@ export default function AssetCard({ asset }: AssetCardProps) {
             </div>
 
             <div className="text-style__small-text text-(--secondary-grey)">
-              {asset.size}
+              {readableSize}
             </div>
           </div>
         </div>
 
         <div className="w-full text-center text-style__small-text px-2 py-1 rounded-[10px] border border-(--terciary-grey)">
-          {asset.type}
+          {assetType}
         </div>
 
         <SeparatorLine />
 
         <div className="text-style__small-text h-8 overflow-hidden">
           <span className="font-bold">Used in: </span>
-          {asset.usage}
+          {assetUsage}
         </div>
 
         <div className="text-style__small-text text-(--secondary-grey)">
-          Uploaded {asset.uploadDate}
+          Uploaded {uploadDate}
         </div>
       </div>
 

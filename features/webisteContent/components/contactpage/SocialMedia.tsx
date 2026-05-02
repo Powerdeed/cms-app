@@ -3,7 +3,7 @@
 import Button, { DeleteIconBtn } from "@global components/ui/Button";
 import FormWrapper, { InputArea } from "@global components/layout/FormWrapper";
 
-import useContactPage from "@features/webisteContent/hooks/contactpage/useContactPage";
+import { useContactPage } from "@features/webisteContent";
 
 export default function SocialMedia() {
   const { state, actions } = useContactPage();

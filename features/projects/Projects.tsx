@@ -2,14 +2,14 @@
 
 import ProjectProvider from "./context/projectsProvider";
 import ProjectsView from "./components/ProjectsView";
-import MediaAssetsProvider from "@features/mediaAndAssets/context/MediaAssetsProvider";
+import { FileUploaderProvider } from "@global components/layout/file-uploader";
 
 export default function Projects() {
   return (
-    <MediaAssetsProvider>
+    <FileUploaderProvider>
       <ProjectProvider>
         <ProjectsView />
       </ProjectProvider>
-    </MediaAssetsProvider>
+    </FileUploaderProvider>
   );
 }

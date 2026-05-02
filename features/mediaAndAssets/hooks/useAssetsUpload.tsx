@@ -2,90 +2,64 @@
 
 import { useContext } from "react";
 
-import { Asset } from "../types/mediaAssets.types";
+import { FileUploaderErrorContext } from "@global components/layout/file-uploader";
 
 import { MediaAssetsStateContext } from "../context/MediaAssetsStateContext";
-import { MediaAssetsProcessingContext } from "../context/MediaAssetsProcessingContext";
-import { MediaAssetsErrorsContext } from "../context/MediaAssetsErrorsContext";
+import { Asset } from "../types/mediaAssets.types";
 import useAssetEditing from "./useAssetsEditing";
 
 export default function useAssetsUpload() {
   const mediaAssetsState = useContext(MediaAssetsStateContext);
-  const processingContext = useContext(MediaAssetsProcessingContext);
-  const errorContext = useContext(MediaAssetsErrorsContext);
+  const errorContext = useContext(FileUploaderErrorContext);
 
-  if (!mediaAssetsState || !processingContext || !errorContext) {
+  if (!mediaAssetsState || !errorContext) {
     throw new Error("useMediaAssets must be used within a MediaAssetsProvider");
   }
 
-  const { setMediaAssets, currentAsset, setCurrentAsset, file, setAssetMode } =
+  const { setMediaAssets, targetAsset, setTargetAsset, setAssetMode } =
     mediaAssetsState;
-
   const { setErrorUploadingFile } = errorContext;
-
-  const { setUploadingStatus } = processingContext;
-
   const { handleResetAssetStates } = useAssetEditing();
 
-  const handleSubmitMediaAsset = (
-    e: React.SubmitEvent<HTMLFormElement>,
-    asset: Asset,
-  ) => {
-    e.preventDefault();
-    setUploadingStatus(true);
-
+  const handleSubmitMediaAsset = (asset: Asset) => {
     try {
-      const payload = {
-        file,
-        metadata: asset,
-      };
-
-      console.log("Uploading:", payload);
-
-      // simulate success → add to list
       setMediaAssets((prev) => [...prev, asset]);
     } catch (error) {
-      if (error instanceof Error)
+      if (error instanceof Error) {
         console.error(`An error occurred during upload: ${error.message}`);
+      }
 
       setErrorUploadingFile(true);
-      setUploadingStatus(false);
       setAssetMode(null);
     } finally {
-      setUploadingStatus(false);
       setAssetMode(null);
-      setCurrentAsset(null);
+      setTargetAsset(null);
       handleResetAssetStates("cancel");
     }
   };
 
-  const handleUpdateCurrentAsset = (e: React.SubmitEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setUploadingStatus(true);
+  const handleUpdateTargetAsset = () => {
+    if (!targetAsset) return;
 
-    if (currentAsset)
-      try {
-        console.log("Uploading:", currentAsset);
-
-        // simulate success → update to list
-        setMediaAssets((prev) =>
-          prev.map((asset) =>
-            asset.id === currentAsset.id ? currentAsset : asset,
-          ),
-        );
-      } catch (error) {
-        if (error instanceof Error)
-          console.error(`An error occurred during upload: ${error.message}`);
-
-        setErrorUploadingFile(true);
-        setUploadingStatus(false);
-        setAssetMode(null);
-      } finally {
-        setUploadingStatus(false);
-        setAssetMode(null);
-        setCurrentAsset(null);
-        handleResetAssetStates("cancel");
+    try {
+      setMediaAssets((prev) =>
+        prev.map((asset) =>
+          asset.id === targetAsset.id ? targetAsset : asset,
+        ),
+      );
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error(`An error occurred during upload: ${error.message}`);
       }
+
+      setErrorUploadingFile(true);
+      setAssetMode(null);
+    } finally {
+      setAssetMode(null);
+      setTargetAsset(null);
+      handleResetAssetStates("cancel");
+    }
   };
-  return { handleSubmitMediaAsset, handleUpdateCurrentAsset };
+
+  return { handleSubmitMediaAsset, handleUpdateTargetAsset };
 }

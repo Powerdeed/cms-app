@@ -3,28 +3,27 @@
 import { useContext, useEffect } from "react";
 
 import { MediaAssetsStateContext } from "../context/MediaAssetsStateContext";
-import { MediaAssetsProcessingContext } from "../context/MediaAssetsProcessingContext";
 
-import useMediaAssetsState from "./useAssetsState";
-
-import { Asset } from "../types/mediaAssets.types";
+import {
+  FileType,
+  FileUploaderProcessingContext,
+  FileUploaderStateContext,
+} from "@global components/layout/file-uploader";
 import useError from "./useAssetsError";
 
 export default function useAssetsEditing() {
   const mediaAssetsState = useContext(MediaAssetsStateContext);
-  const processingContext = useContext(MediaAssetsProcessingContext);
+  const fileUploaderState = useContext(FileUploaderStateContext);
+  const processingContext = useContext(FileUploaderProcessingContext);
 
-  if (!mediaAssetsState || !processingContext) {
+  if (!mediaAssetsState || !fileUploaderState || !processingContext) {
     throw new Error("useMediaAssets must be used within a MediaAssetsProvider");
   }
 
   const {
-    setCurrentAsset,
-    file,
-    setFile,
+    targetAsset,
+    setTargetAsset,
     setAssetMode,
-    fileName,
-    setFileName,
     assetCategory,
     setAssetCategory,
     firstPath,
@@ -34,11 +33,14 @@ export default function useAssetsEditing() {
     setSecondPath,
   } = mediaAssetsState;
 
-  const { setIsSupportedFile, targetFileTypes } = processingContext;
+  const { file, setFile, fileName, setFileName, targetFileTypes } =
+    fileUploaderState;
+
+  const { setIsSupportedFile } = processingContext;
 
   const { resetErrors } = useError();
 
-  const { newEmptyAsset, fileType } = useMediaAssetsState();
+  const fileType: FileType | "unknown" = targetAsset?.assetType ?? "unknown";
 
   const handleResetAssetStates = (reason: "cancel" | "re-upload") => {
     setFile(null);
@@ -49,15 +51,16 @@ export default function useAssetsEditing() {
     setSecondPath("");
     resetErrors();
     setAssetMode(reason === "re-upload" ? "new" : null);
-    setCurrentAsset(reason === "re-upload" ? newEmptyAsset : null);
+    setTargetAsset(reason === "re-upload" ? targetAsset : null);
   };
 
   useEffect(() => {
     const setAsset = () => {
-      if (file) {
-        setIsSupportedFile(targetFileTypes.includes(fileType as Asset["type"]));
-
-        setCurrentAsset(newEmptyAsset);
+      if (file && targetAsset) {
+        setIsSupportedFile(
+          targetFileTypes.includes(fileType as Exclude<FileType, "video">),
+        );
+        setTargetAsset(targetAsset);
       }
     };
 
@@ -65,8 +68,8 @@ export default function useAssetsEditing() {
   }, [
     file,
     fileType,
-    newEmptyAsset,
-    setCurrentAsset,
+    targetAsset,
+    setTargetAsset,
     setIsSupportedFile,
     targetFileTypes,
   ]);
@@ -76,18 +79,33 @@ export default function useAssetsEditing() {
       ? `${firstPath}${secondPath ? `/${secondPath}` : ""}`
       : "";
 
-    setCurrentAsset((prev) =>
+    setTargetAsset((prev) =>
       prev
         ? {
             ...prev,
-            ["name"]: fileName,
-            ["category"]: assetCategory,
-            ["usage"]: assetUsage,
-            ["fullPath"]: `${assetCategory}${assetUsage && "/" + assetUsage}/${fileName}`,
+            name: fileName,
+            storage: {
+              provider: "gcs",
+              bucket: prev.storage?.bucket ?? "",
+              objectName: `${assetCategory}${assetUsage && "/" + assetUsage}/${fileName}`,
+              generation: prev.storage?.generation ?? "",
+              publicUrl: prev.storage?.publicUrl ?? "",
+            },
+            classification: {
+              category: assetCategory,
+              usage: assetUsage,
+              tags: prev.classification?.tags ?? [],
+            },
+            display: {
+              alt: prev.display?.alt ?? "",
+              caption: prev.display?.caption ?? "",
+              title: fileName.split(".").slice(0, -1).join("."),
+            },
+            updatedAt: new Date().toISOString(),
           }
         : prev,
     );
-  }, [fileName, assetCategory, firstPath, secondPath, setCurrentAsset]);
+  }, [fileName, assetCategory, firstPath, secondPath, setTargetAsset]);
 
   return { handleResetAssetStates };
 }

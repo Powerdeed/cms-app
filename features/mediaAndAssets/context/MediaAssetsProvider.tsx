@@ -1,10 +1,8 @@
 "use client";
 
-import MediaAssetsErrorsProvider from "./MediaAssetsErrorsProvider";
-import MediaAssetsProcessingProvider from "./MediaAssetsProcessingProvider";
 import MediaAssetsProviderState from "./MediaAssetsProviderStates";
 import MediaAssetsSearchProvider from "./MediaAssetsSearchProvider";
-import MediaAssetsUploadingProvider from "./MediaAssetsUploadingProvider";
+import { FileUploaderProvider } from "@global components/layout/file-uploader";
 
 export default function MediaAssetsProvider({
   children,
@@ -14,13 +12,7 @@ export default function MediaAssetsProvider({
   return (
     <MediaAssetsSearchProvider>
       <MediaAssetsProviderState>
-        <MediaAssetsErrorsProvider>
-          <MediaAssetsProcessingProvider>
-            <MediaAssetsUploadingProvider>
-              {children}
-            </MediaAssetsUploadingProvider>
-          </MediaAssetsProcessingProvider>
-        </MediaAssetsErrorsProvider>
+        <FileUploaderProvider>{children}</FileUploaderProvider>
       </MediaAssetsProviderState>
     </MediaAssetsSearchProvider>
   );

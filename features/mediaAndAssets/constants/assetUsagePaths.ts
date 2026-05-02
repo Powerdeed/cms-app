@@ -1,8 +1,15 @@
-import { getProjects } from "@features/projects";
-
-import { getCompanyStructureData } from "@features/webisteContent";
-
+import { apiRequest } from "@lib/api/apiRequest";
 import { companyServices } from "@lib/constants/COMPANY_PROVISIONS";
+
+type ProjectUsagePath = {
+  category: string;
+  name: string;
+};
+
+type CompanyStructureUsagePath = {
+  levelName: string;
+  positions: string[];
+};
 
 export interface AssetUsagePaths {
   "home page": string[];
@@ -14,8 +21,16 @@ export interface AssetUsagePaths {
 }
 
 export const usagePaths: Promise<AssetUsagePaths> = (async () => {
-  const companyStructure = await getCompanyStructureData();
-  const projects = await getProjects();
+  const companyStructure = await apiRequest<{
+    structure: CompanyStructureUsagePath[];
+  }>({
+    method: "GET",
+    url: "/company-structure",
+  });
+  const projects = await apiRequest<ProjectUsagePath[]>({
+    method: "GET",
+    url: "/projects",
+  });
 
   return {
     "home page": ["Hero", "about top", "about bottom"],

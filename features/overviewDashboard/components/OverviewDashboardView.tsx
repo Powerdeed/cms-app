@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   recentActivities,
   stats,
-} from "@features/overviewDashboard/services/web-activities";
+} from "@features/overviewDashboard";
 
 import { SectionTitle } from "@global components/ui/Title";
 
