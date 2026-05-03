@@ -1,4 +1,5 @@
-import { Asset, GCSFileMetadata } from "../types/mediaAssets.types";
+import { Asset } from "@global components/layout/fileUploader";
+import { GCSFileMetadata } from "../../../global components/layout/fileUploader/types/assets.types";
 
 // SAMPLE PROCESSED ASSETS - Ready for UI Rendering
 export const sampleProcessedAssets: Asset[] = [

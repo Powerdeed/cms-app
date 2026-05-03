@@ -1,19 +1,34 @@
 "use client";
 
-import MediaAssetsProviderState from "./MediaAssetsProviderStates";
-import MediaAssetsSearchProvider from "./MediaAssetsSearchProvider";
-import { FileUploaderProvider } from "@global components/layout/file-uploader";
+import { useState } from "react";
+import { MediaAssetsStateContext } from "./MediaAssetsStateContext";
+import { Asset } from "@global components/layout/fileUploader";
+import { getMediaAssets } from "../services/mediaAssets";
+import { MediaAssetsSearchContext } from "./MediaAssetsSearchContext";
 
 export default function MediaAssetsProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const [mediaAssets, setMediaAssets] = useState<Asset[]>(getMediaAssets());
+  const [searchQuery, setSearchQuery] = useState("");
+
   return (
-    <MediaAssetsSearchProvider>
-      <MediaAssetsProviderState>
-        <FileUploaderProvider>{children}</FileUploaderProvider>
-      </MediaAssetsProviderState>
-    </MediaAssetsSearchProvider>
+    <MediaAssetsStateContext.Provider
+      value={{
+        mediaAssets,
+        setMediaAssets,
+      }}
+    >
+      <MediaAssetsSearchContext.Provider
+        value={{
+          searchQuery,
+          setSearchQuery,
+        }}
+      >
+        {children}
+      </MediaAssetsSearchContext.Provider>
+    </MediaAssetsStateContext.Provider>
   );
 }

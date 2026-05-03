@@ -1,25 +1,27 @@
 "use client";
 
 import { useContext } from "react";
-
-import { FileUploaderErrorContext } from "@global components/layout/file-uploader";
-
+import {
+  FileMetadataContext,
+  FileUploaderErrorContext,
+  useFileMetadataEditing,
+} from "@global components/layout/fileUploader";
 import { MediaAssetsStateContext } from "../context/MediaAssetsStateContext";
-import { Asset } from "../types/mediaAssets.types";
-import useAssetEditing from "./useAssetsEditing";
+import { Asset } from "@global components/layout/fileUploader";
 
 export default function useAssetsUpload() {
   const mediaAssetsState = useContext(MediaAssetsStateContext);
+  const fileMetadataState = useContext(FileMetadataContext);
   const errorContext = useContext(FileUploaderErrorContext);
 
-  if (!mediaAssetsState || !errorContext) {
+  if (!mediaAssetsState || !fileMetadataState || !errorContext) {
     throw new Error("useMediaAssets must be used within a MediaAssetsProvider");
   }
 
-  const { setMediaAssets, targetAsset, setTargetAsset, setAssetMode } =
-    mediaAssetsState;
+  const { setMediaAssets } = mediaAssetsState;
+  const { targetAsset, setTargetAsset, setAssetMode } = fileMetadataState;
   const { setErrorUploadingFile } = errorContext;
-  const { handleResetAssetStates } = useAssetEditing();
+  const { handleResetAssetStates } = useFileMetadataEditing();
 
   const handleSubmitMediaAsset = (asset: Asset) => {
     try {
@@ -38,13 +40,13 @@ export default function useAssetsUpload() {
     }
   };
 
-  const handleUpdateTargetAsset = () => {
-    if (!targetAsset) return;
+  const handleUpdateTargetAsset = (asset = targetAsset) => {
+    if (!asset) return;
 
     try {
       setMediaAssets((prev) =>
-        prev.map((asset) =>
-          asset.id === targetAsset.id ? targetAsset : asset,
+        prev.map((currentAsset) =>
+          currentAsset.id === asset.id ? asset : currentAsset,
         ),
       );
     } catch (error) {

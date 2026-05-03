@@ -8,7 +8,7 @@ import { InputArea } from "@global components/layout/FormWrapper";
 import useProjects from "../hooks/useProjects";
 
 import { companyServices } from "@lib/constants/COMPANY_PROVISIONS";
-import { FileUploader } from "@global components/layout/file-uploader";
+import { FileUploader } from "@global components/layout/fileUploader";
 
 export default function EditProject() {
   const { state, actions } = useProjects();

@@ -1,16 +1,26 @@
 "use client";
 
 // components
-import FormWrapper from "@global components/layout/FormWrapper";
 import Button, { ButtonLight } from "@global components/ui/Button";
 import SearchBar from "@global components/ui/SearchBar";
+import FormWrapper from "@global components/layout/FormWrapper";
+import { useEffect } from "react";
+import {
+  // components
+  CompressingAsset,
+  DropZone,
+  FileMetaEditor,
+  FileHandlingError,
+
+  // utils
+  supportedFileTypes,
+
+  // hooks
+  useFileUploader,
+} from "@global components/layout/fileUploader";
 
 // feature components
 import AssetCard from "../components/AssetCard";
-import DropZone from "../components/DropZone";
-import AssetMetaEditor from "../components/AssetMetaEditor";
-import AssetHandlingError from "../components/AssetHandlingError";
-import CompressingAsset from "../components/CompressingAsset";
 
 // utils
 import { getTotalUsedSpace, toCamelCase } from "../utils/conversions";
@@ -20,10 +30,20 @@ import useMediaAssets from "../hooks/useAssets";
 
 // constants
 import { PAGE_META } from "../constants/pageMeta";
-import { supportedAssetTypes } from "../constants/supportedAssetTypes";
+import { usagePaths } from "../constants/assetUsagePaths";
 
 export function MediaAssetsView() {
-  const { state, actions } = useMediaAssets();
+  const { state } = useMediaAssets();
+  const { uploaderState, uploaderActions } = useFileUploader();
+  const { setAssetUsagePaths } = uploaderState;
+
+  useEffect(() => {
+    const loadAssetUsagePaths = async () => {
+      setAssetUsagePaths(await usagePaths);
+    };
+
+    loadAssetUsagePaths();
+  }, [setAssetUsagePaths]);
 
   return (
     <div className="relative page-layout">
@@ -33,7 +53,7 @@ export function MediaAssetsView() {
         subtitleChildren={
           <Button
             buttonText="Upload Files"
-            clickAction={() => actions.handleTargetAsset("new")}
+            clickAction={() => uploaderActions.handleTargetAsset("new")}
           />
         }
       >
@@ -44,12 +64,14 @@ export function MediaAssetsView() {
             changeFunc={(val) => state.setSearchQuery(val)}
           />
 
-          {["All", ...supportedAssetTypes].map((category) => (
+          {["All", ...supportedFileTypes].map((category) => (
             <ButtonLight
               key={category}
               buttonText={category}
               clickAction={() =>
-                state.setTargetFileType(category as typeof state.targetFileType)
+                uploaderState.setTargetFileType(
+                  category as typeof uploaderState.targetFileType,
+                )
               }
             />
           ))}
@@ -57,7 +79,7 @@ export function MediaAssetsView() {
 
         <div className="feature-container-vertical">
           <FormWrapper
-            subtitle={`${state.targetFileType === "All" ? "All Assets" : `${toCamelCase(state.targetFileType)}s`} (${state.mediaAssets.length})`}
+            subtitle={`${uploaderState.targetFileType === "All" ? "All Assets" : `${toCamelCase(uploaderState.targetFileType)}s`} (${state.mediaAssets.length})`}
             subtitleChildren={
               <div className="text-(terciary-grey) text-style__small-text">
                 Total Storage: {getTotalUsedSpace()} MB
@@ -73,27 +95,29 @@ export function MediaAssetsView() {
         </div>
       </FormWrapper>
 
-      {state.assetMode && (
+      {uploaderState.assetMode && (
         <div
           className="asset-handling-interface"
-          onClick={() => actions.handleResetAssetStates("cancel")}
+          onClick={() => uploaderActions.handleResetAssetStates("cancel")}
         >
           <div
             onClick={(e) => e.stopPropagation()}
             className="w-full h-80 bg-white rounded-[10px]"
           >
             {/* Ready to upload */}
-            {actions.popUpToDisplay.dropZone && <DropZone />}
+            {uploaderActions.popUpToDisplay.dropZone && <DropZone />}
 
             {/* Compressing */}
-            {actions.popUpToDisplay.compressing && <CompressingAsset />}
+            {uploaderActions.popUpToDisplay.compressing && <CompressingAsset />}
 
             {/* Editor */}
-            {actions.popUpToDisplay.assetMediaEditor && <AssetMetaEditor />}
+            {uploaderActions.popUpToDisplay.assetMediaEditor && (
+              <FileMetaEditor />
+            )}
 
             {/* Error */}
-            {actions.popUpToDisplay.assetHandlingError && (
-              <AssetHandlingError />
+            {uploaderActions.popUpToDisplay.assetHandlingError && (
+              <FileHandlingError />
             )}
           </div>
         </div>

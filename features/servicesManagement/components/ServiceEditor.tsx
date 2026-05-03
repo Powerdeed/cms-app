@@ -4,7 +4,7 @@ import Button, { ButtonRed, DeleteIconBtn } from "@global components/ui/Button";
 import Loader from "@global components/ui/Loader";
 import { InputArea } from "@global components/layout/FormWrapper";
 import Toggle from "@global components/ui/Toggle";
-import { FileUploader } from "@global components/layout/file-uploader";
+import { FileUploader } from "@global components/layout/fileUploader";
 
 import useService from "../hooks/useService";
 

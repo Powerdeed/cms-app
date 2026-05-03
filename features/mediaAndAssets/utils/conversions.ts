@@ -3,7 +3,7 @@ export {
   mediaType,
   sizeOfFile,
   toCamelCase,
-} from "@global components/layout/file-uploader";
+} from "@global components/layout/fileUploader";
 
 export const getTotalUsedSpace = () => {
   const total = getMediaAssets().reduce((acc, asset) => {

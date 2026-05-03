@@ -5,18 +5,16 @@ import { ButtonLight } from "@global components/ui/Button";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { Asset } from "../types/mediaAssets.types";
+import { Asset, useFileUploader } from "@global components/layout/fileUploader";
 
 import { ICON_COLORS } from "../constants/iconColors";
-
-import useMediaAssets from "../hooks/useAssets";
 
 type AssetCardProps = {
   asset: Asset;
 };
 
 export default function AssetCard({ asset }: AssetCardProps) {
-  const { state, actions } = useMediaAssets();
+  const { uploaderState, uploaderActions } = useFileUploader();
   const assetType = asset.assetType ?? asset.type ?? "image";
   const assetUsage = asset.classification?.usage ?? asset.usage ?? "";
   const uploadDate =
@@ -30,8 +28,8 @@ export default function AssetCard({ asset }: AssetCardProps) {
     <div
       className="p-5 vertical-layout__inner border border-(--terciary-grey)/40 hover:border-(--secondary-blue) hover:bg-(--secondary-blue)/5 rounded-[10px]"
       onClick={() => {
-        state.setAssetMode("existing");
-        actions.handleTargetAsset("existing", asset);
+        uploaderState.setAssetMode("existing");
+        uploaderActions.handleTargetAsset("existing", asset);
       }}
     >
       <div className="vertical-layout__inner">
