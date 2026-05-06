@@ -1,11 +1,24 @@
 "use client";
 
+// modules
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+// components
 import Button, { ButtonLight } from "@global components/ui/Button";
 import Loader from "@global components/ui/Loader";
+import MetaWrapper from "./fileMetaEditor/MetaWrapper";
+import EditorField from "./fileMetaEditor/EditorField";
+
+// hooks
 import useFileUploader from "../hooks/useFileUploader";
+
+// types
 import { AssetUsagePaths } from "../types/asset.types";
+
+// constants
 import { assetRoles } from "../constants/assetRoles";
+import RenderImage from "./fileMetaEditor/RenderImage";
+import SetPaths from "./fileMetaEditor/SetPaths";
 
 export default function FileMetaEditor() {
   const { uploaderState, uploaderActions } = useFileUploader();
@@ -13,264 +26,203 @@ export default function FileMetaEditor() {
 
   if (!targetAsset) return null;
 
-  const fileExtension = uploaderState.fileName.includes(".")
-    ? `.${uploaderState.fileName.split(".").pop()}`
-    : "";
-  const assetPath = targetAsset.storage?.objectName ?? "";
-  const primaryRelationship = targetAsset.relationships?.[0];
-  const updateDisplayField = (field: "alt" | "caption", value: string) => {
-    uploaderState.setTargetAsset((prev) =>
-      prev
-        ? {
-            ...prev,
-            display: {
-              alt: prev.display?.alt ?? "",
-              caption: prev.display?.caption ?? "",
-              title: prev.display?.title ?? "",
-              [field]: value,
-            },
-            updatedAt: new Date().toISOString(),
-          }
-        : prev,
-    );
-  };
-  const updateRelationshipRole = (role: string) => {
-    uploaderState.setTargetAsset((prev) =>
-      prev
-        ? {
-            ...prev,
-            relationships: (prev.relationships?.length
-              ? prev.relationships
-              : [
-                  {
-                    entityType: prev.classification?.category ?? "",
-                    entityId: "",
-                    field: "",
-                    role: "",
-                  },
-                ]
-            ).map((relationship, index) =>
-              index === 0 ? { ...relationship, role } : relationship,
-            ),
-            updatedAt: new Date().toISOString(),
-          }
-        : prev,
-    );
-  };
-  const fieldsToReview = [
-    ["assetType", targetAsset.assetType],
-    ["size", targetAsset.size],
-    ["objectName", assetPath],
-    ["mimeType", targetAsset.mimeType],
-  ];
-
   return (
     <form
       onSubmit={async (e) => {
         e.preventDefault();
         await uploaderActions.fileUploadingHandler();
       }}
-      className="feature-container-vertical h-fit text-style__body"
+      onClick={(e) => e.stopPropagation()}
+      className="h-100 bg-white rounded-[10px] text-style__body overflow-hidden"
     >
-      {"Edit file meta data before uploading (areas with '*' must be updated)."}
+      <div className="grid h-full grid-cols-[minmax(16rem,0.85fr)_minmax(0,1.15fr)] gap-5 p-5">
+        <RenderImage />
 
-      <div className="grid grid-cols-2 gap-2.5">
-        {fieldsToReview.map(([key, value]) => (
-          <MetaWrapper key={key} meta={String(key)} val={String(value ?? "")}>
-            {key === "objectName" && (
-              <FontAwesomeIcon
-                icon={["fas", uploaderState.copying ? "check" : "copy"]}
-                className="cursor-pointer"
-                onClick={() => uploaderActions.handleCopyAssetPath(assetPath)}
-              />
-            )}
-          </MetaWrapper>
-        ))}
-
-        <div className="flex gap-2.5 items-center">
-          <div className="w-55">
-            name (optional)<span className="text-(--primary-red)">*</span>:
+        <div className="vertical-layout__inner min-h-0 overflow-y-auto pr-2 section-scrollbar">
+          <div className="text-style__small-text text-(--secondary-grey)">
+            Edit file metadata before uploading. Fields marked with * are
+            required.
           </div>
 
-          <textarea
-            placeholder="Rename file"
-            value={uploaderState.fileName.split(".").slice(0, -1).join(".")}
-            onChange={(e) =>
-              uploaderState.setFileName(`${e.target.value}${fileExtension}`)
-            }
-            className="w-full input-style field-sizing-content"
-          />
-        </div>
-
-        <div className="flex gap-2.5 items-center">
-          <div className="w-55">
-            select category<span className="text-(--primary-red)">*</span>:
-          </div>
-
-          <select
-            value={uploaderState.assetCategory}
-            onChange={(e) => {
-              uploaderState.setAssetCategory(e.target.value);
-              uploaderActions.getFirstPaths(
-                e.target.value as keyof AssetUsagePaths,
-              );
-            }}
-            className="input-style w-full"
-          >
-            <option value="" disabled>
-              select category
-            </option>
-
-            {Object.keys(uploaderState.assetUsagePaths || {}).map(
-              (category) => (
-                <option key={category} value={category}>
-                  {category}
-                </option>
-              ),
-            )}
-          </select>
-        </div>
-      </div>
-
-      <div className="flex gap-2.5 items-center">
-        <div className="w-33">
-          usage<span className="text-(--primary-red)">*</span>:
-        </div>
-
-        {uploaderState.firstPathArr ? (
-          uploaderState.firstPathArr.length > 0 ? (
-            <div className="w-full flex gap-2.5 items-center">
-              <select
-                value={uploaderState.firstPath}
-                onChange={(e) => {
-                  uploaderState.setFirstPath(e.target.value);
-                  uploaderState.setSecondPath("");
-                }}
-                className="input-style w-full"
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-2.5">
+            {uploaderActions.fieldsToReview.map(([key, value]) => (
+              <MetaWrapper
+                key={key}
+                meta={String(key)}
+                val={String(value ?? "")}
               >
-                <option value={undefined}>select specific location</option>
-
-                {[...new Set(uploaderState.firstPathArr)].map((paths) => (
-                  <option key={paths} value={paths}>
-                    {paths}
-                  </option>
-                ))}
-              </select>
-
-              {uploaderState.firstPath &&
-                uploaderState.secondPaths.length > 0 && (
-                  <select
-                    value={uploaderState.secondPath}
-                    onChange={(e) =>
-                      uploaderState.setSecondPath(e.target.value)
+                {key === "objectName" && (
+                  <FontAwesomeIcon
+                    icon={["fas", uploaderState.copying ? "check" : "copy"]}
+                    className="cursor-pointer"
+                    onClick={() =>
+                      uploaderActions.handleCopyAssetPath(
+                        uploaderActions.assetPath,
+                      )
                     }
+                  />
+                )}
+              </MetaWrapper>
+            ))}
+
+            <EditorField
+              label="name (optional)"
+              required
+              control={
+                <textarea
+                  placeholder="Rename file"
+                  value={uploaderState.fileName
+                    .split(".")
+                    .slice(0, -1)
+                    .join(".")}
+                  onChange={(e) =>
+                    uploaderState.setFileName(
+                      `${e.target.value}${uploaderActions.fileExtension}`,
+                    )
+                  }
+                  className="w-full input-style field-sizing-content"
+                />
+              }
+            />
+
+            <EditorField
+              label="alt text"
+              control={
+                <textarea
+                  placeholder="Describe the asset"
+                  value={targetAsset.display?.alt ?? ""}
+                  onChange={(e) =>
+                    uploaderActions.updateDisplayField("alt", e.target.value)
+                  }
+                  className="w-full input-style field-sizing-content"
+                />
+              }
+            />
+
+            <EditorField
+              label="caption"
+              control={
+                <textarea
+                  placeholder="Optional visible caption"
+                  value={targetAsset.display?.caption ?? ""}
+                  onChange={(e) =>
+                    uploaderActions.updateDisplayField(
+                      "caption",
+                      e.target.value,
+                    )
+                  }
+                  className="w-full input-style field-sizing-content"
+                />
+              }
+            />
+
+            <EditorField
+              label="role"
+              control={
+                <select
+                  value={uploaderActions.primaryRelationship?.role ?? ""}
+                  onChange={(e) =>
+                    uploaderActions.updateRelationshipRole(e.target.value)
+                  }
+                  className="input-style w-full"
+                >
+                  <option value="">select role</option>
+
+                  {assetRoles.map((role) => (
+                    <option key={role} value={role}>
+                      {role}
+                    </option>
+                  ))}
+                </select>
+              }
+            />
+
+            <label className="flex gap-2.5 items-center">
+              <div className="w-33">public file:</div>
+
+              <input
+                type="checkbox"
+                checked={targetAsset.isPublic ?? false}
+                onChange={(e) =>
+                  uploaderActions.updateIsPublic(e.target.checked)
+                }
+              />
+
+              <div className="text-style__small-text text-(--secondary-grey)">
+                use stable public URL
+              </div>
+            </label>
+
+            {!uploaderState.hasFeaturePath && (
+              <EditorField
+                label="select category"
+                required
+                control={
+                  <select
+                    value={uploaderState.assetCategory}
+                    onChange={(e) => {
+                      uploaderState.setAssetCategory(e.target.value);
+                      uploaderActions.getFirstPaths(
+                        e.target.value as keyof AssetUsagePaths,
+                      );
+                    }}
                     className="input-style w-full"
                   >
-                    <option value={undefined}>
-                      which {uploaderState.firstPath}?
+                    <option value="" disabled>
+                      select category
                     </option>
 
-                    {uploaderState.secondPaths.map((path) => {
-                      return (
-                        <option key={path} value={path}>
-                          {path}
+                    {Object.keys(uploaderState.assetUsagePaths || {}).map(
+                      (category) => (
+                        <option key={category} value={category}>
+                          {category}
                         </option>
-                      );
-                    })}
+                      ),
+                    )}
                   </select>
-                )}
+                }
+              />
+            )}
+          </div>
+
+          {!uploaderState.hasFeaturePath && (
+            <div className="flex gap-2.5 items-start">
+              <div className="w-33 pt-2">
+                usage<span className="text-(--primary-red)">*</span>:
+              </div>
+
+              {uploaderState.firstPathArr ? (
+                <SetPaths />
+              ) : (
+                <div className="pt-2">select a category first</div>
+              )}
             </div>
-          ) : (
-            <div>no path selection needed</div>
-          )
-        ) : (
-          <div>select a category first</div>
-        )}
-      </div>
+          )}
 
-      <div className="grid grid-cols-2 gap-2.5">
-        <div className="flex gap-2.5 items-center">
-          <div className="w-55">alt text:</div>
+          <div className="flex gap-2.5 sticky bottom-0 bg-white pt-2">
+            <Button
+              type="submit"
+              className="flex-1"
+              buttonText={
+                uploaderState.assetMode === "new"
+                  ? "Upload asset"
+                  : "Update asset"
+              }
+            >
+              {uploaderState.uploadingStatus && <Loader />}
+            </Button>
 
-          <textarea
-            placeholder="Describe the asset"
-            value={targetAsset.display?.alt ?? ""}
-            onChange={(e) => updateDisplayField("alt", e.target.value)}
-            className="w-full input-style field-sizing-content"
-          />
+            {uploaderState.assetMode === "new" && (
+              <ButtonLight
+                buttonText="re-upload"
+                clickAction={() =>
+                  uploaderActions.handleResetAssetStates("re-upload")
+                }
+              />
+            )}
+          </div>
         </div>
-
-        <div className="flex gap-2.5 items-center">
-          <div className="w-55">caption:</div>
-
-          <textarea
-            placeholder="Optional visible caption"
-            value={targetAsset.display?.caption ?? ""}
-            onChange={(e) => updateDisplayField("caption", e.target.value)}
-            className="w-full input-style field-sizing-content"
-          />
-        </div>
-
-        <div className="flex gap-2.5 items-center">
-          <div className="w-55">role:</div>
-
-          <select
-            value={primaryRelationship?.role ?? ""}
-            onChange={(e) => updateRelationshipRole(e.target.value)}
-            className="input-style w-full"
-          >
-            <option value="">select role</option>
-
-            {assetRoles.map((role) => (
-              <option key={role} value={role}>
-                {role}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      <div className="flex gap-2.5">
-        <Button
-          type="submit"
-          className="flex-1"
-          buttonText={
-            uploaderState.assetMode === "new" ? "Upload asset" : "Update asset"
-          }
-        >
-          {uploaderState.uploadingStatus && <Loader />}
-        </Button>
-
-        {uploaderState.assetMode === "new" && (
-          <ButtonLight
-            buttonText="re-upload"
-            clickAction={() =>
-              uploaderActions.handleResetAssetStates("re-upload")
-            }
-          />
-        )}
       </div>
     </form>
-  );
-}
-
-function MetaWrapper({
-  meta,
-  val,
-  children,
-}: {
-  meta: string;
-  val: string;
-  children?: React.ReactNode;
-}) {
-  return (
-    <div className="flex gap-2.5 items-center">
-      <div className="w-33">{meta}:</div>
-
-      <div className="flex-1 min-h-10 input-style items-center flex gap-2.5">
-        <div className="flex-1">{val}</div>
-        {children}
-      </div>
-    </div>
   );
 }

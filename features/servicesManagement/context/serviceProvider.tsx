@@ -11,6 +11,9 @@ export default function ServiceProvider({
 }) {
   const [services, setServices] = useState<Service[] | null>([]);
 
+  const [selectedServicePrev, setSelectedServicePrev] =
+    useState<Service | null>(null);
+
   const [selectedService, setSelectedService] = useState<Service | null>(null);
 
   const [selectedServiceStatus, setSelectedServiceStatus] = useState(false);
@@ -25,11 +28,15 @@ export default function ServiceProvider({
 
   const [isDeleting, setIsDeleting] = useState(false);
 
+  const [hasServiceChanged, setHasServiceChanged] = useState(false);
+
   return (
     <serviceContext.Provider
       value={{
         services,
         setServices,
+        selectedServicePrev,
+        setSelectedServicePrev,
         selectedService,
         setSelectedService,
         selectedServiceStatus,
@@ -44,6 +51,8 @@ export default function ServiceProvider({
         setFetchServicesError,
         isDeleting,
         setIsDeleting,
+        hasServiceChanged,
+        setHasServiceChanged,
       }}
     >
       {children}

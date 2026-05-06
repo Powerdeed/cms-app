@@ -4,8 +4,8 @@ import { User } from "@globals/types/user.type";
 import { createContext, Dispatch, SetStateAction } from "react";
 
 type GlobalStates = {
-  panelActive: boolean;
-  setPanelActive: Dispatch<SetStateAction<boolean>>;
+  unsavedChanges: boolean;
+  setUnsavedChanges: Dispatch<SetStateAction<boolean>>;
 
   user: User | null;
   setUser: Dispatch<SetStateAction<User | null>>;

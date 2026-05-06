@@ -6,6 +6,8 @@ export type AssetStatus = "active" | "archived" | "deleted";
 
 export type AssetUsagePaths = Record<string, string[]>;
 
+export type AssetRef = [assetId: string, fileName: string];
+
 export interface AssetRelationship {
   entityType: string;
   entityId: string;
@@ -39,6 +41,7 @@ export interface Asset {
   };
   relationships?: AssetRelationship[];
   status?: AssetStatus;
+  isPublic?: boolean;
   createdBy?: string;
   updatedBy?: string;
   createdAt?: string;

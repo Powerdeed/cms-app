@@ -7,6 +7,8 @@ import { FileUploaderProcessingContext } from "./FileUploaderProcessingContext";
 import { FileUploaderErrorContext } from "./FileUploaderErrorContext";
 import { AssetMode, FileMetadataContext } from "./FileMetadataContext";
 import { Asset, AssetUsagePaths } from "../types/asset.types";
+import { AssetRefHandler } from "./FileUploaderStateContext";
+import { FileUploaderApiContext } from "./FileUploaderApiContext";
 
 export default function FileUploaderProvider({
   children,
@@ -21,9 +23,11 @@ export default function FileUploaderProvider({
     "diagram",
     "document",
   ]);
+  const [defaultIsPublic, setDefaultIsPublic] = useState(false);
   const [hasFeaturePath, setHasFeaturePath] = useState(false);
   const [featurePath, setFeaturePath] = useState("");
   const [uploadedFile, setUploadedFile] = useState("");
+  const [assetRef, setAssetRef] = useState<AssetRefHandler | null>(null);
   const [compressing, setCompressing] = useState(false);
   const [isSupportedFile, setIsSupportedFile] = useState<boolean | null>(null);
   const [uploadingStatus, setUploadingStatus] = useState(false);
@@ -37,12 +41,16 @@ export default function FileUploaderProvider({
   const [copying, setCopying] = useState(false);
   const [assetUsagePaths, setAssetUsagePaths] =
     useState<AssetUsagePaths | null>(null);
-  const [firstPathArr, setFirstPathArr] = useState<string[] | null>(null);
+  const [firstPathArr, setFirstPathArr] = useState<string[]>([]);
   const [assetCategory, setAssetCategory] = useState("");
   const [firstPath, setFirstPath] = useState("");
   const [secondPaths, setSecondPaths] = useState([""]);
   const [secondPath, setSecondPath] = useState("");
   const [assetUsage, setAssetUsage] = useState("");
+  const [selectedAssetId, setSelectedAssetId] = useState("");
+  const [assetApiOnError, setAssetApiOnError] = useState("");
+  const [isAssetUploading, setIsAssetUploading] = useState(false);
+  const [isAssetDeleting, setIsAssetDeleting] = useState(false);
 
   return (
     <FileMetadataContext.Provider
@@ -67,6 +75,8 @@ export default function FileUploaderProvider({
         setSecondPath,
         assetUsage,
         setAssetUsage,
+        selectedAssetId,
+        setSelectedAssetId,
       }}
     >
       <FileUploaderStateContext.Provider
@@ -79,12 +89,16 @@ export default function FileUploaderProvider({
           setTargetFileType,
           targetFileTypes,
           setTargetFileTypes,
+          defaultIsPublic,
+          setDefaultIsPublic,
           hasFeaturePath,
           setHasFeaturePath,
           featurePath,
           setFeaturePath,
           uploadedFile,
           setUploadedFile,
+          assetRef,
+          setAssetRef,
         }}
       >
         <FileUploaderProcessingContext.Provider
@@ -111,7 +125,18 @@ export default function FileUploaderProvider({
               setErrorUploadingFileMsg,
             }}
           >
-            {children}
+            <FileUploaderApiContext.Provider
+              value={{
+                isAssetUploading,
+                setIsAssetUploading,
+                isAssetDeleting,
+                setIsAssetDeleting,
+                assetApiOnError,
+                setAssetApiOnError,
+              }}
+            >
+              {children}
+            </FileUploaderApiContext.Provider>
           </FileUploaderErrorContext.Provider>
         </FileUploaderProcessingContext.Provider>
       </FileUploaderStateContext.Provider>

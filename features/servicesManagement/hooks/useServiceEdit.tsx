@@ -1,16 +1,33 @@
 "use client";
 
 import { useContext, useEffect } from "react";
+import { isEqual } from "lodash";
+
 import { serviceContext } from "../context/serviceContext";
 import { Service } from "../types/services.types";
+import {
+  AssetRef,
+  FileMetadataContext,
+} from "@global components/layout/fileUploader";
+import { globalContext } from "@globals";
 
 export default function useServiceEdit() {
   const sContext = useContext(serviceContext);
+  const globalState = useContext(globalContext);
+  const FileMetadataStates = useContext(FileMetadataContext);
 
-  if (!sContext) throw new Error("sContext must be within a provider");
+  if (!sContext || !FileMetadataStates || !globalState)
+    throw new Error("Context must be within a provider");
 
-  const { selectedService, setSelectedService, selectedServiceStatus } =
-    sContext;
+  const {
+    selectedService,
+    setSelectedService,
+    selectedServiceStatus,
+    selectedServicePrev,
+    setHasServiceChanged,
+  } = sContext;
+
+  const { setUnsavedChanges } = globalState;
 
   const selectValue = (field: Exclude<keyof Service, "status" | "_id">) => {
     if (!selectedService) return;
@@ -35,27 +52,26 @@ export default function useServiceEdit() {
     });
   }, [selectedServiceStatus, setSelectedService]);
 
-  const addNewServiceImage = (image: string) =>
+  const addNewServiceImage = (image: AssetRef) =>
     setSelectedService((prev) => {
       if (!prev) return prev;
 
       return { ...prev, images: [...prev.images, image] };
     });
 
-  const removeImage = (idx: number) =>
-    setSelectedService((prev) => {
-      if (!prev) return prev;
-      const images = prev.images;
-
-      const newArr = images.toSpliced(idx, 1);
-
-      return { ...prev, images: newArr };
-    });
+  useEffect(() => {
+    setHasServiceChanged(!isEqual(selectedService, selectedServicePrev));
+    setUnsavedChanges(isEqual(selectedService, selectedServicePrev));
+  }, [
+    selectedService,
+    selectedServicePrev,
+    setHasServiceChanged,
+    setUnsavedChanges,
+  ]);
 
   return {
     selectValue,
     modifyService,
     addNewServiceImage,
-    removeImage,
   };
 }

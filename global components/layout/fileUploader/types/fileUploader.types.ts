@@ -8,16 +8,16 @@ export type MediaTypeResult = {
 };
 
 export type UploadedFile = Partial<Asset> & {
-  filename: string;
-  imageUrl: string;
+  filename?: string;
+  imageUrl?: string;
   url?: string;
   storage?: {
     publicUrl?: string;
   };
-  file: {
+  file?: {
     type: "Buffer";
     data: number[];
   };
-  mimetype: string;
-  size: number;
+  mimetype?: string;
+  size?: number;
 };

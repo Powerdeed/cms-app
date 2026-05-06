@@ -1,4 +1,7 @@
+"use client";
+
 import { SectionTitle, SubTitle } from "@global components/ui/Title";
+import { useEffect, useRef } from "react";
 
 export default function FormWrapper({
   keyVal,
@@ -44,19 +47,31 @@ export function InputArea({
   val,
   changeFunc,
   children,
+  autoFocus,
 }: {
   keyVal?: number | string;
   label?: string;
   val: string;
   changeFunc: (val: string) => void;
   children?: React.ReactNode;
+  autoFocus?: boolean;
 }) {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (autoFocus && textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  }, [autoFocus]);
+
   return (
     <div key={keyVal} className="flex-1 vertical-layout__inner w-full">
-      {label}
+      {label && <label className="block mb-2">{label}</label>}
 
-      <div className={`${children && "flex gap-2.5 items-center"} w-full`}>
+      <div className={`${children ? "flex gap-2.5 items-center" : ""} w-full`}>
+        {/* Textarea is ALWAYS rendered here */}
         <textarea
+          ref={textareaRef}
           className="flex-1 w-full input-style field-sizing-content"
           value={val}
           onChange={(e) => changeFunc(e.target.value)}

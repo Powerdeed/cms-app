@@ -14,28 +14,19 @@ import useFileUploader from "../hooks/useFileUploader";
 // utils
 import { removeExtensionName } from "../utils/removeExtensionName";
 
-export default function FileUploaderFileEditor({
-  changeFunc,
-}: {
-  changeFunc: (val: string) => void;
-}) {
+export default function FileRenameAndUpload() {
   const { uploaderState, uploaderActions } = useFileUploader();
 
   return (
     <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        changeFunc(uploaderState.fileName);
-        uploaderActions.fileUploadingHandler();
-        console.log(uploaderState.targetAsset);
-      }}
+      onSubmit={(e) => uploaderActions.uploadFileAndSetStates(e)}
       className="feature-container-vertical h-fit text-style__body"
     >
       <div className="relative">
         <FontAwesomeIcon
           icon={["fas", "xmark"]}
           className="absolute right-0 text-(--primary-blue) cursor-pointer"
-          onClick={() => uploaderActions.handleResetAssetStates("cancel")}
+          onClick={() => uploaderActions.handleResetAssetStates("re-upload")}
         />
       </div>
 
@@ -46,6 +37,7 @@ export default function FileUploaderFileEditor({
           changeFunc={(val) => {
             uploaderState.setFileName(`${val}${uploaderActions.fileExtension}`);
           }}
+          autoFocus
         >
           {uploaderActions.fileExtension}
         </InputArea>

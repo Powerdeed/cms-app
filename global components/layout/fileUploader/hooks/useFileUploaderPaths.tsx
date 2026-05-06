@@ -1,9 +1,10 @@
 "use client";
 
-import { useContext, useEffect } from "react";
+import { useCallback, useContext, useEffect } from "react";
 import { FileMetadataContext } from "../context/FileMetadataContext";
 import { FileUploaderStateContext } from "../context/FileUploaderStateContext";
 import { Asset, AssetUsagePaths } from "../types/asset.types";
+import { createPathUrl } from "../utils/fileConversions";
 
 const resolveUsagePaths = async (
   source: Promise<AssetUsagePaths> | AssetUsagePaths | null,
@@ -40,12 +41,15 @@ export default function useFileUploaderPaths() {
     setFeaturePath,
   } = fileUploaderState;
 
-  const pathSetter = (path: string) => {
-    setHasFeaturePath(true);
-    setFeaturePath(path);
-  };
+  const pathSetter = useCallback(
+    (path: string) => {
+      setHasFeaturePath(true);
+      setFeaturePath(path);
+    },
+    [setFeaturePath, setHasFeaturePath],
+  );
 
-  const parseAssetPath = (assetPath: string) => {
+  const parseAssetPath = useCallback((assetPath: string) => {
     const paths = assetPath.split("/").filter(Boolean);
     const hasFileName = paths.length > 0 && paths.at(-1)?.includes(".");
     const pathParts = hasFileName ? paths.slice(0, -1) : paths;
@@ -53,9 +57,7 @@ export default function useFileUploaderPaths() {
     const firstPath = pathParts[1] ?? "";
     const secondPath = pathParts[2] ?? "";
     const name = hasFileName ? paths.at(-1) || "" : "";
-    const usage = firstPath
-      ? `${firstPath}${secondPath ? `/${secondPath}` : ""}`
-      : "";
+    const usage = createPathUrl([firstPath, secondPath]);
 
     return {
       category,
@@ -63,26 +65,29 @@ export default function useFileUploaderPaths() {
       secondPath,
       name,
       usage,
-      fullPath: `${category}${usage ? "/" + usage : ""}${name ? "/" + name : ""}`,
+      fullPath: createPathUrl([category, firstPath, secondPath, name]),
     };
-  };
+  }, []);
 
-  const getFirstPaths = async (category: keyof AssetUsagePaths) => {
-    setFirstPath("");
-    setSecondPath("");
+  const getFirstPaths = useCallback(
+    async (category: keyof AssetUsagePaths) => {
+      setFirstPath("");
+      setSecondPath("");
 
-    if (category) {
-      const assetPaths = await resolveUsagePaths(assetUsagePaths);
+      if (category) {
+        const assetPaths = await resolveUsagePaths(assetUsagePaths);
 
-      if (!assetPaths) return;
+        if (!assetPaths) return;
 
-      const targetPath = assetPaths[category];
+        const targetPath = assetPaths[category];
 
-      setFirstPathArr(
-        targetPath ? targetPath.map((path) => path.split("-")[0]) : [],
-      );
-    }
-  };
+        setFirstPathArr(
+          targetPath ? targetPath.map((path) => path.split("-")[0]) : [],
+        );
+      }
+    },
+    [assetUsagePaths, setFirstPath, setFirstPathArr, setSecondPath],
+  );
 
   useEffect(() => {
     const fetchSecondPaths = async () => {
@@ -126,28 +131,40 @@ export default function useFileUploaderPaths() {
     setSecondPaths,
   ]);
 
-  const updatePathSetters = (asset?: Asset) => {
-    const assetPath = asset
-      ? (asset.storage?.objectName ?? asset.fullPath ?? "")
-      : featurePath;
-    const { category, firstPath, secondPath, name, usage, fullPath } =
-      parseAssetPath(assetPath);
+  const updatePathSetters = useCallback(
+    (asset?: Asset, pathOverride?: string) => {
+      const assetPath = asset
+        ? (asset.storage?.objectName ?? asset.fullPath ?? "")
+        : (pathOverride ?? featurePath);
+      const { category, firstPath, secondPath, name, usage, fullPath } =
+        parseAssetPath(assetPath);
 
-    if (name) setFileName(name);
-    setAssetCategory(category);
-    getFirstPaths(category);
-    setFirstPath(firstPath);
-    setSecondPath(secondPath);
-    setAssetUsage(usage);
+      if (name) setFileName(name);
+      setAssetCategory(category);
+      getFirstPaths(category);
+      setFirstPath(firstPath);
+      setSecondPath(secondPath);
+      setAssetUsage(usage);
 
-    return {
-      category,
-      firstPath,
-      secondPath,
-      usage,
-      fullPath,
-    };
-  };
+      return {
+        category,
+        firstPath,
+        secondPath,
+        usage,
+        fullPath,
+      };
+    },
+    [
+      featurePath,
+      getFirstPaths,
+      parseAssetPath,
+      setAssetCategory,
+      setAssetUsage,
+      setFileName,
+      setFirstPath,
+      setSecondPath,
+    ],
+  );
 
   return {
     getFirstPaths,

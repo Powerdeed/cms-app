@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext } from "react";
+import { useCallback, useContext } from "react";
 import { FileMetadataContext } from "../context/FileMetadataContext";
 import { Asset } from "../types/asset.types";
 import useFileMetadataPaths from "./useFileUploaderPaths";
@@ -17,7 +17,7 @@ export default function useFileUploaderCreation() {
   const { updatePathSetters } = useFileMetadataPaths();
   const { computedTargetAsset } = useFileUploaderNewAsset();
 
-  const handleTargetAsset = (
+  const handleTargetAsset = useCallback((
     mode: "new" | "existing" | null,
     asset?: Asset,
   ) => {
@@ -70,9 +70,10 @@ export default function useFileUploaderCreation() {
             role: "",
           },
         ],
+        isPublic: asset.isPublic ?? false,
       });
     }
-  };
+  }, [computedTargetAsset, setAssetMode, setTargetAsset, updatePathSetters]);
 
   return { handleTargetAsset };
 }

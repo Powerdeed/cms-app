@@ -4,7 +4,10 @@ import Button, { ButtonRed, DeleteIconBtn } from "@global components/ui/Button";
 import Loader from "@global components/ui/Loader";
 import { InputArea } from "@global components/layout/FormWrapper";
 import Toggle from "@global components/ui/Toggle";
-import { FileUploader } from "@global components/layout/fileUploader";
+import {
+  FileUploader,
+  useFileUploader,
+} from "@global components/layout/fileUploader";
 
 import useService from "../hooks/useService";
 
@@ -12,9 +15,17 @@ import { toPascalCase } from "@globals";
 
 export default function ServiceEditor() {
   const { state, actions } = useService();
+  const { uploaderState } = useFileUploader();
 
   return (
-    <div className="flex-1 feature-container-vertical text-style__body">
+    <div
+      className={`flex-1 p-2.5 md:p-5 flex flex-col gap-2.5 md:gap-5 ${state.hasServiceChanged ? "border-(--secondary-blue)" : "border-(--terciary-grey)"} border bg-white rounded-[10px] text-style__body`}
+    >
+      <div className="text-(--secondary-blue) text-style__small-text">
+        {state.hasServiceChanged &&
+          "changes have been made, save before exiting"}
+      </div>
+
       <div className="text-style__subheading">
         {state.isNewService ? "Add New Service" : "Edit Service"}
       </div>
@@ -38,18 +49,30 @@ export default function ServiceEditor() {
           <div className="vertical-layout__outer">
             <div className="flex-1 text-style__body">Images</div>
             {state.selectedService.images.map((image, idx) => (
-              <div key={idx} className="flex items-center gap-2.5">
-                <div className="flex-1 input-style">{image}</div>
+              <div
+                key={idx}
+                className="flex items-center gap-2.5 hover:cursor-pointer"
+              >
+                <div
+                  className="flex-1 p-2 bg-(--secondary-grey)/30 rounded-[10px] hover:bg-(--secondary-grey)/50 duration-300"
+                  onClick={() => {
+                    uploaderState.setSelectedAssetId(image[0]);
+                  }}
+                >
+                  {image[1]}
+                </div>
 
-                <DeleteIconBtn deleteFunc={() => actions.removeImage(idx)} />
+                {uploaderState.isAssetDeleting && <Loader />}
+
+                <DeleteIconBtn
+                  deleteFunc={() => {
+                    actions.handleDeleteImage(image[0]);
+                  }}
+                />
               </div>
             ))}
 
-            <FileUploader
-              targetFileTypes={["image"]}
-              path={`service/${state.selectedService.name}`}
-              changeFunc={(val) => actions.addNewServiceImage(val)}
-            />
+            <FileUploader />
           </div>
 
           <div className="flex">
@@ -64,19 +87,29 @@ export default function ServiceEditor() {
           <div className="flex justify-between">
             <Button
               buttonText={state.isNewService ? "Add Service" : "Save Changes"}
-              clickAction={
-                state.isNewService
-                  ? actions.handleUploadNewService
-                  : actions.handleUploadServiceChanges
-              }
+              clickAction={() => {
+                if (state.isNewService) {
+                  actions.handleUploadNewService();
+                } else {
+                  actions.handleUploadServiceChanges();
+                }
+              }}
               disabled={state.isUploading}
             >
               {state.isUploading && <Loader />}
             </Button>
 
             <ButtonRed
-              buttonText="Delete Service"
-              clickAction={actions.handleDeleteService}
+              buttonText={
+                state.isNewService ? "Ignore Service" : "Delete Service"
+              }
+              clickAction={() => {
+                if (state.isNewService) {
+                  actions.handleIgnoreNewService();
+                } else {
+                  actions.handleDeleteService();
+                }
+              }}
               disabled={state.isDeleting}
             >
               {state.isDeleting && <Loader />}

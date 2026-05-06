@@ -1,7 +1,6 @@
 "use client";
 
 // modules
-import { useContext } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -15,9 +14,6 @@ import { convertLinkToLabel } from "@globals";
 import { menuItems } from "@lib/constants/NAV_MENU_AND_LABELS";
 import { COMPANY_NAME } from "@lib/constants/COMPANY_NAME";
 
-// Context
-import { globalContext } from "@globals";
-
 const titleMeta = {
   title: "PTR Command Center",
   subtitle: "Operations Hub",
@@ -25,11 +21,6 @@ const titleMeta = {
 
 export default function SideBar() {
   const currentMenu = convertLinkToLabel(usePathname().slice(1));
-
-  const globalStates = useContext(globalContext);
-  if (!globalStates) throw new Error("Global states must be within a provider");
-
-  const { panelActive } = globalStates;
 
   return (
     <aside className="fixed left-0 top-0 flex flex-col w-65 h-full bg-(--primary-blue) text-style__body text-(--terciary-grey)">
@@ -50,11 +41,7 @@ export default function SideBar() {
           {menuItems.map((item) => (
             <li key={item.label}>
               <Link
-                href={
-                  !panelActive
-                    ? convertLabelToLink(currentMenu)
-                    : convertLabelToLink(item.label)
-                }
+                href={convertLabelToLink(item.label)}
                 className={`relative p-2.5 flex pl-5 gap-2.5 items-center ${currentMenu === item.label ? "bg-(--secondary-blue)/70 hover:bg-(--secondary-blue)/70 text-white" : "text-(--terciary-grey)"} cursor-pointer hover:bg-(--primary-grey)/30 hover:text-white transition-colors`}
               >
                 {currentMenu === item.label && (

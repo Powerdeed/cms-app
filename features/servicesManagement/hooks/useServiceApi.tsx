@@ -1,11 +1,14 @@
 "use client";
 
+// modules
 import { useContext, useEffect } from "react";
 
+// hooks
+import useServiceAssets from "./useServiceAssets";
+import { FileUploaderApiContext } from "@global components/layout/fileUploader";
 import { serviceContext } from "../context/serviceContext";
 
-import { ApiError } from "@lib/api/utils/apiError";
-
+// services
 import {
   getServices,
   createService,
@@ -13,27 +16,41 @@ import {
   deleteService,
 } from "../services/services";
 
+// types
 import { Service } from "../types/services.types";
 
+// constants
 import { DEFAULT_SERVICE } from "../constants/defaultService";
+
+// lib
 import { execute } from "@lib/api/execute";
+import { ApiError } from "@lib/api/utils/apiError";
+import { globalContext } from "@globals";
 
 export default function useServiceApi() {
-  const context = useContext(serviceContext);
+  const serviceStates = useContext(serviceContext);
+  const fileUploaderStates = useContext(FileUploaderApiContext);
+  const globalState = useContext(globalContext);
 
-  if (!context) throw new Error("context must be within a provider");
+  if (!serviceStates || !fileUploaderStates || !globalState)
+    throw new Error("Context must be within a provider");
+
+  const { setUnsavedChanges } = globalState;
 
   const {
     setServices,
     selectedService,
     setSelectedService,
+    setSelectedServicePrev,
     setSelectedServiceStatus,
     setIsNewService,
     setIsDeleting,
     setIsUploading,
     setError,
     setFetchServicesError,
-  } = context;
+  } = serviceStates;
+
+  const { deleteFile } = useServiceAssets();
 
   const resetStates = (reason?: "new") => {
     setSelectedService(reason === "new" ? DEFAULT_SERVICE : null);
@@ -57,6 +74,13 @@ export default function useServiceApi() {
   const handleAddNewService = () => {
     setIsNewService(true);
     setSelectedService(DEFAULT_SERVICE);
+    setSelectedServicePrev(DEFAULT_SERVICE);
+  };
+
+  const handleIgnoreNewService = () => {
+    setIsNewService(false);
+    setSelectedService(null);
+    setSelectedServicePrev(null);
   };
 
   const handleUploadNewService = async () => {
@@ -70,6 +94,8 @@ export default function useServiceApi() {
         onSuccess: (newService) => {
           setServices((prev) => (prev ? [...prev, newService] : prev));
           resetStates("new");
+          setSelectedServicePrev(selectedService);
+          setUnsavedChanges(false);
         },
       },
     );
@@ -86,7 +112,7 @@ export default function useServiceApi() {
       {
         setLoading: setIsUploading,
         setError,
-        onSuccess: (updatedService) =>
+        onSuccess: (updatedService) => {
           setServices((prev) =>
             prev
               ? prev.map((service) =>
@@ -95,7 +121,11 @@ export default function useServiceApi() {
                     : service,
                 )
               : prev,
-          ),
+          );
+
+          setSelectedServicePrev(selectedService);
+          setUnsavedChanges(false);
+        },
       },
     );
   };
@@ -112,15 +142,33 @@ export default function useServiceApi() {
             ? prev?.filter((service) => service._id !== selectedService._id)
             : prev,
         );
+
         resetStates();
+        setSelectedServicePrev(selectedService);
+        setUnsavedChanges(false);
       },
     });
   };
 
+  const handleDeleteImage = async (imageId: string) => {
+    await deleteFile(imageId, () =>
+      setSelectedService((prev) => {
+        if (!prev) return prev;
+        const images = prev.images;
+
+        const newArr = images.filter((img) => img[0] !== imageId);
+
+        return { ...prev, images: newArr };
+      }),
+    );
+  };
+
   return {
     handleAddNewService,
+    handleIgnoreNewService,
     handleUploadNewService,
     handleUploadServiceChanges,
     handleDeleteService,
+    handleDeleteImage,
   };
 }

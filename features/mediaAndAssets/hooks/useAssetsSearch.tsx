@@ -2,8 +2,6 @@
 
 import { useContext, useEffect } from "react";
 
-import { getMediaAssets } from "../services/mediaAssets";
-
 import { MediaAssetsStateContext } from "../context/MediaAssetsStateContext";
 import { MediaAssetsSearchContext } from "../context/MediaAssetsSearchContext";
 import { FileUploaderStateContext } from "@global components/layout/fileUploader";
@@ -21,31 +19,31 @@ export default function useAssetsSearchToolBar() {
 
   const { searchQuery } = assetsSearchContext;
 
-  useEffect(() => {
-    if (targetFileType === "All") {
-      setMediaAssets(getMediaAssets());
-    } else {
-      setMediaAssets(
-        getMediaAssets().filter(
-          (asset) => (asset.assetType ?? asset.type) === targetFileType,
-        ),
-      );
-    }
-  }, [setMediaAssets, targetFileType]);
+  // useEffect(() => {
+  //   if (targetFileType === "All") {
+  //     setMediaAssets(getMediaAssets());
+  //   } else {
+  //     setMediaAssets(
+  //       getMediaAssets().filter(
+  //         (asset) => (asset.assetType ?? asset.type) === targetFileType,
+  //       ),
+  //     );
+  //   }
+  // }, [setMediaAssets, targetFileType]);
 
-  useEffect(() => {
-    const query = searchQuery.toLowerCase();
+  // useEffect(() => {
+  //   const query = searchQuery.toLowerCase();
 
-    setMediaAssets(
-      getMediaAssets().filter(
-        (asset) =>
-          asset.name.toLowerCase().includes(query) ||
-          (asset.classification?.usage ?? asset.usage ?? "")
-            .toLowerCase()
-            .includes(query),
-      ),
-    );
-  }, [searchQuery, setMediaAssets]);
+  //   setMediaAssets(
+  //     getMediaAssets().filter(
+  //       (asset) =>
+  //         asset.name.toLowerCase().includes(query) ||
+  //         (asset.classification?.usage ?? asset.usage ?? "")
+  //           .toLowerCase()
+  //           .includes(query),
+  //     ),
+  //   );
+  // }, [searchQuery, setMediaAssets]);
 
   return {};
 }

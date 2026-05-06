@@ -22,7 +22,7 @@ export default function useUser() {
     };
 
     getUser();
-  }, []);
+  }, [setUser]);
 
   return {};
 }

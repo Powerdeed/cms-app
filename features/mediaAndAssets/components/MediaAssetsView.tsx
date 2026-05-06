@@ -102,7 +102,7 @@ export function MediaAssetsView() {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="w-full h-80 bg-white rounded-[10px]"
+            className="w-full bg-white rounded-[10px]"
           >
             {/* Ready to upload */}
             {uploaderActions.popUpToDisplay.dropZone && <DropZone />}

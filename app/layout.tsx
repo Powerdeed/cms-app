@@ -7,7 +7,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import "../global components/icons/icons";
 import Nav from "@global components/layout/nav/Nav";
 import SideBar from "@global components/layout/SideBar";
-import { GlobalProvider } from "@globals";
+import { GlobalProvider, UnsavedChangesGuard } from "@globals";
 import { FileUploaderProvider } from "@global components/layout/fileUploader";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -58,6 +58,8 @@ export default function RootLayout({
             <Nav />
 
             <SideBar />
+
+            <UnsavedChangesGuard />
 
             {children}
           </FileUploaderProvider>

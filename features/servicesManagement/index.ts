@@ -16,7 +16,6 @@ export * from "./constants/pageMeta";
 // context
 export * from "./context/serviceContext";
 export { default as serviceProvider } from "./context/serviceProvider";
-export { default as ServiceProvider } from "./context/serviceProvider";
 export * from "./context/serviceProvider";
 
 // hooks
@@ -28,6 +27,8 @@ export { default as useServiceEdit } from "./hooks/useServiceEdit";
 export * from "./hooks/useServiceEdit";
 export { default as useServiceStates } from "./hooks/useServiceStates";
 export * from "./hooks/useServiceStates";
+export { default as useServiceAssets } from "./hooks/useServiceAssets";
+export * from "./hooks/useServiceAssets";
 
 // services
 export * from "./services/services";

@@ -34,6 +34,7 @@ import {
   faCopy,
   faShieldHalved,
   faChartLine,
+  faCircleExclamation,
 } from "@fortawesome/free-solid-svg-icons";
 
 import {
@@ -88,4 +89,5 @@ library.add(
   faCheck,
   faShieldHalved,
   faChartLine,
+  faCircleExclamation,
 );

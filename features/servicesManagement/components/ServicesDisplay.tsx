@@ -29,6 +29,7 @@ export default function ServicesDisplay() {
                 className="border-t border-(--terciary-grey) hover:bg-(--terciary-grey)/30"
                 onClick={() => {
                   state.setSelectedService(service);
+                  state.setSelectedServicePrev(service);
                   state.setIsNewService(false);
                   state.setSelectedServiceStatus(service.status);
                 }}

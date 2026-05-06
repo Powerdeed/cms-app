@@ -9,6 +9,7 @@ import useFileUploaderError from "./useFileUploaderError";
 import useFileUploaderPaths from "./useFileUploaderPaths";
 import useFileUploaderApi from "./useFileUploaderApi";
 import useFileUploaderNewAsset from "./useFileUploaderNewAsset";
+import useFileUploaderMetaEditor from "./useFileUploaderMetaEditor";
 
 export default function useFileUploader() {
   const uploaderState = useFileMetadataState();
@@ -21,6 +22,7 @@ export default function useFileUploader() {
   const editing = useFileUploaderEditing();
   const errors = useFileUploaderError();
   const paths = useFileUploaderPaths();
+  const meta = useFileUploaderMetaEditor();
 
   return {
     uploaderState,
@@ -33,6 +35,7 @@ export default function useFileUploader() {
       ...editing,
       ...errors,
       ...paths,
+      ...meta,
     },
   };
 }

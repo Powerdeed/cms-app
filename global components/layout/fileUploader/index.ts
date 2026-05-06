@@ -7,8 +7,8 @@ export { default as FileHandlingError } from "./components/FileHandlingError";
 export * from "./components/FileHandlingError";
 export { default as FileUploader } from "./components/FileUploader";
 export * from "./components/FileUploader";
-export { default as FileUploaderFileEditor } from "./components/FileUploaderFileEditor";
-export * from "./components/FileUploaderFileEditor";
+export { default as FileRenameAndUpload } from "./components/FileRenameAndUpload";
+export * from "./components/FileRenameAndUpload";
 export { default as FileMetaEditor } from "./components/FileMetaEditor";
 export * from "./components/FileMetaEditor";
 export { default as FileUploaderView } from "./components/FileUploaderView";
@@ -17,6 +17,14 @@ export { default as CompressingAsset } from "./components/CompressingAsset";
 export * from "./components/CompressingAsset";
 export { default as DropZone } from "./components/DropZone";
 export * from "./components/DropZone";
+export { default as EditorField } from "./components/fileMetaEditor/EditorField";
+export * from "./components/fileMetaEditor/EditorField";
+export { default as MetaWrapper } from "./components/fileMetaEditor/MetaWrapper";
+export * from "./components/fileMetaEditor/MetaWrapper";
+export { default as RenderImage } from "./components/fileMetaEditor/RenderImage";
+export * from "./components/fileMetaEditor/RenderImage";
+export { default as SetPaths } from "./components/fileMetaEditor/SetPaths";
+export * from "./components/fileMetaEditor/SetPaths";
 
 // hooks
 export { default as useFileUploaderApi } from "./hooks/useFileUploaderApi";
@@ -39,6 +47,12 @@ export { default as useFileMetadataState } from "./hooks/useFileUploaderState";
 export * from "./hooks/useFileUploaderState";
 export { default as useFileUploaderNewAsset } from "./hooks/useFileUploaderNewAsset";
 export * from "./hooks/useFileUploaderNewAsset";
+export { default as useFileUploaderMetaEditor } from "./hooks/useFileUploaderMetaEditor";
+export * from "./hooks/useFileUploaderMetaEditor";
+export { default as useFileUploaderPaths } from "./hooks/useFileUploaderPaths";
+export * from "./hooks/useFileUploaderPaths";
+export { default as useFileUploaderCreation } from "./hooks/useFileUploaderCreation";
+export * from "./hooks/useFileUploaderCreation";
 
 // constants
 export * from "./constants/supportedFileTypes";
@@ -48,9 +62,10 @@ export * from "./constants/assetRoles";
 export * from "./context/FileUploaderErrorContext";
 export * from "./context/FileMetadataContext";
 export * from "./context/FileUploaderProcessingContext";
+export * from "./context/FileUploaderStateContext";
+export * from "./context/FileUploaderApiContext";
 export { default as FileUploaderProvider } from "./context/FileUploaderProvider";
 export * from "./context/FileUploaderProvider";
-export * from "./context/FileUploaderStateContext";
 
 // services
 export * from "./services/uploadFile";

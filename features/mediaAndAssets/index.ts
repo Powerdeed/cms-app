@@ -29,8 +29,5 @@ export * from "./hooks/useAssetsState";
 export { default as useAssetsUpload } from "./hooks/useAssetsUpload";
 export * from "./hooks/useAssetsUpload";
 
-// services
-export * from "./services/mediaAssets";
-
 // utils
 export * from "./utils/conversions";

@@ -14,8 +14,8 @@ type FileMetadataState = {
   setCopying: Dispatch<SetStateAction<boolean>>;
   assetUsagePaths: AssetUsagePaths | null;
   setAssetUsagePaths: Dispatch<SetStateAction<AssetUsagePaths | null>>;
-  firstPathArr: string[] | null;
-  setFirstPathArr: Dispatch<SetStateAction<string[] | null>>;
+  firstPathArr: string[];
+  setFirstPathArr: Dispatch<SetStateAction<string[]>>;
   assetCategory: string;
   setAssetCategory: Dispatch<SetStateAction<string>>;
   firstPath: string;
@@ -26,6 +26,8 @@ type FileMetadataState = {
   setSecondPath: Dispatch<SetStateAction<string>>;
   assetUsage: string;
   setAssetUsage: Dispatch<SetStateAction<string>>;
+  selectedAssetId: string;
+  setSelectedAssetId: Dispatch<React.SetStateAction<string>>;
 };
 
 export const FileMetadataContext = createContext<FileMetadataState | null>(

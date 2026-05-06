@@ -7,6 +7,7 @@ import { isEqual } from "lodash";
 import { projectContext } from "../context/projectsContext";
 
 import { Project } from "../types/projects.types";
+import { AssetRef } from "@global components/layout/fileUploader";
 
 export default function useProjectsEdit() {
   const pContext = useContext(projectContext);
@@ -36,7 +37,7 @@ export default function useProjectsEdit() {
 
   const updateByPath = (
     path: Array<keyof Project | number>,
-    value: boolean | string | Record<string, string>,
+    value: boolean | string | AssetRef | Record<string, string>,
   ) =>
     setSelectedProject((prev) => {
       if (!prev) return prev;
@@ -47,14 +48,17 @@ export default function useProjectsEdit() {
 
       for (let i = 0; i < path.length - 1; i++) {
         current = (
-          current as Record<string | number, string | Record<string, string>>
+          current as Record<
+            string | number,
+            string | AssetRef | Record<string, string>
+          >
         )[path[i] as string];
       }
 
       (
         current as Record<
           string | number,
-          boolean | string | Record<string, string>
+          boolean | string | AssetRef | Record<string, string>
         >
       )[path[path.length - 1] as string] = value;
 

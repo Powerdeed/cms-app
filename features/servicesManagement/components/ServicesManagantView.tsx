@@ -9,12 +9,17 @@ import ServicesDisplay from "./ServicesDisplay";
 import { PAGE_META } from "../constants/pageMeta";
 
 import useService from "../hooks/useService";
+import {
+  FileMetaEditor,
+  useFileUploader,
+} from "@global components/layout/fileUploader";
 
 export function ServicesManagementView() {
   const { state, actions } = useService();
+  const { uploaderState, uploaderActions } = useFileUploader();
 
   return (
-    <div className="page-layout">
+    <div className="relative page-layout">
       <div className="flex items-center">
         <div className="flex-1">
           <SectionTitle title={PAGE_META.title} subtitle={PAGE_META.subtitle} />
@@ -31,6 +36,18 @@ export function ServicesManagementView() {
 
         <ServiceEditor />
       </div>
+
+      {uploaderState.selectedAssetId && (
+        <div
+          className="asset-handling-interface"
+          onClick={() => {
+            uploaderState.setSelectedAssetId("");
+            uploaderActions.handleResetAssetStates("re-upload");
+          }}
+        >
+          <FileMetaEditor />
+        </div>
+      )}
 
       {state.fetchServicesError && (
         <div className="text-(--primary-red) text-style__small-text">

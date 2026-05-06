@@ -61,3 +61,6 @@ export const sizeOfFile = (bytes: number) => {
 
 export const toCamelCase = (word: string) =>
   word.charAt(0).toUpperCase() + word.slice(1);
+
+export const createPathUrl = (paths: (string | undefined | null)[]) =>
+  paths.filter(Boolean).join("/");

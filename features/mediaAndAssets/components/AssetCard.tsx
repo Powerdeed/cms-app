@@ -6,8 +6,10 @@ import { ButtonLight } from "@global components/ui/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { Asset, useFileUploader } from "@global components/layout/fileUploader";
+import { deleteAsset } from "@global components/layout/fileUploader/services/uploadFile";
 
 import { ICON_COLORS } from "../constants/iconColors";
+import useMediaAssets from "../hooks/useAssets";
 
 type AssetCardProps = {
   asset: Asset;
@@ -15,6 +17,7 @@ type AssetCardProps = {
 
 export default function AssetCard({ asset }: AssetCardProps) {
   const { uploaderState, uploaderActions } = useFileUploader();
+  const { state } = useMediaAssets();
   const assetType = asset.assetType ?? asset.type ?? "image";
   const assetUsage = asset.classification?.usage ?? asset.usage ?? "";
   const uploadDate =
@@ -68,14 +71,22 @@ export default function AssetCard({ asset }: AssetCardProps) {
         </div>
       </div>
 
-      <div className="flex justify-between">
+      <div className="flex justify-between" onClick={(e) => e.stopPropagation()}>
         <ButtonLight
           buttonText="Download"
           clickAction={() => {}}
           icon={<FontAwesomeIcon icon={["fas", "download"]} />}
         />
 
-        <ButtonLight buttonText="Delete" clickAction={() => {}} />
+        <ButtonLight
+          buttonText="Delete"
+          clickAction={async () => {
+            await deleteAsset(asset.id);
+            state.setMediaAssets((prev) =>
+              prev.filter((currentAsset) => currentAsset.id !== asset.id),
+            );
+          }}
+        />
       </div>
     </div>
   );

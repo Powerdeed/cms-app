@@ -11,6 +11,9 @@ type ServiceState = {
   selectedService: Service | null;
   setSelectedService: Dispatch<React.SetStateAction<Service | null>>;
 
+  selectedServicePrev: Service | null;
+  setSelectedServicePrev: Dispatch<React.SetStateAction<Service | null>>;
+
   selectedServiceStatus: boolean;
   setSelectedServiceStatus: Dispatch<React.SetStateAction<boolean>>;
 
@@ -28,6 +31,9 @@ type ServiceState = {
 
   isDeleting: boolean;
   setIsDeleting: Dispatch<React.SetStateAction<boolean>>;
+
+  hasServiceChanged: boolean;
+  setHasServiceChanged: Dispatch<React.SetStateAction<boolean>>;
 };
 
 export const serviceContext = createContext<ServiceState | null>(null);

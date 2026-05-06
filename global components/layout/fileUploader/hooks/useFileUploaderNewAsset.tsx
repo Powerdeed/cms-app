@@ -37,7 +37,8 @@ export default function useFileUploaderNewAsset() {
   const { user } = globalStates;
   const { assetCategory, firstPath, assetUsage, setTargetAsset } =
     fileMetadataState;
-  const { featurePath, file, fileName, targetFileType } = fileUploaderState;
+  const { defaultIsPublic, featurePath, file, fileName, targetFileType } =
+    fileUploaderState;
 
   const featurePathParts = featurePath.split("/").filter(Boolean);
   const resolvedAssetCategory = assetCategory || featurePathParts[0] || "";
@@ -95,6 +96,7 @@ export default function useFileUploaderNewAsset() {
         },
       ],
       status: "active",
+      isPublic: defaultIsPublic,
       createdBy: user?._id,
       updatedBy: user?._id,
       createdAt: now,
@@ -110,6 +112,7 @@ export default function useFileUploaderNewAsset() {
     assetUsage,
     assetCategory,
     resolvedFirstPath,
+    defaultIsPublic,
     targetFileType,
     user?._id,
   ]);

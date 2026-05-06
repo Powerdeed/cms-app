@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useRef } from "react";
+
 import Button, { ButtonRed, DeleteIconBtn } from "@global components/ui/Button";
 import Loader from "@global components/ui/Loader";
 import Toggle from "@global components/ui/Toggle";
@@ -8,10 +10,60 @@ import { InputArea } from "@global components/layout/FormWrapper";
 import useProjects from "../hooks/useProjects";
 
 import { companyServices } from "@lib/constants/COMPANY_PROVISIONS";
-import { FileUploader } from "@global components/layout/fileUploader";
+import {
+  AssetRef,
+  FileUploader,
+  useFileUploader,
+} from "@global components/layout/fileUploader";
 
 export default function EditProject() {
   const { state, actions } = useProjects();
+  const { uploaderState, uploaderActions } = useFileUploader();
+  const {
+    setAssetMode,
+    setAssetRef,
+    setDefaultIsPublic,
+    setTargetFileTypes,
+  } = uploaderState;
+  const { pathSetter, updatePathSetters } = uploaderActions;
+  const updateProjectByPathRef = useRef(actions.updateByPath);
+  const hasSelectedProject = Boolean(state.selectedProject);
+  const selectedProjectName = state.selectedProject?.name ?? "";
+  const selectedProjectImageCount = state.selectedProject?.images.length ?? 0;
+
+  useEffect(() => {
+    updateProjectByPathRef.current = actions.updateByPath;
+  }, [actions.updateByPath]);
+
+  useEffect(() => {
+    if (!hasSelectedProject) return;
+
+    const uploadPath = `projects/${state.selectedCategory}/${selectedProjectName}`;
+
+    setTargetFileTypes(["image"]);
+    setDefaultIsPublic(true);
+    setAssetRef(
+      () => (val: AssetRef) =>
+        updateProjectByPathRef.current(
+          ["images", selectedProjectImageCount],
+          val,
+        ),
+    );
+    pathSetter(uploadPath);
+    updatePathSetters(undefined, uploadPath);
+    setAssetMode("new");
+  }, [
+    hasSelectedProject,
+    pathSetter,
+    selectedProjectImageCount,
+    selectedProjectName,
+    setAssetMode,
+    setAssetRef,
+    setDefaultIsPublic,
+    setTargetFileTypes,
+    state.selectedCategory,
+    updatePathSetters,
+  ]);
 
   if (!state.selectedProject) return;
 
@@ -76,9 +128,12 @@ export default function EditProject() {
               <input
                 type="text"
                 className="w-full input-style text-style__body mt-1"
-                value={image}
+                value={image[1]}
                 onChange={(e) =>
-                  actions.updateByPath(["images", index], e.target.value)
+                  actions.updateByPath(["images", index], [
+                    image[0],
+                    e.target.value,
+                  ])
                 }
               />
               <DeleteIconBtn
@@ -95,16 +150,7 @@ export default function EditProject() {
               />
             </div>
           ))}
-          <FileUploader
-            targetFileTypes={["image"]}
-            path={`projects/${state.selectedCategory}/${state.selectedProject.name}`}
-            changeFunc={(val) =>
-              actions.updateByPath(
-                ["images", state.selectedProject?.images.length || 0],
-                val,
-              )
-            }
-          />
+          <FileUploader />
         </div>
 
         {["featured", "completed"].map((setter) => (

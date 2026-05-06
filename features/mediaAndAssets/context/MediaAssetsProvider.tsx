@@ -1,18 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MediaAssetsStateContext } from "./MediaAssetsStateContext";
 import { Asset } from "@global components/layout/fileUploader";
-import { getMediaAssets } from "../services/mediaAssets";
 import { MediaAssetsSearchContext } from "./MediaAssetsSearchContext";
+import { getAssets } from "@global components/layout/fileUploader/services/uploadFile";
 
 export default function MediaAssetsProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [mediaAssets, setMediaAssets] = useState<Asset[]>(getMediaAssets());
+  const [mediaAssets, setMediaAssets] = useState<Asset[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    const loadAssets = async () => {
+      try {
+        setMediaAssets(await getAssets());
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    loadAssets();
+  }, []);
 
   return (
     <MediaAssetsStateContext.Provider

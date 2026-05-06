@@ -39,7 +39,7 @@ export default function useFileUploaderEditing() {
     setFile(null);
     setFileName("");
     setAssetCategory("");
-    setFirstPathArr(null);
+    setFirstPathArr([]);
     setFirstPath("");
     setSecondPath("");
     resetErrors();
