@@ -57,6 +57,7 @@ export * from "./hooks/useFileUploaderCreation";
 // constants
 export * from "./constants/supportedFileTypes";
 export * from "./constants/assetRoles";
+export * from "./constants/assetUsagePaths";
 
 // context
 export * from "./context/FileUploaderErrorContext";
@@ -73,7 +74,6 @@ export * from "./services/uploadFile";
 // types
 export * from "./types/fileUploader.types";
 export * from "./types/asset.types";
-export * from "./types/assets.types";
 
 // utils
 export * from "./utils/fileConversions";

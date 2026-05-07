@@ -4,7 +4,6 @@
 import Button, { ButtonLight } from "@global components/ui/Button";
 import SearchBar from "@global components/ui/SearchBar";
 import FormWrapper from "@global components/layout/FormWrapper";
-import { useEffect } from "react";
 import {
   // components
   CompressingAsset,
@@ -30,21 +29,10 @@ import useMediaAssets from "../hooks/useAssets";
 
 // constants
 import { PAGE_META } from "../constants/pageMeta";
-import { usagePaths } from "../constants/assetUsagePaths";
 
 export function MediaAssetsView() {
   const { state, actions } = useMediaAssets();
   const { uploaderState, uploaderActions } = useFileUploader();
-  const { setAssetUsagePaths } = uploaderState;
-
-  useEffect(() => {
-    const loadAssetUsagePaths = async () => {
-      setAssetUsagePaths(await usagePaths);
-    };
-
-    loadAssetUsagePaths();
-  }, [setAssetUsagePaths]);
-
   return (
     <div className="relative page-layout">
       <FormWrapper

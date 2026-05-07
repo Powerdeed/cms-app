@@ -1,17 +1,20 @@
 "use client";
 
+// modules
 import { useCallback, useContext, useEffect } from "react";
+
+// hooks
 import { FileMetadataContext } from "../context/FileMetadataContext";
 import { FileUploaderStateContext } from "../context/FileUploaderStateContext";
+
+// types
 import { Asset, AssetUsagePaths } from "../types/asset.types";
+
+// utils
 import { createPathUrl } from "../utils/fileConversions";
 
-const resolveUsagePaths = async (
-  source: Promise<AssetUsagePaths> | AssetUsagePaths | null,
-) => {
-  if (!source) return null;
-  return await source;
-};
+// constants
+import { usagePaths } from "../constants/assetUsagePaths";
 
 export default function useFileUploaderPaths() {
   const fileMetadataState = useContext(FileMetadataContext);
@@ -31,6 +34,7 @@ export default function useFileUploaderPaths() {
     setSecondPaths,
     assetUsagePaths,
     setAssetUsage,
+    setAssetUsagePaths,
   } = fileMetadataState;
 
   const {
@@ -40,6 +44,14 @@ export default function useFileUploaderPaths() {
     featurePath,
     setFeaturePath,
   } = fileUploaderState;
+
+  useEffect(() => {
+    const loadAssetUsagePaths = async () => {
+      setAssetUsagePaths(await usagePaths);
+    };
+
+    loadAssetUsagePaths();
+  }, [setAssetUsagePaths]);
 
   const pathSetter = useCallback(
     (path: string) => {
@@ -75,7 +87,7 @@ export default function useFileUploaderPaths() {
       setSecondPath("");
 
       if (category) {
-        const assetPaths = await resolveUsagePaths(assetUsagePaths);
+        const assetPaths = await assetUsagePaths;
 
         if (!assetPaths) return;
 
@@ -91,7 +103,7 @@ export default function useFileUploaderPaths() {
 
   useEffect(() => {
     const fetchSecondPaths = async () => {
-      const assetPaths = await resolveUsagePaths(assetUsagePaths);
+      const assetPaths = await assetUsagePaths;
 
       if (assetPaths) {
         const categoryBasedPaths = assetPaths[assetCategory];
@@ -138,8 +150,9 @@ export default function useFileUploaderPaths() {
         parseAssetPath(assetPath);
       const assetCategory = asset?.classification?.category ?? category;
       const assetUsage = asset?.classification?.usage ?? usage;
-      const [assetFirstPath = "", assetSecondPath = ""] =
-        assetUsage.split("/").filter(Boolean);
+      const [assetFirstPath = "", assetSecondPath = ""] = assetUsage
+        .split("/")
+        .filter(Boolean);
 
       const displayName = asset?.name || name;
 

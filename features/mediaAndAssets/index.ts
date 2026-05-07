@@ -8,7 +8,6 @@ export * from "./components/AssetCard";
 export * from "./components/MediaAssetsView";
 
 // constants
-export * from "./constants/assetUsagePaths";
 export * from "./constants/iconColors";
 export * from "./constants/pageMeta";
 

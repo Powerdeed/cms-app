@@ -202,18 +202,18 @@ export default function FileMetaEditor({
                 </select>
               }
             />
-          </div>
 
-          <div className="flex gap-2.5 items-start">
-            <div className="w-33 pt-2">
-              usage<span className="text-(--primary-red)">*</span>:
-            </div>
-
-            {uploaderState.firstPathArr ? (
-              <SetPaths />
-            ) : (
-              <div className="pt-2">select a category first</div>
-            )}
+            <EditorField
+              label="usage"
+              required
+              control={
+                uploaderState.firstPathArr ? (
+                  <SetPaths />
+                ) : (
+                  <div className="pt-2">select a category first</div>
+                )
+              }
+            />
           </div>
 
           <div className="flex gap-2.5 sticky bottom-0 bg-white pt-2">

@@ -1,6 +1,6 @@
 import { apiRequest } from "@lib/api/apiRequest";
 import { companyServices } from "@lib/constants/COMPANY_PROVISIONS";
-import { AssetUsagePaths } from "@global components/layout/fileUploader";
+import { AssetUsagePaths } from "../types/asset.types";
 
 export type { AssetUsagePaths };
 

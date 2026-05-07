@@ -8,7 +8,7 @@ export default function SetPaths() {
 
   if (!targetAsset) return null;
   return (
-    <div className="w-full grid grid-cols-1 xl:grid-cols-2 gap-2.5">
+    <div className="w-full flex flex-col gap-2.5">
       <select
         value={uploaderState.firstPath}
         onChange={(e) => {
