@@ -13,14 +13,22 @@ import EditorField from "./fileMetaEditor/EditorField";
 import useFileUploader from "../hooks/useFileUploader";
 
 // types
-import { AssetUsagePaths } from "../types/asset.types";
+import { Asset, AssetUsagePaths } from "../types/asset.types";
 
 // constants
 import { assetRoles } from "../constants/assetRoles";
 import RenderImage from "./fileMetaEditor/RenderImage";
 import SetPaths from "./fileMetaEditor/SetPaths";
 
-export default function FileMetaEditor() {
+type FileMetaEditorProps = {
+  onAssetUploaded?: (asset: Asset) => void;
+  onAssetUpdated?: (asset: Asset) => void;
+};
+
+export default function FileMetaEditor({
+  onAssetUploaded,
+  onAssetUpdated,
+}: FileMetaEditorProps = {}) {
   const { uploaderState, uploaderActions } = useFileUploader();
   const targetAsset = uploaderState.targetAsset;
 
@@ -30,7 +38,22 @@ export default function FileMetaEditor() {
     <form
       onSubmit={async (e) => {
         e.preventDefault();
-        await uploaderActions.fileUploadingHandler();
+        if (uploaderState.assetMode === "new") {
+          const uploadedAsset = await uploaderActions.fileUploadingHandler();
+
+          if (uploadedAsset?.id && uploadedAsset.name) {
+            onAssetUploaded?.(uploadedAsset as Asset);
+          }
+          return;
+        }
+
+        if (uploaderState.assetMode === "existing") {
+          const updatedAsset = await uploaderActions.updateAssetHandler();
+
+          if (updatedAsset) {
+            onAssetUpdated?.(updatedAsset);
+          }
+        }
       }}
       onClick={(e) => e.stopPropagation()}
       className="h-100 bg-white rounded-[10px] text-style__body overflow-hidden"
@@ -76,9 +99,7 @@ export default function FileMetaEditor() {
                     .slice(0, -1)
                     .join(".")}
                   onChange={(e) =>
-                    uploaderState.setFileName(
-                      `${e.target.value}${uploaderActions.fileExtension}`,
-                    )
+                    uploaderActions.updateFileName(e.target.value)
                   }
                   className="w-full input-style field-sizing-content"
                 />
@@ -153,51 +174,47 @@ export default function FileMetaEditor() {
               </div>
             </label>
 
-            {!uploaderState.hasFeaturePath && (
-              <EditorField
-                label="select category"
-                required
-                control={
-                  <select
-                    value={uploaderState.assetCategory}
-                    onChange={(e) => {
-                      uploaderState.setAssetCategory(e.target.value);
-                      uploaderActions.getFirstPaths(
-                        e.target.value as keyof AssetUsagePaths,
-                      );
-                    }}
-                    className="input-style w-full"
-                  >
-                    <option value="" disabled>
-                      select category
-                    </option>
+            <EditorField
+              label="select category"
+              required
+              control={
+                <select
+                  value={uploaderState.assetCategory}
+                  onChange={(e) => {
+                    uploaderState.setAssetCategory(e.target.value);
+                    uploaderActions.getFirstPaths(
+                      e.target.value as keyof AssetUsagePaths,
+                    );
+                  }}
+                  className="input-style w-full"
+                >
+                  <option value="" disabled>
+                    select category
+                  </option>
 
-                    {Object.keys(uploaderState.assetUsagePaths || {}).map(
-                      (category) => (
-                        <option key={category} value={category}>
-                          {category}
-                        </option>
-                      ),
-                    )}
-                  </select>
-                }
-              />
-            )}
+                  {Object.keys(uploaderState.assetUsagePaths || {}).map(
+                    (category) => (
+                      <option key={category} value={category}>
+                        {category}
+                      </option>
+                    ),
+                  )}
+                </select>
+              }
+            />
           </div>
 
-          {!uploaderState.hasFeaturePath && (
-            <div className="flex gap-2.5 items-start">
-              <div className="w-33 pt-2">
-                usage<span className="text-(--primary-red)">*</span>:
-              </div>
-
-              {uploaderState.firstPathArr ? (
-                <SetPaths />
-              ) : (
-                <div className="pt-2">select a category first</div>
-              )}
+          <div className="flex gap-2.5 items-start">
+            <div className="w-33 pt-2">
+              usage<span className="text-(--primary-red)">*</span>:
             </div>
-          )}
+
+            {uploaderState.firstPathArr ? (
+              <SetPaths />
+            ) : (
+              <div className="pt-2">select a category first</div>
+            )}
+          </div>
 
           <div className="flex gap-2.5 sticky bottom-0 bg-white pt-2">
             <Button
@@ -209,7 +226,8 @@ export default function FileMetaEditor() {
                   : "Update asset"
               }
             >
-              {uploaderState.uploadingStatus && <Loader />}
+              {(uploaderState.uploadingStatus ||
+                uploaderState.isAssetUploading) && <Loader />}
             </Button>
 
             {uploaderState.assetMode === "new" && (
@@ -221,6 +239,10 @@ export default function FileMetaEditor() {
               />
             )}
           </div>
+
+          {uploaderState.assetApiOnError && (
+            <div>{uploaderState.assetApiOnError}</div>
+          )}
         </div>
       </div>
     </form>

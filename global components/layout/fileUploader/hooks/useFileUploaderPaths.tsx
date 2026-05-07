@@ -133,25 +133,29 @@ export default function useFileUploaderPaths() {
 
   const updatePathSetters = useCallback(
     (asset?: Asset, pathOverride?: string) => {
-      const assetPath = asset
-        ? (asset.storage?.objectName ?? asset.fullPath ?? "")
-        : (pathOverride ?? featurePath);
+      const assetPath = pathOverride ?? asset?.fullPath ?? featurePath;
       const { category, firstPath, secondPath, name, usage, fullPath } =
         parseAssetPath(assetPath);
+      const assetCategory = asset?.classification?.category ?? category;
+      const assetUsage = asset?.classification?.usage ?? usage;
+      const [assetFirstPath = "", assetSecondPath = ""] =
+        assetUsage.split("/").filter(Boolean);
 
-      if (name) setFileName(name);
-      setAssetCategory(category);
-      getFirstPaths(category);
-      setFirstPath(firstPath);
-      setSecondPath(secondPath);
-      setAssetUsage(usage);
+      const displayName = asset?.name || name;
+
+      if (displayName) setFileName(displayName);
+      setAssetCategory(assetCategory);
+      getFirstPaths(assetCategory);
+      setFirstPath(assetFirstPath || firstPath);
+      setSecondPath(assetSecondPath || secondPath);
+      setAssetUsage(assetUsage);
 
       return {
-        category,
-        firstPath,
-        secondPath,
-        usage,
-        fullPath,
+        category: assetCategory,
+        firstPath: assetFirstPath || firstPath,
+        secondPath: assetSecondPath || secondPath,
+        usage: assetUsage,
+        fullPath: asset?.storage?.objectName ?? fullPath,
       };
     },
     [

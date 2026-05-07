@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useContext } from "react";
+import { useCallback, useContext, useEffect, useRef } from "react";
 import { FileMetadataContext } from "../context/FileMetadataContext";
 import { Asset } from "../types/asset.types";
 import useFileMetadataPaths from "./useFileUploaderPaths";
@@ -16,6 +16,11 @@ export default function useFileUploaderCreation() {
   const { setTargetAsset, setAssetMode } = fileMetadataState;
   const { updatePathSetters } = useFileMetadataPaths();
   const { computedTargetAsset } = useFileUploaderNewAsset();
+  const computedTargetAssetRef = useRef(computedTargetAsset);
+
+  useEffect(() => {
+    computedTargetAssetRef.current = computedTargetAsset;
+  }, [computedTargetAsset]);
 
   const handleTargetAsset = useCallback((
     mode: "new" | "existing" | null,
@@ -25,7 +30,7 @@ export default function useFileUploaderCreation() {
     const pathData = updatePathSetters(asset);
 
     if (mode === "new") {
-      setTargetAsset(computedTargetAsset);
+      setTargetAsset(computedTargetAssetRef.current);
     } else if (mode === "existing" && asset) {
       const assetType = asset.assetType ?? asset.type ?? "image";
       const objectName = asset.storage?.objectName ?? asset.fullPath ?? "";
@@ -73,7 +78,7 @@ export default function useFileUploaderCreation() {
         isPublic: asset.isPublic ?? false,
       });
     }
-  }, [computedTargetAsset, setAssetMode, setTargetAsset, updatePathSetters]);
+  }, [setAssetMode, setTargetAsset, updatePathSetters]);
 
   return { handleTargetAsset };
 }

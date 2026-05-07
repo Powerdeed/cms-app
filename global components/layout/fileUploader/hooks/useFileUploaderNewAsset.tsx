@@ -11,7 +11,11 @@ import { FileUploaderProcessingContext } from "../context/FileUploaderProcessing
 import { FileUploaderStateContext } from "../context/FileUploaderStateContext";
 
 // utils
-import { mediaType, toCamelCase } from "../utils/fileConversions";
+import {
+  createAssetObjectName,
+  mediaType,
+  toCamelCase,
+} from "../utils/fileConversions";
 
 // types
 import { Asset } from "../types/asset.types";
@@ -35,9 +39,16 @@ export default function useFileUploaderNewAsset() {
   }
 
   const { user } = globalStates;
-  const { assetCategory, firstPath, assetUsage, setTargetAsset } =
+  const { assetCategory, firstPath, assetUsage, setTargetAsset, assetMode } =
     fileMetadataState;
-  const { defaultIsPublic, featurePath, file, fileName, targetFileType } =
+  const {
+    defaultIsPublic,
+    featurePath,
+    file,
+    fileName,
+    newAssetId,
+    targetFileType,
+  } =
     fileUploaderState;
 
   const featurePathParts = featurePath.split("/").filter(Boolean);
@@ -52,9 +63,7 @@ export default function useFileUploaderNewAsset() {
   const fileType: FileType =
     fileMeta.type === "unknown" ? "image" : fileMeta.type;
 
-  const objectName = [resolvedAssetCategory, assetUsage, fileName]
-    .filter(Boolean)
-    .join("/");
+  const objectName = createAssetObjectName(newAssetId, fileName, fileType);
 
   const computedTargetAsset: Asset | null = useMemo(() => {
     if (!file && !fileName) return null;
@@ -62,7 +71,7 @@ export default function useFileUploaderNewAsset() {
     const now = new Date().toISOString();
 
     return {
-      id: crypto.randomUUID(),
+      id: newAssetId,
       name: fileName,
       originalName: file?.name || fileName,
       assetType: fileType,
@@ -105,6 +114,7 @@ export default function useFileUploaderNewAsset() {
   }, [
     file,
     fileName,
+    newAssetId,
     fileType,
     fileMeta.mimeType,
     objectName,
@@ -118,10 +128,11 @@ export default function useFileUploaderNewAsset() {
   ]);
 
   useEffect(() => {
+    if (assetMode !== "new") return;
     if (!computedTargetAsset) return;
 
     setTargetAsset(computedTargetAsset);
-  }, [computedTargetAsset, setTargetAsset]);
+  }, [assetMode, computedTargetAsset, setTargetAsset]);
 
   return {
     fileType,

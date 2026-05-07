@@ -1,13 +1,16 @@
 "use client";
 
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { globalContext } from "@globals/context/GlobalContext";
+import { useCallback, useContext, useEffect, useRef } from "react";
+import {
+  globalContext,
+  UnsavedChangesNoticeText,
+} from "@globals/context/GlobalContext";
+import { DEFAULT_UNSAVED_CHANGES_NOTICE } from "../constants/unsavedChangesNotice";
 
 const NOTICE_DURATION = 3500;
 
 export default function useUnsavedChangesGuard() {
   const globalStates = useContext(globalContext);
-  const [noticeVisible, setNoticeVisible] = useState(false);
   const noticeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const guardedHistoryUrlRef = useRef("");
 
@@ -15,16 +18,29 @@ export default function useUnsavedChangesGuard() {
     throw new Error("Global Context context must be within a provider.");
   }
 
-  const hasUnsavedChanges = !globalStates.unsavedChanges;
+  const hasUnsavedChanges = globalStates.unsavedChanges;
+  const {
+    unsavedChangesNoticeText,
+    unsavedChangesNoticeVisible,
+    setUnsavedChangesNoticeText,
+    setUnsavedChangesNoticeVisible,
+  } = globalStates;
 
-  const showNotice = useCallback(() => {
-    if (noticeTimeoutRef.current) clearTimeout(noticeTimeoutRef.current);
+  const showNotice = useCallback(
+    (noticeText?: Partial<UnsavedChangesNoticeText>) => {
+      if (noticeTimeoutRef.current) clearTimeout(noticeTimeoutRef.current);
 
-    setNoticeVisible(true);
-    noticeTimeoutRef.current = setTimeout(() => {
-      setNoticeVisible(false);
-    }, NOTICE_DURATION);
-  }, []);
+      setUnsavedChangesNoticeText({
+        ...DEFAULT_UNSAVED_CHANGES_NOTICE,
+        ...noticeText,
+      });
+      setUnsavedChangesNoticeVisible(true);
+      noticeTimeoutRef.current = setTimeout(() => {
+        setUnsavedChangesNoticeVisible(false);
+      }, NOTICE_DURATION);
+    },
+    [setUnsavedChangesNoticeText, setUnsavedChangesNoticeVisible],
+  );
 
   useEffect(() => {
     if (!hasUnsavedChanges) return;
@@ -118,8 +134,9 @@ export default function useUnsavedChangesGuard() {
 
   return {
     hasUnsavedChanges,
-    noticeVisible,
+    noticeText: unsavedChangesNoticeText,
+    noticeVisible: unsavedChangesNoticeVisible,
     showNotice,
-    hideNotice: () => setNoticeVisible(false),
+    hideNotice: () => setUnsavedChangesNoticeVisible(false),
   };
 }

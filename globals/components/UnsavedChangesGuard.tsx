@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useUnsavedChangesGuard from "@globals/hooks/useUnsavedChangesGuard";
 
 export default function UnsavedChangesGuard() {
-  const { noticeVisible } = useUnsavedChangesGuard();
+  const { noticeText, noticeVisible } = useUnsavedChangesGuard();
 
   return (
     <div
@@ -24,11 +24,9 @@ export default function UnsavedChangesGuard() {
 
         <div>
           <div className="font-bold text-(--primary-grey)">
-            Unsaved changes
+            {noticeText.title}
           </div>
-          <div className="text-(--secondary-grey)">
-            Save or discard your changes before leaving this page.
-          </div>
+          <div className="text-(--secondary-grey)">{noticeText.message}</div>
         </div>
       </div>
     </div>

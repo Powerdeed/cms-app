@@ -3,6 +3,8 @@
 import { useContext } from "react";
 import { FileUploaderStateContext } from "../context/FileUploaderStateContext";
 import { FileMetadataContext } from "../context/FileMetadataContext";
+import { createAssetObjectName } from "../utils/fileConversions";
+import { FileType } from "../types/fileUploader.types";
 
 export default function useFileUploaderMetaEditor() {
   const uploaderStates = useContext(FileUploaderStateContext);
@@ -11,8 +13,8 @@ export default function useFileUploaderMetaEditor() {
   if (!uploaderStates || !uploaderMeta)
     throw new Error("File Uploader states must be within a provider");
 
-  const { fileName } = uploaderStates;
-  const { targetAsset, setTargetAsset } = uploaderMeta;
+  const { fileName, setFileName } = uploaderStates;
+  const { targetAsset, setTargetAsset, assetMode } = uploaderMeta;
 
   const fileExtension = fileName.includes(".")
     ? `.${fileName.split(".").pop()}`
@@ -20,6 +22,41 @@ export default function useFileUploaderMetaEditor() {
   const assetPath = targetAsset?.storage?.objectName ?? "";
   const previewUrl = targetAsset?.storage?.publicUrl ?? "";
   const primaryRelationship = targetAsset?.relationships?.[0];
+
+  const updateFileName = (baseName: string) => {
+    const nextName = `${baseName}${fileExtension}`;
+
+    setFileName(nextName);
+    setTargetAsset((prev) => {
+      if (!prev) return prev;
+
+      const nextObjectName =
+        assetMode === "new"
+          ? createAssetObjectName(
+              prev.id,
+              nextName,
+              prev.assetType ?? ("image" as FileType),
+            )
+          : (prev.storage?.objectName ?? "");
+
+      return {
+        ...prev,
+        name: nextName,
+        storage: prev.storage
+          ? {
+              ...prev.storage,
+              objectName: nextObjectName,
+            }
+          : prev.storage,
+        display: {
+          alt: prev.display?.alt ?? "",
+          caption: prev.display?.caption ?? "",
+          title: baseName,
+        },
+        updatedAt: new Date().toISOString(),
+      };
+    });
+  };
 
   const updateDisplayField = (field: "alt" | "caption", value: string) => {
     setTargetAsset((prev) =>
@@ -61,6 +98,7 @@ export default function useFileUploaderMetaEditor() {
         : prev,
     );
   };
+
   const updateIsPublic = (isPublic: boolean) => {
     setTargetAsset((prev) =>
       prev
@@ -85,6 +123,7 @@ export default function useFileUploaderMetaEditor() {
     assetPath,
     previewUrl,
     primaryRelationship,
+    updateFileName,
     updateDisplayField,
     updateRelationshipRole,
     updateIsPublic,

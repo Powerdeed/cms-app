@@ -6,6 +6,7 @@ import { isEqual } from "lodash";
 import { serviceContext } from "../context/serviceContext";
 import { Service } from "../types/services.types";
 import {
+  Asset,
   AssetRef,
   FileMetadataContext,
 } from "@global components/layout/fileUploader";
@@ -59,9 +60,23 @@ export default function useServiceEdit() {
       return { ...prev, images: [...prev.images, image] };
     });
 
+  const updateServiceImageRef = (asset: Asset) =>
+    setSelectedService((prev) => {
+      if (!prev) return prev;
+
+      return {
+        ...prev,
+        images: prev.images.map((image) =>
+          image[0] === asset.id ? [image[0], asset.name] : image,
+        ),
+      };
+    });
+
   useEffect(() => {
-    setHasServiceChanged(!isEqual(selectedService, selectedServicePrev));
-    setUnsavedChanges(isEqual(selectedService, selectedServicePrev));
+    const hasServiceChanged = !isEqual(selectedService, selectedServicePrev);
+
+    setHasServiceChanged(hasServiceChanged);
+    setUnsavedChanges(hasServiceChanged);
   }, [
     selectedService,
     selectedServicePrev,
@@ -73,5 +88,6 @@ export default function useServiceEdit() {
     selectValue,
     modifyService,
     addNewServiceImage,
+    updateServiceImageRef,
   };
 }

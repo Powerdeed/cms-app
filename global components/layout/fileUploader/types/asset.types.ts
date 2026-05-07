@@ -22,6 +22,7 @@ export interface Asset {
   assetType?: FileType;
   mimeType?: string;
   size: number | string;
+
   storage?: {
     provider: "gcs";
     bucket: string;
@@ -29,16 +30,19 @@ export interface Asset {
     generation: string;
     publicUrl: string;
   };
+
   classification?: {
     category: string;
     usage: string;
     tags: string[];
   };
+
   display?: {
     alt: string;
     caption: string;
     title: string;
   };
+
   relationships?: AssetRelationship[];
   status?: AssetStatus;
   isPublic?: boolean;

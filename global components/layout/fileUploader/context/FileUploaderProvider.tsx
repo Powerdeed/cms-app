@@ -27,6 +27,7 @@ export default function FileUploaderProvider({
   const [hasFeaturePath, setHasFeaturePath] = useState(false);
   const [featurePath, setFeaturePath] = useState("");
   const [uploadedFile, setUploadedFile] = useState("");
+  const [newAssetId, setNewAssetId] = useState(() => crypto.randomUUID());
   const [assetRef, setAssetRef] = useState<AssetRefHandler | null>(null);
   const [compressing, setCompressing] = useState(false);
   const [isSupportedFile, setIsSupportedFile] = useState<boolean | null>(null);
@@ -97,6 +98,8 @@ export default function FileUploaderProvider({
           setFeaturePath,
           uploadedFile,
           setUploadedFile,
+          newAssetId,
+          setNewAssetId,
           assetRef,
           setAssetRef,
         }}

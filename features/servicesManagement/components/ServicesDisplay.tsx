@@ -3,9 +3,11 @@
 import Loader from "@global components/ui/Loader";
 
 import useService from "../hooks/useService";
+import { useGlobals } from "@globals";
 
 export default function ServicesDisplay() {
   const { state } = useService();
+  const { globalActions } = useGlobals();
 
   return (
     <div className="flex-1 feature-container-vertical text-style__body">
@@ -28,6 +30,11 @@ export default function ServicesDisplay() {
                 key={service._id}
                 className="border-t border-(--terciary-grey) hover:bg-(--terciary-grey)/30"
                 onClick={() => {
+                  if (globalActions.hasUnsavedChanges) {
+                    globalActions.showNotice();
+                    return;
+                  }
+
                   state.setSelectedService(service);
                   state.setSelectedServicePrev(service);
                   state.setIsNewService(false);

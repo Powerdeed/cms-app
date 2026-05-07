@@ -23,6 +23,8 @@ type FileUploaderState = {
   setFeaturePath: Dispatch<SetStateAction<string>>;
   uploadedFile: string;
   setUploadedFile: Dispatch<SetStateAction<string>>;
+  newAssetId: string;
+  setNewAssetId: Dispatch<SetStateAction<string>>;
   assetRef: AssetRefHandler | null;
   setAssetRef: Dispatch<SetStateAction<AssetRefHandler | null>>;
 };

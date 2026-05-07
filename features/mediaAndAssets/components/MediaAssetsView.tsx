@@ -33,7 +33,7 @@ import { PAGE_META } from "../constants/pageMeta";
 import { usagePaths } from "../constants/assetUsagePaths";
 
 export function MediaAssetsView() {
-  const { state } = useMediaAssets();
+  const { state, actions } = useMediaAssets();
   const { uploaderState, uploaderActions } = useFileUploader();
   const { setAssetUsagePaths } = uploaderState;
 
@@ -112,7 +112,10 @@ export function MediaAssetsView() {
 
             {/* Editor */}
             {uploaderActions.popUpToDisplay.assetMediaEditor && (
-              <FileMetaEditor />
+              <FileMetaEditor
+                onAssetUploaded={actions.handleSubmitMediaAsset}
+                onAssetUpdated={actions.handleUpdateTargetAsset}
+              />
             )}
 
             {/* Error */}

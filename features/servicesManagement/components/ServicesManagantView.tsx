@@ -13,9 +13,11 @@ import {
   FileMetaEditor,
   useFileUploader,
 } from "@global components/layout/fileUploader";
+import { useGlobals } from "@globals";
 
 export function ServicesManagementView() {
   const { state, actions } = useService();
+  const { globalActions } = useGlobals();
   const { uploaderState, uploaderActions } = useFileUploader();
 
   return (
@@ -27,7 +29,16 @@ export function ServicesManagementView() {
 
         <Button
           buttonText={"+ Add New Service"}
-          clickAction={actions.handleAddNewService}
+          clickAction={() => {
+            if (globalActions.hasUnsavedChanges) {
+              globalActions.showNotice({
+                title: "Save changes to service data",
+              });
+              return;
+            }
+
+            actions.handleAddNewService();
+          }}
         />
       </div>
 
@@ -45,7 +56,7 @@ export function ServicesManagementView() {
             uploaderActions.handleResetAssetStates("re-upload");
           }}
         >
-          <FileMetaEditor />
+          <FileMetaEditor onAssetUpdated={actions.updateServiceImageRef} />
         </div>
       )}
 

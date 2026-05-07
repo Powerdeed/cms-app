@@ -1,4 +1,4 @@
-import { MediaTypeResult } from "../types/fileUploader.types";
+import { FileType, MediaTypeResult } from "../types/fileUploader.types";
 
 const fallbackMediaType: MediaTypeResult = {
   type: "unknown",
@@ -64,3 +64,27 @@ export const toCamelCase = (word: string) =>
 
 export const createPathUrl = (paths: (string | undefined | null)[]) =>
   paths.filter(Boolean).join("/");
+
+export const toSafeFileName = (fileName: string) =>
+  fileName
+    .trim()
+    .replace(/\\/g, "/")
+    .split("/")
+    .filter(Boolean)
+    .at(-1)
+    ?.replace(/\s+/g, "-")
+    .replace(/[^a-zA-Z0-9._-]/g, "-")
+    .replace(/-+/g, "-") || "asset";
+
+const objectNameFolders: Record<FileType, string> = {
+  image: "images",
+  document: "documents",
+  diagram: "diagrams",
+  video: "videos",
+};
+
+export const createAssetObjectName = (
+  assetId: string,
+  fileName: string,
+  fileType: FileType,
+) => createPathUrl([objectNameFolders[fileType], assetId, toSafeFileName(fileName)]);

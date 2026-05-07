@@ -3,21 +3,38 @@
 import { useContext } from "react";
 
 import {
+  Asset,
   FileMetadataContext,
+  FileUploaderApiContext,
   FileUploaderErrorContext,
   FileUploaderProcessingContext,
   FileUploaderStateContext,
 } from "@global components/layout/fileUploader";
 
-import { uploadFile } from "../services/uploadFile";
+import { updateAsset, uploadFile } from "../services/uploadFile";
 import useFileUploaderEditing from "./useFileUploaderEditing";
 import { globalContext } from "@globals";
+import { execute } from "@lib/api/execute";
+
+const buildAssetUpdatePayload = (asset: Asset): Partial<Asset> => ({
+  name: asset.name,
+  originalName: asset.originalName,
+  storage: asset.storage,
+  classification: asset.classification,
+  display: asset.display,
+  relationships: asset.relationships,
+  status: asset.status,
+  isPublic: asset.isPublic,
+  updatedBy: asset.updatedBy,
+  updatedAt: new Date().toISOString(),
+});
 
 export default function useFileUploaderApi() {
   const fileMetadataState = useContext(FileMetadataContext);
   const fileUploaderState = useContext(FileUploaderStateContext);
   const fileUploaderProcessing = useContext(FileUploaderProcessingContext);
   const fileUploaderErrors = useContext(FileUploaderErrorContext);
+  const fileUploaderApi = useContext(FileUploaderApiContext);
   const globalStates = useContext(globalContext);
 
   if (
@@ -25,14 +42,16 @@ export default function useFileUploaderApi() {
     !fileUploaderState ||
     !fileUploaderProcessing ||
     !fileUploaderErrors ||
-    !globalStates
+    !globalStates ||
+    !fileUploaderApi
   )
     throw new Error("FileUploaderContext context must be withing a provider.");
 
   const { file, fileName, setUploadedFile, assetRef } = fileUploaderState;
   const { setUploadingStatus } = fileUploaderProcessing;
   const { setUploadingFile, setErrorUploadingFileMsg } = fileUploaderErrors;
-  const { targetAsset } = fileMetadataState;
+  const { setIsAssetUploading, setAssetApiOnError } = fileUploaderApi;
+  const { targetAsset, setTargetAsset } = fileMetadataState;
   const { setUnsavedChanges } = globalStates;
 
   const { handleResetAssetStates } = useFileUploaderEditing();
@@ -87,5 +106,17 @@ export default function useFileUploaderApi() {
     setUnsavedChanges(false);
   };
 
-  return { fileUploadingHandler, uploadFileAndSetStates };
+  const updateAssetHandler = async () => {
+    if (!targetAsset) return;
+
+    const payload = buildAssetUpdatePayload(targetAsset);
+
+    return await execute(() => updateAsset(targetAsset.id, payload), {
+      setLoading: setIsAssetUploading,
+      setError: setAssetApiOnError,
+      onSuccess: (updatedAsset: Asset) => setTargetAsset(updatedAsset),
+    });
+  };
+
+  return { fileUploadingHandler, uploadFileAndSetStates, updateAssetHandler };
 }

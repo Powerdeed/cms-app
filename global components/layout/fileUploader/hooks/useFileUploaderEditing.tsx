@@ -6,6 +6,7 @@ import { FileUploaderProcessingContext } from "../context/FileUploaderProcessing
 import { FileUploaderStateContext } from "../context/FileUploaderStateContext";
 import { FileType } from "../types/fileUploader.types";
 import useFileMetadataError from "./useFileUploaderError";
+import { createAssetObjectName } from "../utils/fileConversions";
 
 export default function useFileUploaderEditing() {
   const fileMetadataState = useContext(FileMetadataContext);
@@ -19,6 +20,7 @@ export default function useFileUploaderEditing() {
   const {
     targetAsset,
     setTargetAsset,
+    assetMode,
     setAssetMode,
     assetCategory,
     setAssetCategory,
@@ -28,16 +30,19 @@ export default function useFileUploaderEditing() {
     secondPath,
     setSecondPath,
   } = fileMetadataState;
-  const { file, setFile, fileName, setFileName, targetFileTypes } =
+  const { file, setFile, fileName, setFileName, setNewAssetId, targetFileTypes } =
     fileUploaderState;
   const { setIsSupportedFile } = processingContext;
   const { resetErrors } = useFileMetadataError();
 
   const fileType: FileType | "unknown" = targetAsset?.assetType ?? "unknown";
+  const storageFileType: FileType =
+    fileType === "unknown" ? "image" : fileType;
 
   const handleResetAssetStates = (reason: "cancel" | "re-upload") => {
     setFile(null);
     setFileName("");
+    setNewAssetId(crypto.randomUUID());
     setAssetCategory("");
     setFirstPathArr([]);
     setFirstPath("");
@@ -80,7 +85,10 @@ export default function useFileUploaderEditing() {
             storage: {
               provider: "gcs",
               bucket: prev.storage?.bucket ?? "",
-              objectName: `${assetCategory}${assetUsage && "/" + assetUsage}/${fileName}`,
+              objectName:
+                assetMode === "existing"
+                  ? (prev.storage?.objectName ?? "")
+                  : createAssetObjectName(prev.id, fileName, storageFileType),
               generation: prev.storage?.generation ?? "",
               publicUrl: prev.storage?.publicUrl ?? "",
             },
@@ -98,7 +106,15 @@ export default function useFileUploaderEditing() {
           }
         : prev,
     );
-  }, [fileName, assetCategory, firstPath, secondPath, setTargetAsset]);
+  }, [
+    fileName,
+    assetCategory,
+    firstPath,
+    secondPath,
+    assetMode,
+    storageFileType,
+    setTargetAsset,
+  ]);
 
   return { handleResetAssetStates };
 }
