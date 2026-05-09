@@ -1,18 +1,17 @@
 "use client";
 
-import Button from "@global components/ui/Button";
-import { SectionTitle } from "@global components/ui/Title";
-
 import ServiceEditor from "./ServiceEditor";
 import ServicesDisplay from "./ServicesDisplay";
-
-import { PAGE_META } from "../constants/pageMeta";
-
-import useService from "../hooks/useService";
+import Button from "@global components/ui/Button";
+import { SectionTitle } from "@global components/ui/Title";
 import {
   FileMetaEditor,
   useFileUploader,
 } from "@global components/layout/fileUploader";
+
+import { PAGE_META } from "../constants/pageMeta";
+
+import useService from "../hooks/useService";
 import { useGlobals } from "@globals";
 
 export function ServicesManagementView() {
@@ -53,7 +52,7 @@ export function ServicesManagementView() {
           className="asset-handling-interface"
           onClick={() => {
             uploaderState.setSelectedAssetId("");
-            uploaderActions.handleResetAssetStates("re-upload");
+            uploaderActions.handleResetAssetStates("cancel");
           }}
         >
           <FileMetaEditor onAssetUpdated={actions.updateServiceImageRef} />

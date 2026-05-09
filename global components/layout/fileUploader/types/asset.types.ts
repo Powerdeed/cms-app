@@ -15,13 +15,26 @@ export interface AssetRelationship {
   role: string;
 }
 
+export interface AssetReference {
+  id: string;
+  category: string;
+  usage: string;
+  entityId?: string;
+  field?: string;
+  role?: string;
+  label?: string;
+  entityType?: string;
+}
+
+export type DeleteAssetReferenceAction = "block" | "unlink" | "force";
+
 export interface Asset {
   id: string;
   name: string;
   originalName?: string;
   assetType?: FileType;
   mimeType?: string;
-  size: number | string;
+  size: number;
 
   storage?: {
     provider: "gcs";
@@ -44,6 +57,7 @@ export interface Asset {
   };
 
   relationships?: AssetRelationship[];
+  references?: AssetReference[];
   status?: AssetStatus;
   isPublic?: boolean;
   createdBy?: string;

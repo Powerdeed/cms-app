@@ -7,6 +7,7 @@ export default function SetPaths() {
   const targetAsset = uploaderState.targetAsset;
 
   if (!targetAsset) return null;
+
   return (
     <div className="w-full flex flex-col gap-2.5">
       <select

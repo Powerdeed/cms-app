@@ -26,7 +26,7 @@ export default function FileRenameAndUpload() {
         <FontAwesomeIcon
           icon={["fas", "xmark"]}
           className="absolute right-0 text-(--primary-blue) cursor-pointer"
-          onClick={() => uploaderActions.handleResetAssetStates("re-upload")}
+          onClick={() => uploaderActions.handleResetAssetStates("cancel")}
         />
       </div>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import Button, { ButtonRed, DeleteIconBtn } from "@global components/ui/Button";
 import Loader from "@global components/ui/Loader";
@@ -12,11 +12,13 @@ import useProjects from "../hooks/useProjects";
 import { companyServices } from "@lib/constants/COMPANY_PROVISIONS";
 import {
   AssetRef,
+  ExistingAssetPicker,
   FileUploader,
   useFileUploader,
 } from "@global components/layout/fileUploader";
 
 export default function EditProject() {
+  const [showExistingAssets, setShowExistingAssets] = useState(false);
   const { state, actions } = useProjects();
   const { uploaderState, uploaderActions } = useFileUploader();
   const {
@@ -150,6 +152,21 @@ export default function EditProject() {
               />
             </div>
           ))}
+          <Button
+            buttonText="Add from existing file"
+            clickAction={() => setShowExistingAssets(true)}
+          />
+
+          {showExistingAssets && (
+            <ExistingAssetPicker
+              onSelect={(assetRef) => {
+                actions.updateByPath(["images", selectedProjectImageCount], assetRef);
+                setShowExistingAssets(false);
+              }}
+              onCancel={() => setShowExistingAssets(false)}
+            />
+          )}
+
           <FileUploader />
         </div>
 

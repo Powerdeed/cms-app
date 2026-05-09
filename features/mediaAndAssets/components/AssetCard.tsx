@@ -1,15 +1,27 @@
 "use client";
 
-import { SeparatorLine } from "@global components/layout/FormWrapper";
-import { ButtonLight } from "@global components/ui/Button";
-
+// modules
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { Asset, useFileUploader } from "@global components/layout/fileUploader";
-import { deleteAsset } from "@global components/layout/fileUploader/services/uploadFile";
+// components
+import { SeparatorLine } from "@global components/layout/FormWrapper";
+import { ButtonLight } from "@global components/ui/Button";
+import {
+  Asset,
+  getAssetReferences,
+  sizeOfFile,
+  useFileUploader,
+} from "@global components/layout/fileUploader";
+import Loader from "@global components/ui/Loader";
 
+// constants
 import { ICON_COLORS } from "../constants/iconColors";
+
+// hooks
 import useMediaAssets from "../hooks/useAssets";
+
+// utils
+import { getDateFormatted } from "@globals";
 
 type AssetCardProps = {
   asset: Asset;
@@ -17,23 +29,16 @@ type AssetCardProps = {
 
 export default function AssetCard({ asset }: AssetCardProps) {
   const { uploaderState, uploaderActions } = useFileUploader();
-  const { state } = useMediaAssets();
+  const { actions } = useMediaAssets();
   const assetType = asset.assetType ?? asset.type ?? "image";
   const assetUsage = asset.classification?.usage ?? asset.usage ?? "";
-  const uploadDate =
-    asset.createdAt ?? asset.uploadDate ?? new Date().toISOString();
-  const readableSize =
-    typeof asset.size === "number"
-      ? `${(asset.size / 1000000).toFixed(2)} MB`
-      : asset.size;
+  const references = getAssetReferences(asset);
+  const isLinked = references.length > 0;
 
   return (
     <div
       className="p-5 vertical-layout__inner border border-(--terciary-grey)/40 hover:border-(--secondary-blue) hover:bg-(--secondary-blue)/5 rounded-[10px]"
-      onClick={() => {
-        uploaderState.setAssetMode("existing");
-        uploaderActions.handleTargetAsset("existing", asset);
-      }}
+      onClick={() => uploaderActions.handleTargetAsset("existing", asset)}
     >
       <div className="vertical-layout__inner">
         <div className="flex gap-2.5 h-12">
@@ -44,14 +49,18 @@ export default function AssetCard({ asset }: AssetCardProps) {
             />
           </div>
 
-          <div>
+          <div className="flex-1">
             <div className="w-full h-8 text-style__small-text--bold overflow-hidden">
               {asset.name}
             </div>
 
             <div className="text-style__small-text text-(--secondary-grey)">
-              {readableSize}
+              {sizeOfFile(asset.size)}
             </div>
+          </div>
+
+          <div className="h-fit text-center text-style__small-text px-2 py-1 rounded-[10px] border border-(--secondary-blue) text-(--secondary-blue)">
+            {isLinked ? `${references.length} linked` : "Unlinked"}
           </div>
         </div>
 
@@ -67,11 +76,14 @@ export default function AssetCard({ asset }: AssetCardProps) {
         </div>
 
         <div className="text-style__small-text text-(--secondary-grey)">
-          Uploaded {uploadDate}
+          Updated on: {getDateFormatted(asset.updatedAt)}
         </div>
       </div>
 
-      <div className="flex justify-between" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="flex justify-between"
+        onClick={(e) => e.stopPropagation()}
+      >
         <ButtonLight
           buttonText="Download"
           clickAction={() => {}}
@@ -80,13 +92,14 @@ export default function AssetCard({ asset }: AssetCardProps) {
 
         <ButtonLight
           buttonText="Delete"
-          clickAction={async () => {
-            await deleteAsset(asset.id);
-            state.setMediaAssets((prev) =>
-              prev.filter((currentAsset) => currentAsset.id !== asset.id),
-            );
-          }}
-        />
+          clickAction={() =>
+            isLinked
+              ? actions.handleDeletePopUp(asset)
+              : actions.handleDeleteAsset(asset, "block")
+          }
+        >
+          {uploaderState.isAssetDeleting && <Loader />}
+        </ButtonLight>
       </div>
     </div>
   );

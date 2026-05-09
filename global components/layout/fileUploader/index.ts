@@ -7,12 +7,12 @@ export { default as FileHandlingError } from "./components/FileHandlingError";
 export * from "./components/FileHandlingError";
 export { default as FileUploader } from "./components/FileUploader";
 export * from "./components/FileUploader";
+export { default as ExistingAssetPicker } from "./components/ExistingAssetPicker";
+export * from "./components/ExistingAssetPicker";
 export { default as FileRenameAndUpload } from "./components/FileRenameAndUpload";
 export * from "./components/FileRenameAndUpload";
 export { default as FileMetaEditor } from "./components/FileMetaEditor";
 export * from "./components/FileMetaEditor";
-export { default as FileUploaderView } from "./components/FileUploaderView";
-export * from "./components/FileUploaderView";
 export { default as CompressingAsset } from "./components/CompressingAsset";
 export * from "./components/CompressingAsset";
 export { default as DropZone } from "./components/DropZone";
@@ -77,4 +77,6 @@ export * from "./types/asset.types";
 
 // utils
 export * from "./utils/fileConversions";
+export * from "./utils/createAssetReference";
 export * from "./utils/removeExtensionName";
+export * from "./utils/references";

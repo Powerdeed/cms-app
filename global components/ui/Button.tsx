@@ -38,6 +38,7 @@ export function ButtonLight({
   className = "",
   type,
   icon,
+  children,
   disabled,
 }: {
   buttonText: string;
@@ -55,9 +56,10 @@ export function ButtonLight({
       onClick={clickAction}
       disabled={disabled}
     >
-      <div className={icon ? "flex items-center" : ""}>
+      <div className={icon || children ? "flex items-center gap-2" : ""}>
         {icon}
         {buttonText}
+        {children}
       </div>
     </button>
   );

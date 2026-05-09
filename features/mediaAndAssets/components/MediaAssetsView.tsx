@@ -29,6 +29,7 @@ import useMediaAssets from "../hooks/useAssets";
 
 // constants
 import { PAGE_META } from "../constants/pageMeta";
+import DeleteAssetOptions from "@global components/layout/fileUploader/components/DeleteAssetOptions";
 
 export function MediaAssetsView() {
   const { state, actions } = useMediaAssets();
@@ -111,6 +112,24 @@ export function MediaAssetsView() {
               <FileHandlingError />
             )}
           </div>
+        </div>
+      )}
+
+      {state.showDeleteOptions && (
+        <div
+          className="asset-handling-interface"
+          onClick={() => state.setShowDeleteOptions(false)}
+        >
+          <DeleteAssetOptions
+            forceDelete={() =>
+              uploaderState.targetAsset &&
+              actions.handleDeleteAsset(uploaderState.targetAsset, "force")
+            }
+            unlinkAndDelete={() =>
+              uploaderState.targetAsset &&
+              actions.handleDeleteAsset(uploaderState.targetAsset, "unlink")
+            }
+          />
         </div>
       )}
     </div>

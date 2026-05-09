@@ -13,6 +13,7 @@ export default function MediaAssetsProvider({
 }) {
   const [mediaAssets, setMediaAssets] = useState<Asset[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showDeleteOptions, setShowDeleteOptions] = useState(false);
 
   useEffect(() => {
     const loadAssets = async () => {
@@ -31,6 +32,8 @@ export default function MediaAssetsProvider({
       value={{
         mediaAssets,
         setMediaAssets,
+        showDeleteOptions,
+        setShowDeleteOptions,
       }}
     >
       <MediaAssetsSearchContext.Provider

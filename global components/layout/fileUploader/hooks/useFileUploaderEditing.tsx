@@ -6,7 +6,7 @@ import { FileUploaderProcessingContext } from "../context/FileUploaderProcessing
 import { FileUploaderStateContext } from "../context/FileUploaderStateContext";
 import { FileType } from "../types/fileUploader.types";
 import useFileMetadataError from "./useFileUploaderError";
-import { createAssetObjectName } from "../utils/fileConversions";
+import { createAssetObjectName, createPathUrl } from "../utils/fileConversions";
 
 export default function useFileUploaderEditing() {
   const fileMetadataState = useContext(FileMetadataContext);
@@ -23,30 +23,18 @@ export default function useFileUploaderEditing() {
     assetMode,
     setAssetMode,
     assetCategory,
-    setAssetCategory,
     firstPath,
-    setFirstPath,
-    setFirstPathArr,
     secondPath,
-    setSecondPath,
   } = fileMetadataState;
-  const { file, setFile, fileName, setFileName, setNewAssetId, targetFileTypes } =
-    fileUploaderState;
+  const { file, fileName, setNewAssetId, targetFileTypes } = fileUploaderState;
   const { setIsSupportedFile } = processingContext;
   const { resetErrors } = useFileMetadataError();
 
   const fileType: FileType | "unknown" = targetAsset?.assetType ?? "unknown";
-  const storageFileType: FileType =
-    fileType === "unknown" ? "image" : fileType;
+  const storageFileType: FileType = fileType === "unknown" ? "image" : fileType;
 
   const handleResetAssetStates = (reason: "cancel" | "re-upload") => {
-    setFile(null);
-    setFileName("");
     setNewAssetId(crypto.randomUUID());
-    setAssetCategory("");
-    setFirstPathArr([]);
-    setFirstPath("");
-    setSecondPath("");
     resetErrors();
     setAssetMode(reason === "re-upload" ? "new" : null);
     setTargetAsset(reason === "re-upload" ? targetAsset : null);
@@ -58,25 +46,13 @@ export default function useFileUploaderEditing() {
         setIsSupportedFile(
           targetFileTypes.includes(fileType as Exclude<FileType, "video">),
         );
-        setTargetAsset(targetAsset);
       }
     };
 
     setAsset();
-  }, [
-    file,
-    fileType,
-    targetAsset,
-    setTargetAsset,
-    setIsSupportedFile,
-    targetFileTypes,
-  ]);
+  }, [file, fileType, setIsSupportedFile, targetAsset, targetFileTypes]);
 
   useEffect(() => {
-    const assetUsage = firstPath
-      ? `${firstPath}${secondPath ? `/${secondPath}` : ""}`
-      : "";
-
     setTargetAsset((prev) =>
       prev
         ? {
@@ -94,7 +70,7 @@ export default function useFileUploaderEditing() {
             },
             classification: {
               category: assetCategory,
-              usage: assetUsage,
+              usage: firstPath ? createPathUrl([firstPath, secondPath]) : "",
               tags: prev.classification?.tags ?? [],
             },
             display: {

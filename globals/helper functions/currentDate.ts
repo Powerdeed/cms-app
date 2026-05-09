@@ -1,5 +1,11 @@
-export function getCurrentDateFormatted() {
-  const date = new Date();
+type DateInput = Date | string | number | null | undefined;
+
+export function getDateFormatted(rawDate?: DateInput) {
+  const date = rawDate ? new Date(rawDate) : new Date();
+
+  if (Number.isNaN(date.getTime())) {
+    return "";
+  }
 
   const options = {
     day: "numeric",

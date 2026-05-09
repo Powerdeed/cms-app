@@ -4,8 +4,10 @@
 import { useContext, useEffect } from "react";
 
 // hooks
-import useServiceAssets from "./useServiceAssets";
-import { FileUploaderApiContext } from "@global components/layout/fileUploader";
+import {
+  FileUploaderApiContext,
+  useFileUploaderApi,
+} from "@global components/layout/fileUploader";
 import { serviceContext } from "../context/serviceContext";
 
 // services
@@ -50,7 +52,7 @@ export default function useServiceApi() {
     setFetchServicesError,
   } = serviceStates;
 
-  const { deleteFile } = useServiceAssets();
+  const { deleteFile } = useFileUploaderApi();
 
   const resetStates = (reason?: "new") => {
     setSelectedService(reason === "new" ? DEFAULT_SERVICE : null);

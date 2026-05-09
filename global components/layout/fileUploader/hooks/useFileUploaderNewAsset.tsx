@@ -11,11 +11,7 @@ import { FileUploaderProcessingContext } from "../context/FileUploaderProcessing
 import { FileUploaderStateContext } from "../context/FileUploaderStateContext";
 
 // utils
-import {
-  createAssetObjectName,
-  mediaType,
-  toCamelCase,
-} from "../utils/fileConversions";
+import { createAssetObjectName, mediaType } from "../utils/fileConversions";
 
 // types
 import { Asset } from "../types/asset.types";
@@ -39,21 +35,8 @@ export default function useFileUploaderNewAsset() {
   }
 
   const { user } = globalStates;
-  const { assetCategory, firstPath, assetUsage, setTargetAsset, assetMode } =
-    fileMetadataState;
-  const {
-    defaultIsPublic,
-    featurePath,
-    file,
-    fileName,
-    newAssetId,
-    targetFileType,
-  } =
-    fileUploaderState;
-
-  const featurePathParts = featurePath.split("/").filter(Boolean);
-  const resolvedAssetCategory = assetCategory || featurePathParts[0] || "";
-  const resolvedFirstPath = firstPath || featurePathParts[1] || "";
+  const { setTargetAsset, assetMode } = fileMetadataState;
+  const { defaultIsPublic, file, fileName, newAssetId } = fileUploaderState;
 
   const fileMeta =
     fileName !== ""
@@ -85,25 +68,17 @@ export default function useFileUploaderNewAsset() {
         publicUrl: "",
       },
       classification: {
-        category: resolvedAssetCategory,
-        usage: assetUsage,
-        tags: assetUsage
-          ? [...assetUsage.split("/"), assetCategory, fileName]
-          : [],
+        category: "",
+        usage: "",
+        tags: [],
       },
       display: {
         alt: "",
         caption: "",
         title: fileName.split(".").slice(0, -1).join("."),
       },
-      relationships: [
-        {
-          entityType: resolvedAssetCategory,
-          entityId: resolvedFirstPath,
-          field: `${toCamelCase(targetFileType)}s`,
-          role: "",
-        },
-      ],
+      relationships: [],
+      references: [],
       status: "active",
       isPublic: defaultIsPublic,
       createdBy: user?._id,
@@ -118,12 +93,7 @@ export default function useFileUploaderNewAsset() {
     fileType,
     fileMeta.mimeType,
     objectName,
-    resolvedAssetCategory,
-    assetUsage,
-    assetCategory,
-    resolvedFirstPath,
     defaultIsPublic,
-    targetFileType,
     user?._id,
   ]);
 

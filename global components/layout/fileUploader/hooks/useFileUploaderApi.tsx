@@ -3,7 +3,11 @@
 import { useContext } from "react";
 
 import {
+  // states
   Asset,
+  DeleteAssetReferenceAction,
+  deleteAsset,
+  deleteAssets,
   FileMetadataContext,
   FileUploaderApiContext,
   FileUploaderErrorContext,
@@ -20,9 +24,7 @@ const buildAssetUpdatePayload = (asset: Asset): Partial<Asset> => ({
   name: asset.name,
   originalName: asset.originalName,
   storage: asset.storage,
-  classification: asset.classification,
   display: asset.display,
-  relationships: asset.relationships,
   status: asset.status,
   isPublic: asset.isPublic,
   updatedBy: asset.updatedBy,
@@ -30,31 +32,49 @@ const buildAssetUpdatePayload = (asset: Asset): Partial<Asset> => ({
 });
 
 export default function useFileUploaderApi() {
-  const fileMetadataState = useContext(FileMetadataContext);
+  const fileMetaState = useContext(FileMetadataContext);
   const fileUploaderState = useContext(FileUploaderStateContext);
   const fileUploaderProcessing = useContext(FileUploaderProcessingContext);
   const fileUploaderErrors = useContext(FileUploaderErrorContext);
-  const fileUploaderApi = useContext(FileUploaderApiContext);
   const globalStates = useContext(globalContext);
+  const fileUploaderApiStates = useContext(FileUploaderApiContext);
 
   if (
-    !fileMetadataState ||
+    !fileMetaState ||
     !fileUploaderState ||
     !fileUploaderProcessing ||
     !fileUploaderErrors ||
     !globalStates ||
-    !fileUploaderApi
+    !fileUploaderApiStates
   )
     throw new Error("FileUploaderContext context must be withing a provider.");
 
+  const { setIsAssetDeleting, setIsAssetUploading, setAssetApiOnError } =
+    fileUploaderApiStates;
   const { file, fileName, setUploadedFile, assetRef } = fileUploaderState;
   const { setUploadingStatus } = fileUploaderProcessing;
   const { setUploadingFile, setErrorUploadingFileMsg } = fileUploaderErrors;
-  const { setIsAssetUploading, setAssetApiOnError } = fileUploaderApi;
-  const { targetAsset, setTargetAsset } = fileMetadataState;
+  const { targetAsset, setTargetAsset, assetMode } = fileMetaState;
   const { setUnsavedChanges } = globalStates;
 
   const { handleResetAssetStates } = useFileUploaderEditing();
+
+  // Upload new asset
+  const uploadFileAndSetStates = async (
+    e: React.SubmitEvent<HTMLFormElement>,
+  ) => {
+    e.preventDefault();
+    const uploadedAsset = await fileUploadingHandler();
+    const assetId = uploadedAsset?.id ?? targetAsset?.id;
+    const name = uploadedAsset?.name ?? targetAsset?.name ?? fileName;
+
+    if (assetId && fileName) {
+      assetRef?.([assetId, name]);
+    }
+
+    handleResetAssetStates("re-upload");
+    setUnsavedChanges(false);
+  };
 
   const fileUploadingHandler = async () => {
     if (file) {
@@ -90,20 +110,30 @@ export default function useFileUploaderApi() {
     }
   };
 
-  const uploadFileAndSetStates = async (
+  // Update existing asset meta
+  const updateAssetMeta = async (
     e: React.SubmitEvent<HTMLFormElement>,
+    onAssetUploaded?: (asset: Asset) => void,
+    onAssetUpdated?: (asset: Asset) => void,
   ) => {
     e.preventDefault();
-    const uploadedAsset = await fileUploadingHandler();
-    const assetId = uploadedAsset?.id ?? targetAsset?.id;
-    const name = uploadedAsset?.name ?? targetAsset?.name ?? fileName;
 
-    if (assetId && fileName) {
-      assetRef?.([assetId, name]);
+    if (assetMode === "new") {
+      const uploadedAsset = await fileUploadingHandler();
+
+      if (uploadedAsset?.id && uploadedAsset.name) {
+        onAssetUploaded?.(uploadedAsset as Asset);
+      }
+      return;
     }
 
-    handleResetAssetStates("re-upload");
-    setUnsavedChanges(false);
+    if (assetMode === "existing") {
+      const updatedAsset = await updateAssetHandler();
+
+      if (updatedAsset) {
+        onAssetUpdated?.(updatedAsset);
+      }
+    }
   };
 
   const updateAssetHandler = async () => {
@@ -118,5 +148,31 @@ export default function useFileUploaderApi() {
     });
   };
 
-  return { fileUploadingHandler, uploadFileAndSetStates, updateAssetHandler };
+  // Delete asset
+  const deleteFile = async (
+    assetId: string,
+    onSuccess: () => void,
+    referenceAction: DeleteAssetReferenceAction = "block",
+  ) =>
+    await execute(() => deleteAsset(assetId, referenceAction), {
+      setLoading: setIsAssetDeleting,
+      setError: setAssetApiOnError,
+      onSuccess,
+    });
+
+  // Delete multiple assets
+  const deleteFiles = async (assetIds: string[]) =>
+    await execute(() => deleteAssets(assetIds), {
+      setLoading: setIsAssetDeleting,
+      setError: setAssetApiOnError,
+    });
+
+  return {
+    fileUploadingHandler,
+    uploadFileAndSetStates,
+    updateAssetHandler,
+    deleteFile,
+    deleteFiles,
+    updateAssetMeta,
+  };
 }

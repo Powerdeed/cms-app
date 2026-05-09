@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { FileType } from "../types/fileUploader.types";
 import { FileUploaderStateContext } from "./FileUploaderStateContext";
 import { FileUploaderProcessingContext } from "./FileUploaderProcessingContext";
@@ -9,6 +9,50 @@ import { AssetMode, FileMetadataContext } from "./FileMetadataContext";
 import { Asset, AssetUsagePaths } from "../types/asset.types";
 import { AssetRefHandler } from "./FileUploaderStateContext";
 import { FileUploaderApiContext } from "./FileUploaderApiContext";
+import { getAsset } from "../services/uploadFile";
+
+const normalizeExistingAsset = (asset: Asset): Asset => {
+  const assetType = asset.assetType ?? asset.type ?? "image";
+  const objectName = asset.storage?.objectName ?? asset.fullPath ?? "";
+  const category = asset.classification?.category ?? asset.category ?? "";
+  const usage = asset.classification?.usage ?? asset.usage ?? "";
+
+  return {
+    ...asset,
+    originalName: asset.originalName ?? asset.name,
+    assetType,
+    mimeType: asset.mimeType ?? asset.contentType ?? "",
+    storage: {
+      provider: asset.storage?.provider ?? "gcs",
+      bucket: asset.storage?.bucket ?? "",
+      objectName,
+      generation: asset.storage?.generation ?? "",
+      publicUrl: asset.storage?.publicUrl ?? asset.url ?? "",
+    },
+    classification: {
+      category,
+      usage,
+      tags: asset.classification?.tags ?? (usage ? usage.split("/") : []),
+    },
+    display: {
+      alt: asset.display?.alt ?? "",
+      caption: asset.display?.caption ?? "",
+      title:
+        asset.display?.title ?? asset.name.split(".").slice(0, -1).join("."),
+    },
+    relationships: asset.relationships ?? [],
+    references:
+      asset.references?.map((reference) => ({
+        ...reference,
+        id:
+          reference.id ||
+          `${reference.category}-${reference.usage}-${reference.entityId ?? ""}-${reference.field ?? ""}`,
+        category: reference.category || reference.entityType || "",
+        usage: reference.usage || reference.entityId || "",
+      })) ?? [],
+    isPublic: asset.isPublic ?? false,
+  };
+};
 
 export default function FileUploaderProvider({
   children,
@@ -52,6 +96,32 @@ export default function FileUploaderProvider({
   const [assetApiOnError, setAssetApiOnError] = useState("");
   const [isAssetUploading, setIsAssetUploading] = useState(false);
   const [isAssetDeleting, setIsAssetDeleting] = useState(false);
+
+  useEffect(() => {
+    if (!selectedAssetId) return;
+
+    const loadSelectedAsset = async () => {
+      try {
+        const asset = await getAsset(selectedAssetId);
+        const normalizedAsset = normalizeExistingAsset(asset);
+        const [selectedFirstPath = "", selectedSecondPath = ""] =
+          normalizedAsset.classification?.usage.split("/").filter(Boolean) ??
+          [];
+
+        setAssetMode("existing");
+        setFileName(normalizedAsset.name);
+        setAssetCategory(normalizedAsset.classification?.category ?? "");
+        setAssetUsage(normalizedAsset.classification?.usage ?? "");
+        setFirstPath(selectedFirstPath);
+        setSecondPath(selectedSecondPath);
+        setTargetAsset(normalizedAsset);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    loadSelectedAsset();
+  }, [selectedAssetId]);
 
   return (
     <FileMetadataContext.Provider

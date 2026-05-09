@@ -13,12 +13,10 @@ import EditorField from "./fileMetaEditor/EditorField";
 import useFileUploader from "../hooks/useFileUploader";
 
 // types
-import { Asset, AssetUsagePaths } from "../types/asset.types";
+import { Asset } from "../types/asset.types";
 
-// constants
-import { assetRoles } from "../constants/assetRoles";
 import RenderImage from "./fileMetaEditor/RenderImage";
-import SetPaths from "./fileMetaEditor/SetPaths";
+import { sizeOfFile } from "@features/mediaAndAssets";
 
 type FileMetaEditorProps = {
   onAssetUploaded?: (asset: Asset) => void;
@@ -36,25 +34,9 @@ export default function FileMetaEditor({
 
   return (
     <form
-      onSubmit={async (e) => {
-        e.preventDefault();
-        if (uploaderState.assetMode === "new") {
-          const uploadedAsset = await uploaderActions.fileUploadingHandler();
-
-          if (uploadedAsset?.id && uploadedAsset.name) {
-            onAssetUploaded?.(uploadedAsset as Asset);
-          }
-          return;
-        }
-
-        if (uploaderState.assetMode === "existing") {
-          const updatedAsset = await uploaderActions.updateAssetHandler();
-
-          if (updatedAsset) {
-            onAssetUpdated?.(updatedAsset);
-          }
-        }
-      }}
+      onSubmit={(e) =>
+        uploaderActions.updateAssetMeta(e, onAssetUploaded, onAssetUpdated)
+      }
       onClick={(e) => e.stopPropagation()}
       className="h-100 bg-white rounded-[10px] text-style__body overflow-hidden"
     >
@@ -72,7 +54,11 @@ export default function FileMetaEditor({
               <MetaWrapper
                 key={key}
                 meta={String(key)}
-                val={String(value ?? "")}
+                val={String(
+                  key === "size"
+                    ? sizeOfFile(value as Asset["size"])
+                    : (value ?? ""),
+                )}
               >
                 {key === "objectName" && (
                   <FontAwesomeIcon
@@ -137,27 +123,6 @@ export default function FileMetaEditor({
               }
             />
 
-            <EditorField
-              label="role"
-              control={
-                <select
-                  value={uploaderActions.primaryRelationship?.role ?? ""}
-                  onChange={(e) =>
-                    uploaderActions.updateRelationshipRole(e.target.value)
-                  }
-                  className="input-style w-full"
-                >
-                  <option value="">select role</option>
-
-                  {assetRoles.map((role) => (
-                    <option key={role} value={role}>
-                      {role}
-                    </option>
-                  ))}
-                </select>
-              }
-            />
-
             <label className="flex gap-2.5 items-center">
               <div className="w-33">public file:</div>
 
@@ -175,43 +140,20 @@ export default function FileMetaEditor({
             </label>
 
             <EditorField
-              label="select category"
-              required
+              label="references"
               control={
-                <select
-                  value={uploaderState.assetCategory}
-                  onChange={(e) => {
-                    uploaderState.setAssetCategory(e.target.value);
-                    uploaderActions.getFirstPaths(
-                      e.target.value as keyof AssetUsagePaths,
-                    );
-                  }}
-                  className="input-style w-full"
-                >
-                  <option value="" disabled>
-                    select category
-                  </option>
-
-                  {Object.keys(uploaderState.assetUsagePaths || {}).map(
-                    (category) => (
-                      <option key={category} value={category}>
-                        {category}
-                      </option>
-                    ),
+                <div className="flex flex-col gap-1 text-style__small-text text-(--secondary-grey)">
+                  {targetAsset.references?.length ? (
+                    targetAsset.references.map((reference) => (
+                      <div key={reference.id}>
+                        {reference.label ||
+                          `${reference.category}: ${reference.usage}`}
+                      </div>
+                    ))
+                  ) : (
+                    <div>No feature references</div>
                   )}
-                </select>
-              }
-            />
-
-            <EditorField
-              label="usage"
-              required
-              control={
-                uploaderState.firstPathArr ? (
-                  <SetPaths />
-                ) : (
-                  <div className="pt-2">select a category first</div>
-                )
+                </div>
               }
             />
           </div>

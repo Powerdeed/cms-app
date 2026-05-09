@@ -1,10 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import Button, { ButtonRed, DeleteIconBtn } from "@global components/ui/Button";
 import Loader from "@global components/ui/Loader";
 import { InputArea } from "@global components/layout/FormWrapper";
 import Toggle from "@global components/ui/Toggle";
 import {
+  ExistingAssetPicker,
   FileUploader,
   useFileUploader,
 } from "@global components/layout/fileUploader";
@@ -14,6 +16,7 @@ import useService from "../hooks/useService";
 import { toPascalCase } from "@globals";
 
 export default function ServiceEditor() {
+  const [showExistingAssets, setShowExistingAssets] = useState(false);
   const { state, actions } = useService();
   const { uploaderState } = useFileUploader();
 
@@ -71,6 +74,23 @@ export default function ServiceEditor() {
                 />
               </div>
             ))}
+
+            <div className="flex flex-wrap gap-2.5">
+              <Button
+                buttonText="Add from existing file"
+                clickAction={() => setShowExistingAssets(true)}
+              />
+            </div>
+
+            {showExistingAssets && (
+              <ExistingAssetPicker
+                onSelect={(assetRef) => {
+                  actions.addNewServiceImage(assetRef);
+                  setShowExistingAssets(false);
+                }}
+                onCancel={() => setShowExistingAssets(false)}
+              />
+            )}
 
             <FileUploader />
           </div>

@@ -76,6 +76,7 @@ export default function useFileUploaderError() {
       !compressing &&
       !hasError,
     assetHandlingError: hasError,
+    assetDelete: true,
   };
 
   const resetErrors = () => {

@@ -1,6 +1,6 @@
 import { apiRequest } from "@lib/api/apiRequest";
 import { UploadedFile } from "../types/fileUploader.types";
-import { Asset } from "../types/asset.types";
+import { Asset, DeleteAssetReferenceAction } from "../types/asset.types";
 
 export const getAssets = async (): Promise<Asset[]> =>
   await apiRequest({
@@ -14,13 +14,14 @@ export const getAsset = async (id: string): Promise<Asset> =>
     url: `/assets/${id}`,
   });
 
-export const uploadFiles = async (formData: FormData): Promise<UploadedFile[]> =>
+export const uploadFiles = async (
+  formData: FormData,
+): Promise<UploadedFile[]> =>
   await apiRequest({
     method: "POST",
     url: `/upload/multiple`,
     data: formData,
   });
-
 
 export const uploadFile = async (formData: FormData): Promise<UploadedFile> =>
   await apiRequest({
@@ -45,9 +46,13 @@ export const deleteAssets = async (ids: string[]): Promise<void> =>
     url: `/upload/multiple`,
     data: { ids },
   });
-  
-export const deleteAsset = async (id: string): Promise<void> =>
+
+export const deleteAsset = async (
+  id: string,
+  referenceAction: DeleteAssetReferenceAction = "block",
+): Promise<void> =>
   await apiRequest({
     method: "DELETE",
     url: `/upload/single/${id}`,
+    params: { referenceAction },
   });
