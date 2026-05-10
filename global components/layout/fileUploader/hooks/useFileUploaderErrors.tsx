@@ -2,21 +2,18 @@
 
 import { useContext } from "react";
 import { FileMetadataContext } from "../context/FileMetadataContext";
-import { FileUploaderErrorContext } from "../context/FileUploaderErrorContext";
 import { FileUploaderProcessingContext } from "../context/FileUploaderProcessingContext";
 import { FileUploaderStateContext } from "../context/FileUploaderStateContext";
 
-export default function useFileUploaderError() {
+export default function useFileUploaderErrors() {
   const fileMetadataState = useContext(FileMetadataContext);
   const fileUploaderState = useContext(FileUploaderStateContext);
   const processingContext = useContext(FileUploaderProcessingContext);
-  const errorContext = useContext(FileUploaderErrorContext);
 
   if (
     !fileMetadataState ||
     !fileUploaderState ||
-    !processingContext ||
-    !errorContext
+    !processingContext
   ) {
     throw new Error("File metadata must be used within FileUploaderProvider");
   }
@@ -30,7 +27,7 @@ export default function useFileUploaderError() {
     setErrorProcessingFile,
     errorUploadingFile,
     setErrorUploadingFile,
-  } = errorContext;
+  } = processingContext;
 
   const hasError =
     (!isSupportedFile && isSupportedFile !== null) ||

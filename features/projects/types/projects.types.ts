@@ -1,12 +1,12 @@
 import { companyServices } from "@lib/constants/COMPANY_PROVISIONS";
-import { AssetRef } from "@global components/layout/fileUploader";
+import { AssetLink } from "@global components/layout/fileUploader";
 
 export interface FetchedProject {
   _id: string;
   category: (typeof companyServices)[number];
   name: string;
   featuredImage: string;
-  images: AssetRef[];
+  images: AssetLink[];
   description: string;
   status: "Ongoing" | "Completed";
   featured: boolean;
@@ -19,7 +19,7 @@ export interface Project {
   category: (typeof companyServices)[number];
   name: string;
   featuredImage: string;
-  images: AssetRef[];
+  images: AssetLink[];
   description: string;
   status: "Ongoing" | "Completed";
   featured: boolean;

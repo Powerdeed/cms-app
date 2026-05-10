@@ -6,7 +6,8 @@ import { useContext, useEffect } from "react";
 // hooks
 import {
   FileUploaderApiContext,
-  useFileUploaderApi,
+  removeAssetLink,
+  useAssetFeatureLinks,
 } from "@global components/layout/fileUploader";
 import { serviceContext } from "../context/serviceContext";
 
@@ -52,7 +53,7 @@ export default function useServiceApi() {
     setFetchServicesError,
   } = serviceStates;
 
-  const { deleteFile } = useFileUploaderApi();
+  const { resetAssetLinkingState } = useAssetFeatureLinks();
 
   const resetStates = (reason?: "new") => {
     setSelectedService(reason === "new" ? DEFAULT_SERVICE : null);
@@ -152,17 +153,18 @@ export default function useServiceApi() {
     });
   };
 
-  const handleDeleteImage = async (imageId: string) => {
-    await deleteFile(imageId, () =>
-      setSelectedService((prev) => {
-        if (!prev) return prev;
-        const images = prev.images;
+  const removeServiceImage = (imageId: string) => {
+    setSelectedService((prev) => {
+      if (!prev) return prev;
 
-        const newArr = images.filter((img) => img[0] !== imageId);
+      return { ...prev, images: removeAssetLink(prev.images, imageId) };
+    });
 
-        return { ...prev, images: newArr };
-      }),
-    );
+    resetAssetLinkingState();
+  };
+
+  const handleRemoveImageFromService = (imageId: string) => {
+    removeServiceImage(imageId);
   };
 
   return {
@@ -171,6 +173,6 @@ export default function useServiceApi() {
     handleUploadNewService,
     handleUploadServiceChanges,
     handleDeleteService,
-    handleDeleteImage,
+    handleRemoveImageFromService,
   };
 }

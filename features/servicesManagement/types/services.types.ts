@@ -1,9 +1,9 @@
-import { AssetRef } from "@global components/layout/fileUploader";
+import { AssetLink } from "@global components/layout/fileUploader";
 
 export interface Service {
   _id: string;
   name: string;
   description: string;
-  images: AssetRef[];
+  images: AssetLink[];
   status: boolean;
 }

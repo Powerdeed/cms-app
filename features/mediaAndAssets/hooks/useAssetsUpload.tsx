@@ -3,7 +3,7 @@
 import { useContext } from "react";
 import {
   FileMetadataContext,
-  FileUploaderErrorContext,
+  FileUploaderProcessingContext,
   useFileMetadataEditing,
 } from "@global components/layout/fileUploader";
 import { MediaAssetsStateContext } from "../context/MediaAssetsStateContext";
@@ -12,15 +12,15 @@ import { Asset } from "@global components/layout/fileUploader";
 export default function useAssetsUpload() {
   const mediaAssetsState = useContext(MediaAssetsStateContext);
   const fileMetadataState = useContext(FileMetadataContext);
-  const errorContext = useContext(FileUploaderErrorContext);
+  const processingContext = useContext(FileUploaderProcessingContext);
 
-  if (!mediaAssetsState || !fileMetadataState || !errorContext) {
+  if (!mediaAssetsState || !fileMetadataState || !processingContext) {
     throw new Error("useMediaAssets must be used within a MediaAssetsProvider");
   }
 
   const { setMediaAssets } = mediaAssetsState;
   const { targetAsset, setTargetAsset, setAssetMode } = fileMetadataState;
-  const { setErrorUploadingFile } = errorContext;
+  const { setErrorUploadingFile } = processingContext;
   const { handleResetAssetStates } = useFileMetadataEditing();
 
   const handleSubmitMediaAsset = (asset: Asset) => {

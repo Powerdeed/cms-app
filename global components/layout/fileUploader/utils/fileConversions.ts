@@ -87,4 +87,12 @@ export const createAssetObjectName = (
   assetId: string,
   fileName: string,
   fileType: FileType,
-) => createPathUrl([objectNameFolders[fileType], assetId, toSafeFileName(fileName)]);
+) =>
+  createPathUrl([
+    objectNameFolders[fileType],
+    assetId,
+    toSafeFileName(fileName),
+  ]);
+
+export const fileExtension = (fileName: string) =>
+  fileName.includes(".") ? `.${fileName.split(".").pop()}` : "";

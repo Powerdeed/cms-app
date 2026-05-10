@@ -31,8 +31,8 @@ export default function AssetCard({ asset }: AssetCardProps) {
   const { uploaderState, uploaderActions } = useFileUploader();
   const { actions } = useMediaAssets();
   const assetType = asset.assetType ?? asset.type ?? "image";
-  const assetUsage = asset.classification?.usage ?? asset.usage ?? "";
   const references = getAssetReferences(asset);
+  const assetUsage = references.map((reference) => reference.usage).join(", ");
   const isLinked = references.length > 0;
 
   return (
@@ -86,9 +86,11 @@ export default function AssetCard({ asset }: AssetCardProps) {
       >
         <ButtonLight
           buttonText="Download"
-          clickAction={() => {}}
+          clickAction={() => actions.handleDownloadAsset(asset)}
           icon={<FontAwesomeIcon icon={["fas", "download"]} />}
-        />
+        >
+          {uploaderState.isAssetDownloading && <Loader />}
+        </ButtonLight>
 
         <ButtonLight
           buttonText="Delete"

@@ -23,6 +23,8 @@ export { default as useUnsavedChangesGuard } from "./hooks/useUnsavedChangesGuar
 export * from "./hooks/useUnsavedChangesGuard";
 export { default as useUser } from "./hooks/useUser";
 export * from "./hooks/useUser";
+export { default as useClipboard } from "./hooks/useClipboard";
+export * from "./hooks/useClipboard";
 
 // types
 export * from "./types/user.type";

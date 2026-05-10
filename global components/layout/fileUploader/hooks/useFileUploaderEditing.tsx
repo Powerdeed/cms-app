@@ -5,8 +5,8 @@ import { FileMetadataContext } from "../context/FileMetadataContext";
 import { FileUploaderProcessingContext } from "../context/FileUploaderProcessingContext";
 import { FileUploaderStateContext } from "../context/FileUploaderStateContext";
 import { FileType } from "../types/fileUploader.types";
-import useFileMetadataError from "./useFileUploaderError";
-import { createAssetObjectName, createPathUrl } from "../utils/fileConversions";
+import useFileMetadataError from "./useFileUploaderErrors";
+import { createAssetObjectName } from "../utils/fileConversions";
 
 export default function useFileUploaderEditing() {
   const fileMetadataState = useContext(FileMetadataContext);
@@ -17,17 +17,12 @@ export default function useFileUploaderEditing() {
     throw new Error("File metadata must be used within FileUploaderProvider");
   }
 
-  const {
-    targetAsset,
-    setTargetAsset,
-    assetMode,
-    setAssetMode,
-    assetCategory,
-    firstPath,
-    secondPath,
-  } = fileMetadataState;
-  const { file, fileName, setNewAssetId, targetFileTypes } = fileUploaderState;
+  const { targetAsset, setTargetAsset, assetMode, setAssetMode } =
+    fileMetadataState;
+  const { file, setFile, fileName, setNewAssetId, targetFileTypes } =
+    fileUploaderState;
   const { setIsSupportedFile } = processingContext;
+
   const { resetErrors } = useFileMetadataError();
 
   const fileType: FileType | "unknown" = targetAsset?.assetType ?? "unknown";
@@ -36,8 +31,15 @@ export default function useFileUploaderEditing() {
   const handleResetAssetStates = (reason: "cancel" | "re-upload") => {
     setNewAssetId(crypto.randomUUID());
     resetErrors();
-    setAssetMode(reason === "re-upload" ? "new" : null);
-    setTargetAsset(reason === "re-upload" ? targetAsset : null);
+    setFile(null);
+
+    if (reason === "cancel") {
+      setAssetMode(null);
+      setTargetAsset(null);
+    } else if (reason === "re-upload") {
+      setAssetMode("new");
+      setTargetAsset(null);
+    }
   };
 
   useEffect(() => {
@@ -54,10 +56,14 @@ export default function useFileUploaderEditing() {
 
   useEffect(() => {
     setTargetAsset((prev) =>
-      prev
+      prev && assetMode
         ? {
             ...prev,
             name: fileName,
+            fullPath:
+              assetMode === "existing"
+                ? prev.fullPath
+                : createAssetObjectName(prev.id, fileName, storageFileType),
             storage: {
               provider: "gcs",
               bucket: prev.storage?.bucket ?? "",
@@ -68,11 +74,7 @@ export default function useFileUploaderEditing() {
               generation: prev.storage?.generation ?? "",
               publicUrl: prev.storage?.publicUrl ?? "",
             },
-            classification: {
-              category: assetCategory,
-              usage: firstPath ? createPathUrl([firstPath, secondPath]) : "",
-              tags: prev.classification?.tags ?? [],
-            },
+            tags: prev.tags ?? [],
             display: {
               alt: prev.display?.alt ?? "",
               caption: prev.display?.caption ?? "",
@@ -82,15 +84,7 @@ export default function useFileUploaderEditing() {
           }
         : prev,
     );
-  }, [
-    fileName,
-    assetCategory,
-    firstPath,
-    secondPath,
-    assetMode,
-    storageFileType,
-    setTargetAsset,
-  ]);
+  }, [fileName, assetMode, storageFileType, setTargetAsset]);
 
   return { handleResetAssetStates };
 }

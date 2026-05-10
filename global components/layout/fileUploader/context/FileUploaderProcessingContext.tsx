@@ -7,10 +7,14 @@ type FileUploaderProcessingState = {
   setCompressing: Dispatch<SetStateAction<boolean>>;
   isSupportedFile: boolean | null;
   setIsSupportedFile: Dispatch<SetStateAction<boolean | null>>;
-  uploadingStatus: boolean;
-  setUploadingStatus: Dispatch<SetStateAction<boolean>>;
   compressionProgress: number;
   setCompressionProgress: Dispatch<SetStateAction<number>>;
+  errorProcessingFile: boolean;
+  setErrorProcessingFile: Dispatch<SetStateAction<boolean>>;
+  errorUploadingFile: boolean;
+  setErrorUploadingFile: Dispatch<SetStateAction<boolean>>;
+  errorUploadingFileMsg: string;
+  setErrorUploadingFileMsg: Dispatch<SetStateAction<string>>;
 };
 
 export const FileUploaderProcessingContext =

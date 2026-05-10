@@ -1,11 +1,13 @@
 "use client";
 
+import { useEffect } from "react";
 import ServiceEditor from "./ServiceEditor";
 import ServicesDisplay from "./ServicesDisplay";
 import Button from "@global components/ui/Button";
 import { SectionTitle } from "@global components/ui/Title";
 import {
   FileMetaEditor,
+  useAssetFeatureLinks,
   useFileUploader,
 } from "@global components/layout/fileUploader";
 
@@ -18,6 +20,11 @@ export function ServicesManagementView() {
   const { state, actions } = useService();
   const { globalActions } = useGlobals();
   const { uploaderState, uploaderActions } = useFileUploader();
+  const { resetAssetLinkingState } = useAssetFeatureLinks();
+
+  useEffect(() => {
+    resetAssetLinkingState();
+  }, [resetAssetLinkingState]);
 
   return (
     <div className="relative page-layout">

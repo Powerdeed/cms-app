@@ -2,9 +2,6 @@
 
 import { createContext, Dispatch, SetStateAction } from "react";
 import { FileType } from "../types/fileUploader.types";
-import { AssetRef } from "../types/asset.types";
-
-export type AssetRefHandler = (val: AssetRef) => void;
 
 type FileUploaderState = {
   file: File | null;
@@ -21,13 +18,10 @@ type FileUploaderState = {
   setHasFeaturePath: Dispatch<SetStateAction<boolean>>;
   featurePath: string;
   setFeaturePath: Dispatch<SetStateAction<string>>;
-  uploadedFile: string;
-  setUploadedFile: Dispatch<SetStateAction<string>>;
   newAssetId: string;
   setNewAssetId: Dispatch<SetStateAction<string>>;
-  assetRef: AssetRefHandler | null;
-  setAssetRef: Dispatch<SetStateAction<AssetRefHandler | null>>;
 };
 
-export const FileUploaderStateContext =
-  createContext<FileUploaderState | null>(null);
+export const FileUploaderStateContext = createContext<FileUploaderState | null>(
+  null,
+);

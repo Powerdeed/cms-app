@@ -1,40 +1,37 @@
 "use client";
 
-import useFileHandlers from "./useFileUploaderHandlers";
 import useFileMetadataState from "./useFileUploaderState";
-import useFileUploaderClipboard from "./useFileUploaderClipboard";
-import useFileUploaderCreation from "./useFileUploaderCreation";
+import useAssetCreation from "./useAssetCreation";
 import useFileUploaderEditing from "./useFileUploaderEditing";
-import useFileUploaderError from "./useFileUploaderError";
-import useFileUploaderPaths from "./useFileUploaderPaths";
+import useFileUploaderErrors from "./useFileUploaderErrors";
+import useAssetPaths from "./useAssetPaths";
 import useFileUploaderApi from "./useFileUploaderApi";
-import useFileUploaderNewAsset from "./useFileUploaderNewAsset";
-import useFileUploaderMetaEditor from "./useFileUploaderMetaEditor";
+import useNewAsset from "./useNewAsset";
+import useMetaEditor from "./useMetaEditor";
+import useAssetFeatureLinks from "./useAssetFeatureLinks";
 
 export default function useFileUploader() {
   const uploaderState = useFileMetadataState();
 
-  const newAsset = useFileUploaderNewAsset();
+  const newAsset = useNewAsset();
   const api = useFileUploaderApi();
-  const handlers = useFileHandlers();
-  const clipboard = useFileUploaderClipboard();
-  const creation = useFileUploaderCreation();
+  const creation = useAssetCreation();
   const editing = useFileUploaderEditing();
-  const errors = useFileUploaderError();
-  const paths = useFileUploaderPaths();
-  const meta = useFileUploaderMetaEditor();
+  const errors = useFileUploaderErrors();
+  const paths = useAssetPaths();
+  const assetLinks = useAssetFeatureLinks();
+  const meta = useMetaEditor();
 
   return {
     uploaderState,
     uploaderActions: {
       ...newAsset,
       ...api,
-      ...handlers,
-      ...clipboard,
       ...creation,
       ...editing,
       ...errors,
       ...paths,
+      ...assetLinks,
       ...meta,
     },
   };

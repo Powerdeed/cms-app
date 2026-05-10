@@ -6,7 +6,7 @@ import { FileMetadataContext } from "../context/FileMetadataContext";
 import { createAssetObjectName } from "../utils/fileConversions";
 import { FileType } from "../types/fileUploader.types";
 
-export default function useFileUploaderMetaEditor() {
+export default function useMetaEditor() {
   const uploaderStates = useContext(FileUploaderStateContext);
   const uploaderMeta = useContext(FileMetadataContext);
 
@@ -84,7 +84,7 @@ export default function useFileUploaderMetaEditor() {
               ? prev.relationships
               : [
                   {
-                    entityType: prev.classification?.category ?? "",
+                    entityType: "",
                     entityId: "",
                     field: "",
                     role: "",
@@ -112,6 +112,7 @@ export default function useFileUploaderMetaEditor() {
   };
 
   const fieldsToReview = [
+    ["id", targetAsset?.id],
     ["assetType", targetAsset?.assetType],
     ["size", targetAsset?.size],
     ["objectName", assetPath],

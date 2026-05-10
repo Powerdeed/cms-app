@@ -7,12 +7,22 @@ import { isEqual } from "lodash";
 import { projectContext } from "../context/projectsContext";
 
 import { Project } from "../types/projects.types";
-import { AssetRef } from "@global components/layout/fileUploader";
+import {
+  Asset,
+  AssetLink,
+  FileMetadataContext,
+  addAssetLink,
+  removeAssetLink,
+  useAssetFeatureLinks,
+} from "@global components/layout/fileUploader";
 
 export default function useProjectsEdit() {
   const pContext = useContext(projectContext);
+  const fileMetadataState = useContext(FileMetadataContext);
+  const { resetAssetLinkingState } = useAssetFeatureLinks();
 
-  if (!pContext) throw new Error("projects context must be within a provider");
+  if (!pContext || !fileMetadataState)
+    throw new Error("projects context must be within a provider");
 
   const {
     selectedProjectPrev,
@@ -35,9 +45,41 @@ export default function useProjectsEdit() {
     setCompletedState(p.status === "Completed" ? true : false);
   };
 
+  const addImageLinkToProject = (asset: Asset) => {
+    setSelectedProject((prev) => {
+      if (!prev) return prev;
+
+      return { ...prev, images: addAssetLink(prev.images, asset) };
+    });
+
+    resetAssetLinkingState();
+  };
+
+  // Existing images only update the project draft. Asset references are rebuilt
+  // by the backend after the project is saved.
+  const linkExistingProjectImage = () => {
+    if (!fileMetadataState.targetAsset) return;
+
+    addImageLinkToProject(fileMetadataState.targetAsset);
+  };
+
+  const linkUploadedProjectImage = (asset: Asset) => {
+    addImageLinkToProject(asset);
+  };
+
+  const removeProjectImage = (assetId: string) => {
+    setSelectedProject((prev) => {
+      if (!prev) return prev;
+
+      return { ...prev, images: removeAssetLink(prev.images, assetId) };
+    });
+
+    resetAssetLinkingState();
+  };
+
   const updateByPath = (
     path: Array<keyof Project | number>,
-    value: boolean | string | AssetRef | Record<string, string>,
+    value: boolean | string | AssetLink | Record<string, string>,
   ) =>
     setSelectedProject((prev) => {
       if (!prev) return prev;
@@ -50,7 +92,7 @@ export default function useProjectsEdit() {
         current = (
           current as Record<
             string | number,
-            string | AssetRef | Record<string, string>
+            string | AssetLink | Record<string, string>
           >
         )[path[i] as string];
       }
@@ -58,7 +100,7 @@ export default function useProjectsEdit() {
       (
         current as Record<
           string | number,
-          boolean | string | AssetRef | Record<string, string>
+          boolean | string | AssetLink | Record<string, string>
         >
       )[path[path.length - 1] as string] = value;
 
@@ -87,5 +129,8 @@ export default function useProjectsEdit() {
   return {
     updateByPath,
     handleSelectedProject,
+    linkExistingProjectImage,
+    linkUploadedProjectImage,
+    removeProjectImage,
   };
 }

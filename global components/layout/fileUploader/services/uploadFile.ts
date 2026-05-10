@@ -1,4 +1,7 @@
+import axios from "axios";
 import { apiRequest } from "@lib/api/apiRequest";
+import { api } from "@lib/api/axios";
+import { ApiError } from "@lib/api/utils/apiError";
 import { UploadedFile } from "../types/fileUploader.types";
 import { Asset, DeleteAssetReferenceAction } from "../types/asset.types";
 
@@ -56,3 +59,42 @@ export const deleteAsset = async (
     url: `/upload/single/${id}`,
     params: { referenceAction },
   });
+
+const getDownloadFileName = (contentDisposition?: string) => {
+  if (!contentDisposition) return "";
+
+  const utf8FileName = contentDisposition.match(/filename\*=UTF-8''([^;]+)/i);
+  const quotedFileName = contentDisposition.match(/filename="([^"]+)"/i);
+  const rawFileName = utf8FileName?.[1] ?? quotedFileName?.[1] ?? "";
+
+  return rawFileName ? decodeURIComponent(rawFileName) : "";
+};
+
+export const downloadAsset = async (asset: Asset) => {
+  try {
+    const response = await api.get<Blob>(
+      `/upload/single/${asset.id}/download`,
+      {
+        responseType: "blob",
+      },
+    );
+
+    return {
+      blob: response.data,
+      fileName:
+        getDownloadFileName(response.headers["content-disposition"]) ||
+        asset.name ||
+        asset.originalName,
+    };
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new ApiError(
+        error.response?.data?.message || "Download failed",
+        error.response?.status || 500,
+        error.response?.data,
+      );
+    }
+
+    throw error;
+  }
+};

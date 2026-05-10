@@ -6,6 +6,7 @@ import {
   Asset,
   DeleteAssetReferenceAction,
   deleteAsset,
+  downloadAsset,
   FileUploaderApiContext,
   FileMetadataContext,
 } from "@global components/layout/fileUploader";
@@ -21,7 +22,8 @@ export default function useAssetApi() {
   if (!uploaderApiStates || !mediaAssetsStates || !fileMetaStates)
     throw new Error("Context must be within a provider");
 
-  const { setIsAssetDeleting, setAssetApiOnError } = uploaderApiStates;
+  const { setIsAssetDeleting, setIsAssetDownloading, setAssetApiOnError } =
+    uploaderApiStates;
   const { setMediaAssets, setShowDeleteOptions } = mediaAssetsStates;
   const { setTargetAsset } = fileMetaStates;
 
@@ -46,5 +48,31 @@ export default function useAssetApi() {
     });
   };
 
-  return { handleDeleteAsset, handleDeletePopUp };
+  const saveBlobToDownloads = ({
+    blob,
+    fileName,
+  }: {
+    blob: Blob;
+    fileName: string;
+  }) => {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleDownloadAsset = async (asset: Asset) => {
+    await execute(() => downloadAsset(asset), {
+      setLoading: setIsAssetDownloading,
+      setError: setAssetApiOnError,
+      onSuccess: saveBlobToDownloads,
+    });
+  };
+
+  return { handleDeleteAsset, handleDeletePopUp, handleDownloadAsset };
 }

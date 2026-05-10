@@ -5,24 +5,29 @@ import useFileUploader from "../hooks/useFileUploader";
 
 //  components
 import FileRenameAndUpload from "./FileRenameAndUpload";
-import CompressingFile from "./CompressingAsset";
+import CompressingAsset from "./CompressingAsset";
 import FileHandlingError from "./FileHandlingError";
+import { Asset } from "../types/asset.types";
 
 // context
 import { DropZone } from "@global components/layout/fileUploader";
 
-export default function FileUploader() {
+type FileUploaderProps = {
+  onAssetUploaded?: (asset: Asset) => void;
+};
+
+export default function FileUploader({ onAssetUploaded }: FileUploaderProps) {
   const { uploaderState, uploaderActions } = useFileUploader();
 
   return (
     <div>
       {uploaderActions.popUpToDisplay.dropZone && <DropZone />}
 
-      {uploaderActions.popUpToDisplay.compressing && <CompressingFile />}
+      {uploaderActions.popUpToDisplay.compressing && <CompressingAsset />}
 
       {uploaderState.assetMode === "new" &&
         uploaderActions.popUpToDisplay.assetMediaEditor && (
-          <FileRenameAndUpload />
+          <FileRenameAndUpload onAssetUploaded={onAssetUploaded} />
         )}
 
       {uploaderActions.popUpToDisplay.assetHandlingError && (

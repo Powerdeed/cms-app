@@ -1,7 +1,21 @@
 import axios from "axios";
 
+const getApiBaseUrl = () => {
+  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.trim();
+
+  if (!baseUrl) {
+    throw new Error("NEXT_PUBLIC_API_BASE_URL is required.");
+  }
+
+  try {
+    return new URL(baseUrl).origin;
+  } catch {
+    throw new Error("NEXT_PUBLIC_API_BASE_URL must be a valid URL.");
+  }
+};
+
 export const api = axios.create({
-  baseURL: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1`,
+  baseURL: `${getApiBaseUrl()}/api/v1`,
   headers: {
     "Content-Type": "application/json",
   },
@@ -11,16 +25,10 @@ export const api = axios.create({
 api.interceptors.response.use(
   (response) => response,
   (err) => {
-    console.log("INTERCEPTOR ERROR:", err.response);
-
-    if (err.response?.status === 401) {
-      // 🔥 token expired / invalid
-
+    if (typeof window !== "undefined" && err.response?.status === 401) {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
       localStorage.removeItem("user");
-
-      // redirect to login
       window.location.href = "/login";
     }
 

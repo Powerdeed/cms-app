@@ -6,7 +6,7 @@ import Loader from "@global components/ui/Loader";
 import { InputArea } from "@global components/layout/FormWrapper";
 import Toggle from "@global components/ui/Toggle";
 import {
-  ExistingAssetPicker,
+  AssetLookUp,
   FileUploader,
   useFileUploader,
 } from "@global components/layout/fileUploader";
@@ -16,9 +16,22 @@ import useService from "../hooks/useService";
 import { toPascalCase } from "@globals";
 
 export default function ServiceEditor() {
-  const [showExistingAssets, setShowExistingAssets] = useState(false);
   const { state, actions } = useService();
-  const { uploaderState } = useFileUploader();
+  const { uploaderState, uploaderActions } = useFileUploader();
+  const [assetAddMode, setAssetAddMode] = useState<"existing" | "new" | null>(
+    null,
+  );
+
+  const openAssetAddMode = (mode: "existing" | "new") => {
+    setAssetAddMode(mode);
+
+    if (mode === "new") {
+      uploaderActions.handleTargetAsset("new");
+      return;
+    }
+
+    uploaderActions.resetAssetLinkingState();
+  };
 
   return (
     <div
@@ -52,10 +65,7 @@ export default function ServiceEditor() {
           <div className="vertical-layout__outer">
             <div className="flex-1 text-style__body">Images</div>
             {state.selectedService.images.map((image, idx) => (
-              <div
-                key={idx}
-                className="flex items-center gap-2.5 hover:cursor-pointer"
-              >
+              <div key={idx} className="flex items-center gap-2.5">
                 <div
                   className="flex-1 p-2 bg-(--secondary-grey)/30 rounded-[10px] hover:bg-(--secondary-grey)/50 duration-300"
                   onClick={() => {
@@ -65,34 +75,44 @@ export default function ServiceEditor() {
                   {image[1]}
                 </div>
 
-                {uploaderState.isAssetDeleting && <Loader />}
-
                 <DeleteIconBtn
                   deleteFunc={() => {
-                    actions.handleDeleteImage(image[0]);
+                    actions.handleRemoveImageFromService(image[0]);
                   }}
                 />
               </div>
             ))}
 
-            <div className="flex flex-wrap gap-2.5">
+            <div className="grid grid-cols-2 gap-2.5">
               <Button
-                buttonText="Add from existing file"
-                clickAction={() => setShowExistingAssets(true)}
+                buttonText="Use existing image"
+                clickAction={() => openAssetAddMode("existing")}
+              />
+
+              <Button
+                buttonText="Upload new image"
+                clickAction={() => openAssetAddMode("new")}
               />
             </div>
 
-            {showExistingAssets && (
-              <ExistingAssetPicker
-                onSelect={(assetRef) => {
-                  actions.addNewServiceImage(assetRef);
-                  setShowExistingAssets(false);
+            {assetAddMode === "existing" && (
+              <AssetLookUp
+                label="Paste the image id"
+                onFindSuccess={() => {
+                  actions.linkExistingServiceImage();
+                  setAssetAddMode(null);
                 }}
-                onCancel={() => setShowExistingAssets(false)}
               />
             )}
 
-            <FileUploader />
+            {assetAddMode === "new" && (
+              <FileUploader
+                onAssetUploaded={(asset) => {
+                  actions.linkUploadedServiceImage(asset);
+                  setAssetAddMode(null);
+                }}
+              />
+            )}
           </div>
 
           <div className="flex">

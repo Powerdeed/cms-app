@@ -38,7 +38,9 @@ export default function useAssetsSearchToolBar() {
   //     getMediaAssets().filter(
   //       (asset) =>
   //         asset.name.toLowerCase().includes(query) ||
-  //         (asset.classification?.usage ?? asset.usage ?? "")
+  //         getAssetReferences(asset).some((reference) =>
+  //           reference.usage.toLowerCase().includes(query),
+  //         )
   //           .toLowerCase()
   //           .includes(query),
   //     ),

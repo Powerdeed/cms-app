@@ -8,7 +8,7 @@ import { FileMetadataContext } from "../context/FileMetadataContext";
 import { FileUploaderStateContext } from "../context/FileUploaderStateContext";
 
 // types
-import { Asset, AssetUsagePaths } from "../types/asset.types";
+import { RawAsset, AssetUsagePaths } from "../types/asset.types";
 
 // utils
 import { createPathUrl } from "../utils/fileConversions";
@@ -16,7 +16,7 @@ import { createPathUrl } from "../utils/fileConversions";
 // constants
 import { usagePaths } from "../constants/assetUsagePaths";
 
-export default function useFileUploaderPaths() {
+export default function useAssetPaths() {
   const fileMetadataState = useContext(FileMetadataContext);
   const fileUploaderState = useContext(FileUploaderStateContext);
 
@@ -103,10 +103,8 @@ export default function useFileUploaderPaths() {
 
   useEffect(() => {
     const fetchSecondPaths = async () => {
-      const assetPaths = await assetUsagePaths;
-
-      if (assetPaths) {
-        const categoryBasedPaths = assetPaths[assetCategory];
+      if (assetUsagePaths) {
+        const categoryBasedPaths = assetUsagePaths[assetCategory];
 
         if (!categoryBasedPaths) {
           setSecondPaths([]);
@@ -144,12 +142,13 @@ export default function useFileUploaderPaths() {
   ]);
 
   const updatePathSetters = useCallback(
-    (asset?: Asset, pathOverride?: string) => {
+    (asset?: RawAsset, pathOverride?: string) => {
       const assetPath = pathOverride ?? asset?.fullPath ?? featurePath;
       const { category, firstPath, secondPath, name, usage, fullPath } =
         parseAssetPath(assetPath);
-      const assetCategory = asset?.classification?.category ?? category;
-      const assetUsage = asset?.classification?.usage ?? usage;
+      const primaryReference = asset?.references?.[0];
+      const assetCategory = primaryReference?.category ?? category;
+      const assetUsage = primaryReference?.usage ?? usage;
       const [assetFirstPath = "", assetSecondPath = ""] = assetUsage
         .split("/")
         .filter(Boolean);

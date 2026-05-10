@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 import Button, { ButtonRed, DeleteIconBtn } from "@global components/ui/Button";
 import Loader from "@global components/ui/Loader";
@@ -11,31 +11,33 @@ import useProjects from "../hooks/useProjects";
 
 import { companyServices } from "@lib/constants/COMPANY_PROVISIONS";
 import {
-  AssetRef,
-  ExistingAssetPicker,
+  AssetLookUp,
   FileUploader,
   useFileUploader,
 } from "@global components/layout/fileUploader";
 
 export default function EditProject() {
-  const [showExistingAssets, setShowExistingAssets] = useState(false);
   const { state, actions } = useProjects();
   const { uploaderState, uploaderActions } = useFileUploader();
-  const {
-    setAssetMode,
-    setAssetRef,
-    setDefaultIsPublic,
-    setTargetFileTypes,
-  } = uploaderState;
+  const { setAssetMode, setDefaultIsPublic, setTargetFileTypes } =
+    uploaderState;
   const { pathSetter, updatePathSetters } = uploaderActions;
-  const updateProjectByPathRef = useRef(actions.updateByPath);
   const hasSelectedProject = Boolean(state.selectedProject);
   const selectedProjectName = state.selectedProject?.name ?? "";
-  const selectedProjectImageCount = state.selectedProject?.images.length ?? 0;
+  const [assetAddMode, setAssetAddMode] = useState<"existing" | "new" | null>(
+    null,
+  );
 
-  useEffect(() => {
-    updateProjectByPathRef.current = actions.updateByPath;
-  }, [actions.updateByPath]);
+  const openAssetAddMode = (mode: "existing" | "new") => {
+    setAssetAddMode(mode);
+
+    if (mode === "new") {
+      uploaderActions.handleTargetAsset("new");
+      return;
+    }
+
+    uploaderActions.resetAssetLinkingState();
+  };
 
   useEffect(() => {
     if (!hasSelectedProject) return;
@@ -44,23 +46,14 @@ export default function EditProject() {
 
     setTargetFileTypes(["image"]);
     setDefaultIsPublic(true);
-    setAssetRef(
-      () => (val: AssetRef) =>
-        updateProjectByPathRef.current(
-          ["images", selectedProjectImageCount],
-          val,
-        ),
-    );
     pathSetter(uploadPath);
     updatePathSetters(undefined, uploadPath);
-    setAssetMode("new");
+    setAssetMode(null);
   }, [
     hasSelectedProject,
     pathSetter,
-    selectedProjectImageCount,
     selectedProjectName,
     setAssetMode,
-    setAssetRef,
     setDefaultIsPublic,
     setTargetFileTypes,
     state.selectedCategory,
@@ -132,42 +125,50 @@ export default function EditProject() {
                 className="w-full input-style text-style__body mt-1"
                 value={image[1]}
                 onChange={(e) =>
-                  actions.updateByPath(["images", index], [
-                    image[0],
-                    e.target.value,
-                  ])
+                  actions.updateByPath(
+                    ["images", index],
+                    [image[0], e.target.value, image[2]],
+                  )
                 }
               />
               <DeleteIconBtn
                 deleteFunc={() =>
-                  state.setSelectedProject((prev) => {
-                    if (!prev) return prev;
-
-                    return {
-                      ...prev,
-                      ["images"]: prev.images.filter((_, i) => i !== index),
-                    };
-                  })
+                  actions.removeProjectImage(image[0])
                 }
               />
             </div>
           ))}
-          <Button
-            buttonText="Add from existing file"
-            clickAction={() => setShowExistingAssets(true)}
-          />
 
-          {showExistingAssets && (
-            <ExistingAssetPicker
-              onSelect={(assetRef) => {
-                actions.updateByPath(["images", selectedProjectImageCount], assetRef);
-                setShowExistingAssets(false);
+          <div className="grid grid-cols-2 gap-2.5">
+            <Button
+              buttonText="Use existing image"
+              clickAction={() => openAssetAddMode("existing")}
+            />
+
+            <Button
+              buttonText="Upload new image"
+              clickAction={() => openAssetAddMode("new")}
+            />
+          </div>
+
+          {assetAddMode === "existing" && (
+            <AssetLookUp
+              label="Paste an existing file id"
+              onFindSuccess={() => {
+                actions.linkExistingProjectImage();
+                setAssetAddMode(null);
               }}
-              onCancel={() => setShowExistingAssets(false)}
             />
           )}
 
-          <FileUploader />
+          {assetAddMode === "new" && (
+            <FileUploader
+              onAssetUploaded={(asset) => {
+                actions.linkUploadedProjectImage(asset);
+                setAssetAddMode(null);
+              }}
+            />
+          )}
         </div>
 
         {["featured", "completed"].map((setter) => (

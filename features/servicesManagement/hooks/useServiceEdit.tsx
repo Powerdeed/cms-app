@@ -7,8 +7,10 @@ import { serviceContext } from "../context/serviceContext";
 import { Service } from "../types/services.types";
 import {
   Asset,
-  AssetRef,
+  addAssetLink,
   FileMetadataContext,
+  renameAssetLink,
+  useAssetFeatureLinks,
 } from "@global components/layout/fileUploader";
 import { globalContext } from "@globals";
 
@@ -16,6 +18,7 @@ export default function useServiceEdit() {
   const sContext = useContext(serviceContext);
   const globalState = useContext(globalContext);
   const FileMetadataStates = useContext(FileMetadataContext);
+  const { resetAssetLinkingState } = useAssetFeatureLinks();
 
   if (!sContext || !FileMetadataStates || !globalState)
     throw new Error("Context must be within a provider");
@@ -53,12 +56,29 @@ export default function useServiceEdit() {
     });
   }, [selectedServiceStatus, setSelectedService]);
 
-  const addNewServiceImage = (image: AssetRef) =>
+  const addImageLinkToService = (asset: Asset) => {
     setSelectedService((prev) => {
       if (!prev) return prev;
 
-      return { ...prev, images: [...prev.images, image] };
+      return { ...prev, images: addAssetLink(prev.images, asset) };
     });
+
+    resetAssetLinkingState();
+  };
+
+  // Existing assets are already saved. Linking only updates the service draft;
+  // the backend rebuilds asset.references when the service is saved.
+  const linkExistingServiceImage = () => {
+    if (!FileMetadataStates.targetAsset) return;
+
+    addImageLinkToService(FileMetadataStates.targetAsset);
+  };
+
+  // Newly uploaded files return as assets first, then use the same link path as
+  // existing files so feature state stays easy to reason about.
+  const linkUploadedServiceImage = (asset: Asset) => {
+    addImageLinkToService(asset);
+  };
 
   const updateServiceImageRef = (asset: Asset) =>
     setSelectedService((prev) => {
@@ -66,9 +86,7 @@ export default function useServiceEdit() {
 
       return {
         ...prev,
-        images: prev.images.map((image) =>
-          image[0] === asset.id ? [image[0], asset.name] : image,
-        ),
+        images: renameAssetLink(prev.images, asset),
       };
     });
 
@@ -87,7 +105,8 @@ export default function useServiceEdit() {
   return {
     selectValue,
     modifyService,
-    addNewServiceImage,
+    linkExistingServiceImage,
+    linkUploadedServiceImage,
     updateServiceImageRef,
   };
 }

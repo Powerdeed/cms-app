@@ -4,7 +4,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 // components
-import Button from "@global components/ui/Button";
+import Button, { ButtonLight } from "@global components/ui/Button";
 import Loader from "@global components/ui/Loader";
 import { InputArea } from "@global components/layout/FormWrapper";
 
@@ -13,13 +13,22 @@ import useFileUploader from "../hooks/useFileUploader";
 
 // utils
 import { removeExtensionName } from "../utils/removeExtensionName";
+import { Asset } from "../types/asset.types";
 
-export default function FileRenameAndUpload() {
+type FileRenameAndUploadProps = {
+  onAssetUploaded?: (asset: Asset) => void;
+};
+
+export default function FileRenameAndUpload({
+  onAssetUploaded,
+}: FileRenameAndUploadProps = {}) {
   const { uploaderState, uploaderActions } = useFileUploader();
 
   return (
     <form
-      onSubmit={(e) => uploaderActions.uploadFileAndSetStates(e)}
+      onSubmit={(e) =>
+        uploaderActions.uploadFileAndSetStates(e, onAssetUploaded)
+      }
       className="feature-container-vertical h-fit text-style__body"
     >
       <div className="relative">
@@ -43,9 +52,19 @@ export default function FileRenameAndUpload() {
         </InputArea>
       </div>
 
-      <Button type="submit" className="flex-1" buttonText="Add File">
-        {uploaderState.uploadingFile && <Loader />}
-      </Button>
+      <div className="flex items-center gap-2.5">
+        <Button type="submit" className="flex-1" buttonText="Add File">
+          {uploaderState.isAssetUploading && <Loader />}
+        </Button>
+
+        <ButtonLight
+          className="flex-1"
+          buttonText="re-upload"
+          clickAction={() =>
+            uploaderActions.handleResetAssetStates("re-upload")
+          }
+        />
+      </div>
     </form>
   );
 }

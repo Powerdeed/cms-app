@@ -6,7 +6,6 @@ import { useContext, useEffect, useMemo } from "react";
 // custom hooks
 import { globalContext } from "@globals";
 import { FileMetadataContext } from "../context/FileMetadataContext";
-import { FileUploaderErrorContext } from "../context/FileUploaderErrorContext";
 import { FileUploaderProcessingContext } from "../context/FileUploaderProcessingContext";
 import { FileUploaderStateContext } from "../context/FileUploaderStateContext";
 
@@ -17,18 +16,16 @@ import { createAssetObjectName, mediaType } from "../utils/fileConversions";
 import { Asset } from "../types/asset.types";
 import { FileType } from "../types/fileUploader.types";
 
-export default function useFileUploaderNewAsset() {
+export default function useNewAsset() {
   const fileMetadataState = useContext(FileMetadataContext);
   const fileUploaderState = useContext(FileUploaderStateContext);
   const processingContext = useContext(FileUploaderProcessingContext);
-  const errorContext = useContext(FileUploaderErrorContext);
   const globalStates = useContext(globalContext);
 
   if (
     !fileMetadataState ||
     !fileUploaderState ||
     !processingContext ||
-    !errorContext ||
     !globalStates
   ) {
     throw new Error("File metadata must be used within FileUploaderProvider");
@@ -52,6 +49,7 @@ export default function useFileUploaderNewAsset() {
     if (!file && !fileName) return null;
 
     const now = new Date().toISOString();
+    const updatedBy = user?._id ?? "";
 
     return {
       id: newAssetId,
@@ -60,6 +58,7 @@ export default function useFileUploaderNewAsset() {
       assetType: fileType,
       mimeType: fileMeta.mimeType,
       size: file?.size ?? 0,
+      type: fileType,
       storage: {
         provider: "gcs",
         bucket: "",
@@ -67,11 +66,9 @@ export default function useFileUploaderNewAsset() {
         generation: "",
         publicUrl: "",
       },
-      classification: {
-        category: "",
-        usage: "",
-        tags: [],
-      },
+      fullPath: objectName,
+      uploadDate: now,
+      tags: [],
       display: {
         alt: "",
         caption: "",
@@ -82,7 +79,7 @@ export default function useFileUploaderNewAsset() {
       status: "active",
       isPublic: defaultIsPublic,
       createdBy: user?._id,
-      updatedBy: user?._id,
+      updatedBy,
       createdAt: now,
       updatedAt: now,
     };

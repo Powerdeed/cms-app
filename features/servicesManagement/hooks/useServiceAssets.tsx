@@ -1,15 +1,13 @@
 "use client";
 
 // modules
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect } from "react";
 
 // hooks
 import { serviceContext } from "../context/serviceContext";
-import useServiceEdit from "./useServiceEdit";
 
 // components
 import {
-  AssetRef,
   useFileUploaderPaths,
   FileMetadataContext,
   FileUploaderStateContext,
@@ -25,19 +23,14 @@ export default function useServiceAssets() {
 
   const { selectedService } = serviceState;
   const { setAssetMode } = fileState;
-  const { setAssetRef, setDefaultIsPublic, setTargetFileTypes } = uploaderState;
-  const { addNewServiceImage } = useServiceEdit();
+  const { setDefaultIsPublic, setTargetFileTypes } = uploaderState;
   const { pathSetter, updatePathSetters } = useFileUploaderPaths();
 
-  const addServiceImageRef = useRef(addNewServiceImage);
   const hasSelectedService = Boolean(selectedService);
   const selectedServiceName = selectedService?.name ?? "";
 
-  useEffect(() => {
-    addServiceImageRef.current = addNewServiceImage;
-  }, [addNewServiceImage]);
-
-  // Update asset states
+  // Keep feature upload defaults ready, but do not open the uploader here.
+  // The editor chooses between "existing" and "new" explicitly.
   useEffect(() => {
     if (!hasSelectedService) return;
 
@@ -45,16 +38,14 @@ export default function useServiceAssets() {
 
     setTargetFileTypes(["image"]);
     setDefaultIsPublic(true);
-    setAssetRef(() => (val: AssetRef) => addServiceImageRef.current(val));
     pathSetter(uploadPath);
     updatePathSetters(undefined, uploadPath);
-    setAssetMode("new");
+    setAssetMode(null);
   }, [
     hasSelectedService,
     selectedServiceName,
     pathSetter,
     setAssetMode,
-    setAssetRef,
     setDefaultIsPublic,
     setTargetFileTypes,
     updatePathSetters,

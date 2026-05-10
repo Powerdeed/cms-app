@@ -17,6 +17,7 @@ import { Asset } from "../types/asset.types";
 
 import RenderImage from "./fileMetaEditor/RenderImage";
 import { sizeOfFile } from "@features/mediaAndAssets";
+import { useGlobals } from "@globals";
 
 type FileMetaEditorProps = {
   onAssetUploaded?: (asset: Asset) => void;
@@ -28,6 +29,7 @@ export default function FileMetaEditor({
   onAssetUpdated,
 }: FileMetaEditorProps = {}) {
   const { uploaderState, uploaderActions } = useFileUploader();
+  const { globalActions } = useGlobals();
   const targetAsset = uploaderState.targetAsset;
 
   if (!targetAsset) return null;
@@ -60,13 +62,14 @@ export default function FileMetaEditor({
                     : (value ?? ""),
                 )}
               >
-                {key === "objectName" && (
+                {key === "id" && (
                   <FontAwesomeIcon
                     icon={["fas", uploaderState.copying ? "check" : "copy"]}
                     className="cursor-pointer"
                     onClick={() =>
-                      uploaderActions.handleCopyAssetPath(
-                        uploaderActions.assetPath,
+                      globalActions.handleCopy(
+                        targetAsset?.id,
+                        uploaderState.setCopying,
                       )
                     }
                   />
@@ -168,8 +171,7 @@ export default function FileMetaEditor({
                   : "Update asset"
               }
             >
-              {(uploaderState.uploadingStatus ||
-                uploaderState.isAssetUploading) && <Loader />}
+              {uploaderState.isAssetUploading && <Loader />}
             </Button>
 
             {uploaderState.assetMode === "new" && (
