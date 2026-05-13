@@ -12,7 +12,9 @@ import {
   AssetLink,
   FileMetadataContext,
   addAssetLink,
+  createAssetLink,
   removeAssetLink,
+  renameAssetLink,
   useAssetFeatureLinks,
 } from "@global components/layout/fileUploader";
 
@@ -67,6 +69,36 @@ export default function useProjectsEdit() {
     addImageLinkToProject(asset);
   };
 
+  const linkAssetAsFeaturedImage = (asset: Asset) => {
+    setSelectedProject((prev) => {
+      if (!prev) return prev;
+
+      return { ...prev, featuredImage: createAssetLink(asset) };
+    });
+
+    resetAssetLinkingState();
+  };
+
+  const linkExistingProjectFeaturedImage = () => {
+    if (!fileMetadataState.targetAsset) return;
+
+    linkAssetAsFeaturedImage(fileMetadataState.targetAsset);
+  };
+
+  const linkUploadedProjectFeaturedImage = (asset: Asset) => {
+    linkAssetAsFeaturedImage(asset);
+  };
+
+  const removeProjectFeaturedImage = () => {
+    setSelectedProject((prev) => {
+      if (!prev) return prev;
+
+      return { ...prev, featuredImage: "" };
+    });
+
+    resetAssetLinkingState();
+  };
+
   const removeProjectImage = (assetId: string) => {
     setSelectedProject((prev) => {
       if (!prev) return prev;
@@ -111,6 +143,22 @@ export default function useProjectsEdit() {
       return clone;
     });
 
+  const updateProjectsImageRef = (asset: Asset) =>
+    setSelectedProject((prev) => {
+      if (!prev) return prev;
+
+      const featuredImage =
+        Array.isArray(prev.featuredImage) && prev.featuredImage[0] === asset.id
+          ? createAssetLink(asset)
+          : prev.featuredImage;
+
+      return {
+        ...prev,
+        featuredImage,
+        images: renameAssetLink(prev.images, asset),
+      };
+    });
+
   useEffect(() => {
     const handleFeaturedProject = () =>
       setSelectedProject((proj) =>
@@ -129,8 +177,12 @@ export default function useProjectsEdit() {
   return {
     updateByPath,
     handleSelectedProject,
+    linkExistingProjectFeaturedImage,
     linkExistingProjectImage,
+    linkUploadedProjectFeaturedImage,
     linkUploadedProjectImage,
+    removeProjectFeaturedImage,
     removeProjectImage,
+    updateProjectsImageRef,
   };
 }

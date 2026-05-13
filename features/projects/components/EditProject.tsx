@@ -12,7 +12,9 @@ import useProjects from "../hooks/useProjects";
 import { companyServices } from "@lib/constants/COMPANY_PROVISIONS";
 import {
   AssetLookUp,
+  getAssetLinkId,
   FileUploader,
+  isAssetLink,
   useFileUploader,
 } from "@global components/layout/fileUploader";
 
@@ -27,9 +29,16 @@ export default function EditProject() {
   const [assetAddMode, setAssetAddMode] = useState<"existing" | "new" | null>(
     null,
   );
+  const [assetTarget, setAssetTarget] = useState<"featuredImage" | "images">(
+    "images",
+  );
 
-  const openAssetAddMode = (mode: "existing" | "new") => {
+  const openAssetAddMode = (
+    mode: "existing" | "new",
+    target: "featuredImage" | "images",
+  ) => {
     setAssetAddMode(mode);
+    setAssetTarget(target);
 
     if (mode === "new") {
       uploaderActions.handleTargetAsset("new");
@@ -110,48 +119,92 @@ export default function EditProject() {
           </div>
         </div>
 
-        <InputArea
-          label="Featured Image"
-          val={state.selectedProject.featuredImage}
-          changeFunc={(val) => actions.updateByPath(["featuredImage"], val)}
-        />
+        <div className="flex flex-col gap-2.5 text-style__body">
+          Featured Image
+          {state.selectedProject.featuredImage ? (
+            <div className="flex items-center gap-2.5">
+              <div
+                className="flex-1 p-2 bg-(--secondary-grey)/30 rounded-[10px] hover:bg-(--secondary-grey)/50 duration-300"
+                onClick={() => {
+                  if (isAssetLink(state.selectedProject?.featuredImage)) {
+                    uploaderState.setSelectedAssetId(
+                      getAssetLinkId(state.selectedProject.featuredImage),
+                    );
+                  }
+                }}
+              >
+                {isAssetLink(state.selectedProject.featuredImage)
+                  ? state.selectedProject.featuredImage[1]
+                  : state.selectedProject.featuredImage}
+              </div>
+
+              <DeleteIconBtn deleteFunc={actions.removeProjectFeaturedImage} />
+            </div>
+          ) : (
+            <div className="text-style__small-text text-(--secondary-grey)">
+              No featured image selected
+            </div>
+          )}
+          <div className="grid grid-cols-2 gap-2.5">
+            <Button
+              buttonText="Use existing image"
+              clickAction={() => openAssetAddMode("existing", "featuredImage")}
+            />
+
+            <Button
+              buttonText="Upload new image"
+              clickAction={() => openAssetAddMode("new", "featuredImage")}
+            />
+          </div>
+          {assetTarget === "featuredImage" && assetAddMode === "existing" && (
+            <AssetLookUp
+              label="Paste an existing file id"
+              onFindSuccess={() => {
+                actions.linkExistingProjectFeaturedImage();
+                setAssetAddMode(null);
+              }}
+            />
+          )}
+          {assetTarget === "featuredImage" && assetAddMode === "new" && (
+            <FileUploader
+              onAssetUploaded={(asset) => {
+                actions.linkUploadedProjectFeaturedImage(asset);
+                setAssetAddMode(null);
+              }}
+            />
+          )}
+        </div>
 
         <div className="flex flex-col gap-2.5 text-style__body">
           Images
           {state.selectedProject.images.map((image, index) => (
             <div key={index} className="flex items-center gap-2.5">
-              <input
-                type="text"
-                className="w-full input-style text-style__body mt-1"
-                value={image[1]}
-                onChange={(e) =>
-                  actions.updateByPath(
-                    ["images", index],
-                    [image[0], e.target.value, image[2]],
-                  )
-                }
-              />
+              <div
+                className="flex-1 p-2 bg-(--secondary-grey)/30 rounded-[10px] hover:bg-(--secondary-grey)/50 duration-300"
+                onClick={() => {
+                  uploaderState.setSelectedAssetId(image[0]);
+                }}
+              >
+                {image[1]}
+              </div>
+
               <DeleteIconBtn
-                deleteFunc={() =>
-                  actions.removeProjectImage(image[0])
-                }
+                deleteFunc={() => actions.removeProjectImage(image[0])}
               />
             </div>
           ))}
-
           <div className="grid grid-cols-2 gap-2.5">
             <Button
               buttonText="Use existing image"
-              clickAction={() => openAssetAddMode("existing")}
+              clickAction={() => openAssetAddMode("existing", "images")}
             />
 
             <Button
               buttonText="Upload new image"
-              clickAction={() => openAssetAddMode("new")}
+              clickAction={() => openAssetAddMode("new", "images")}
             />
           </div>
-
-          {assetAddMode === "existing" && (
+          {assetTarget === "images" && assetAddMode === "existing" && (
             <AssetLookUp
               label="Paste an existing file id"
               onFindSuccess={() => {
@@ -160,8 +213,7 @@ export default function EditProject() {
               }}
             />
           )}
-
-          {assetAddMode === "new" && (
+          {assetTarget === "images" && assetAddMode === "new" && (
             <FileUploader
               onAssetUploaded={(asset) => {
                 actions.linkUploadedProjectImage(asset);

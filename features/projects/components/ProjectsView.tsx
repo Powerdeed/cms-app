@@ -9,9 +9,14 @@ import AllProjects from "./AllProjects";
 import useProjects from "../hooks/useProjects";
 
 import { PAGE_META } from "../constants/pageMeta";
+import {
+  FileMetaEditor,
+  useFileUploader,
+} from "@global components/layout/fileUploader";
 
 export default function ProjectsView() {
   const { state, actions } = useProjects();
+  const { uploaderState, uploaderActions } = useFileUploader();
 
   return (
     <div className="page-layout">
@@ -32,6 +37,18 @@ export default function ProjectsView() {
 
         {!state.selectedProject && <NoProjectSelected />}
       </div>
+
+      {uploaderState.selectedAssetId && (
+        <div
+          className="asset-handling-interface"
+          onClick={() => {
+            uploaderState.setSelectedAssetId("");
+            uploaderActions.handleResetAssetStates("cancel");
+          }}
+        >
+          <FileMetaEditor onAssetUpdated={actions.updateProjectsImageRef} />
+        </div>
+      )}
     </div>
   );
 }

@@ -2,6 +2,11 @@ import { Asset, AssetLink } from "../types/asset.types";
 
 export const getAssetLinkId = (assetLink: AssetLink) => assetLink[0];
 
+export const isAssetLink = (assetLink: unknown): assetLink is AssetLink =>
+  Array.isArray(assetLink) &&
+  assetLink.length === 3 &&
+  assetLink.every((value) => typeof value === "string");
+
 export const createAssetLink = (asset: Asset): AssetLink => [
   asset.id,
   asset.name,
