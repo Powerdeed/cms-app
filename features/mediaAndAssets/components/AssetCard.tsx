@@ -32,8 +32,11 @@ export default function AssetCard({ asset }: AssetCardProps) {
   const { actions } = useMediaAssets();
   const assetType = asset.assetType ?? asset.type ?? "image";
   const references = getAssetReferences(asset);
-  const assetUsage = references.map((reference) => reference.usage).join(", ");
+  const assetUsage =
+    references.map((reference) => reference.usage).filter(Boolean).join(", ") ||
+    "Not linked";
   const isLinked = references.length > 0;
+  const updatedAt = asset.updatedAt ?? asset.uploadDate ?? asset.createdAt;
 
   return (
     <div
@@ -51,21 +54,23 @@ export default function AssetCard({ asset }: AssetCardProps) {
 
           <div className="flex-1">
             <div className="w-full h-8 text-style__small-text--bold overflow-hidden">
-              {asset.name}
+              {asset.name || asset.originalName || asset.id}
             </div>
 
             <div className="text-style__small-text text-(--secondary-grey)">
-              {sizeOfFile(asset.size)}
+              {sizeOfFile(asset.size || 0)}
             </div>
-          </div>
-
-          <div className="h-fit text-center text-style__small-text px-2 py-1 rounded-[10px] border border-(--secondary-blue) text-(--secondary-blue)">
-            {isLinked ? `${references.length} linked` : "Unlinked"}
           </div>
         </div>
 
-        <div className="w-full text-center text-style__small-text px-2 py-1 rounded-[10px] border border-(--terciary-grey)">
-          {assetType}
+        <div className="flex gap-2.5 items-center text-style__small-text">
+          <div className="flex-2 rounded-border border-(--terciary-grey)">
+            {assetType}
+          </div>
+
+          <div className="flex-1 rounded-border border-(--secondary-blue) text-(--secondary-blue)">
+            {isLinked ? `${references.length} linked` : "Unlinked"}
+          </div>
         </div>
 
         <SeparatorLine />
@@ -76,7 +81,7 @@ export default function AssetCard({ asset }: AssetCardProps) {
         </div>
 
         <div className="text-style__small-text text-(--secondary-grey)">
-          Updated on: {getDateFormatted(asset.updatedAt)}
+          Updated on: {updatedAt ? getDateFormatted(updatedAt) : "Unknown"}
         </div>
       </div>
 

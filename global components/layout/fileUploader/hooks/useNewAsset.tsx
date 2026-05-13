@@ -33,7 +33,8 @@ export default function useNewAsset() {
 
   const { user } = globalStates;
   const { setTargetAsset, assetMode } = fileMetadataState;
-  const { defaultIsPublic, file, fileName, newAssetId } = fileUploaderState;
+  const { defaultIsPublic, featurePath, file, fileName, newAssetId } =
+    fileUploaderState;
 
   const fileMeta =
     fileName !== ""
@@ -43,7 +44,12 @@ export default function useNewAsset() {
   const fileType: FileType =
     fileMeta.type === "unknown" ? "image" : fileMeta.type;
 
-  const objectName = createAssetObjectName(newAssetId, fileName, fileType);
+  const objectName = createAssetObjectName(
+    newAssetId,
+    fileName,
+    fileType,
+    featurePath,
+  );
 
   const computedTargetAsset: Asset | null = useMemo(() => {
     if (!file && !fileName) return null;
@@ -74,7 +80,6 @@ export default function useNewAsset() {
         caption: "",
         title: fileName.split(".").slice(0, -1).join("."),
       },
-      relationships: [],
       references: [],
       status: "active",
       isPublic: defaultIsPublic,

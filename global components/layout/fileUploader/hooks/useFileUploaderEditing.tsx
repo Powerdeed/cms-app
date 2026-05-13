@@ -19,8 +19,14 @@ export default function useFileUploaderEditing() {
 
   const { targetAsset, setTargetAsset, assetMode, setAssetMode } =
     fileMetadataState;
-  const { file, setFile, fileName, setNewAssetId, targetFileTypes } =
-    fileUploaderState;
+  const {
+    featurePath,
+    file,
+    setFile,
+    fileName,
+    setNewAssetId,
+    targetFileTypes,
+  } = fileUploaderState;
   const { setIsSupportedFile } = processingContext;
 
   const { resetErrors } = useFileMetadataError();
@@ -63,14 +69,24 @@ export default function useFileUploaderEditing() {
             fullPath:
               assetMode === "existing"
                 ? prev.fullPath
-                : createAssetObjectName(prev.id, fileName, storageFileType),
+                : createAssetObjectName(
+                    prev.id,
+                    fileName,
+                    storageFileType,
+                    featurePath,
+                  ),
             storage: {
               provider: "gcs",
               bucket: prev.storage?.bucket ?? "",
               objectName:
                 assetMode === "existing"
                   ? (prev.storage?.objectName ?? "")
-                  : createAssetObjectName(prev.id, fileName, storageFileType),
+                  : createAssetObjectName(
+                      prev.id,
+                      fileName,
+                      storageFileType,
+                      featurePath,
+                    ),
               generation: prev.storage?.generation ?? "",
               publicUrl: prev.storage?.publicUrl ?? "",
             },
@@ -84,7 +100,7 @@ export default function useFileUploaderEditing() {
           }
         : prev,
     );
-  }, [fileName, assetMode, storageFileType, setTargetAsset]);
+  }, [fileName, assetMode, featurePath, storageFileType, setTargetAsset]);
 
   return { handleResetAssetStates };
 }

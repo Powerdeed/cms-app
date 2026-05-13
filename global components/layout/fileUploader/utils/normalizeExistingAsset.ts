@@ -1,28 +1,12 @@
 import { Asset, RawAsset } from "../types/asset.types";
 
-type NormalizeExistingAssetOptions = {
-  relationshipEntityId?: string;
-};
-
 export const normalizeExistingAsset = (
   asset: RawAsset,
-  options: NormalizeExistingAssetOptions = {},
 ): Asset => {
   const assetType = asset.assetType ?? asset.type ?? "image";
   const name = asset.name ?? asset.originalName ?? "asset";
   const objectName = asset.storage?.objectName ?? asset.fullPath ?? "";
   const now = new Date().toISOString();
-  const fallbackRelationships =
-    options.relationshipEntityId
-      ? [
-          {
-            entityType: "",
-            entityId: options.relationshipEntityId ?? "",
-            field: "",
-            role: "",
-          },
-        ]
-      : [];
 
   return {
     ...asset,
@@ -51,14 +35,13 @@ export const normalizeExistingAsset = (
       title:
         asset.display?.title ?? name.split(".").slice(0, -1).join("."),
     },
-    relationships: asset.relationships ?? fallbackRelationships,
     references:
       asset.references?.map((reference) => ({
         ...reference,
         id:
           reference.id ||
           `${reference.category}-${reference.usage}-${reference.entityId ?? ""}-${reference.field ?? ""}`,
-        category: reference.category || reference.entityType || "",
+        category: reference.category || "",
         usage: reference.usage || reference.entityId || "",
       })) ?? [],
     isPublic: asset.isPublic ?? false,

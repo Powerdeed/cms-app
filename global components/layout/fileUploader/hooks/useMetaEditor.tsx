@@ -13,7 +13,7 @@ export default function useMetaEditor() {
   if (!uploaderStates || !uploaderMeta)
     throw new Error("File Uploader states must be within a provider");
 
-  const { fileName, setFileName } = uploaderStates;
+  const { featurePath, fileName, setFileName } = uploaderStates;
   const { targetAsset, setTargetAsset, assetMode } = uploaderMeta;
 
   const fileExtension = fileName.includes(".")
@@ -21,7 +21,6 @@ export default function useMetaEditor() {
     : "";
   const assetPath = targetAsset?.storage?.objectName ?? "";
   const previewUrl = targetAsset?.storage?.publicUrl ?? "";
-  const primaryRelationship = targetAsset?.relationships?.[0];
 
   const updateFileName = (baseName: string) => {
     const nextName = `${baseName}${fileExtension}`;
@@ -36,6 +35,7 @@ export default function useMetaEditor() {
               prev.id,
               nextName,
               prev.assetType ?? ("image" as FileType),
+              featurePath,
             )
           : (prev.storage?.objectName ?? "");
 
@@ -75,30 +75,6 @@ export default function useMetaEditor() {
     );
   };
 
-  const updateRelationshipRole = (role: string) => {
-    setTargetAsset((prev) =>
-      prev
-        ? {
-            ...prev,
-            relationships: (prev.relationships?.length
-              ? prev.relationships
-              : [
-                  {
-                    entityType: "",
-                    entityId: "",
-                    field: "",
-                    role: "",
-                  },
-                ]
-            ).map((relationship, index) =>
-              index === 0 ? { ...relationship, role } : relationship,
-            ),
-            updatedAt: new Date().toISOString(),
-          }
-        : prev,
-    );
-  };
-
   const updateIsPublic = (isPublic: boolean) => {
     setTargetAsset((prev) =>
       prev
@@ -123,10 +99,8 @@ export default function useMetaEditor() {
     fileExtension,
     assetPath,
     previewUrl,
-    primaryRelationship,
     updateFileName,
     updateDisplayField,
-    updateRelationshipRole,
     updateIsPublic,
     fieldsToReview,
   };

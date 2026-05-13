@@ -26,16 +26,12 @@ export default function useAssetCreation() {
   const handleTargetAsset = useCallback(
     (mode: "new" | "existing", asset?: RawAsset) => {
       setAssetMode(mode);
-      const pathData = updatePathSetters(asset);
+      updatePathSetters(asset);
 
       if (mode === "new") {
         setTargetAsset(computedTargetAssetRef.current);
       } else if (mode === "existing" && asset) {
-        setTargetAsset(
-          normalizeExistingAsset(asset, {
-            relationshipEntityId: pathData.firstPath,
-          }),
-        );
+        setTargetAsset(normalizeExistingAsset(asset));
       }
     },
     [setAssetMode, setTargetAsset, updatePathSetters],

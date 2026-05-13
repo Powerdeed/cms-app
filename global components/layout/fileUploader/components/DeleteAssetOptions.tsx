@@ -16,7 +16,7 @@ export default function DeleteAssetOptions({
   const { uploaderState } = useFileUploader();
   const targetAsset = uploaderState.targetAsset;
 
-  if (!targetAsset) return;
+  if (!targetAsset) return null;
 
   const references = getAssetReferences(targetAsset);
   const isLinked = references.length > 0;

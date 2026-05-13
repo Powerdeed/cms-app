@@ -4,7 +4,10 @@ import { useContext, useEffect } from "react";
 
 import { MediaAssetsStateContext } from "../context/MediaAssetsStateContext";
 import { MediaAssetsSearchContext } from "../context/MediaAssetsSearchContext";
-import { FileUploaderStateContext } from "@global components/layout/fileUploader";
+import {
+  FileUploaderStateContext,
+  getAssetReferences,
+} from "@global components/layout/fileUploader";
 
 export default function useAssetsSearchToolBar() {
   const assetsContext = useContext(MediaAssetsStateContext);
@@ -14,38 +17,52 @@ export default function useAssetsSearchToolBar() {
   if (!assetsContext || !fileUploaderState || !assetsSearchContext)
     throw new Error("context must be used within a provider");
 
-  const { setMediaAssets } = assetsContext;
+  const { allMediaAssets, setMediaAssets } = assetsContext;
   const { targetFileType } = fileUploaderState;
 
   const { searchQuery } = assetsSearchContext;
 
-  // useEffect(() => {
-  //   if (targetFileType === "All") {
-  //     setMediaAssets(getMediaAssets());
-  //   } else {
-  //     setMediaAssets(
-  //       getMediaAssets().filter(
-  //         (asset) => (asset.assetType ?? asset.type) === targetFileType,
-  //       ),
-  //     );
-  //   }
-  // }, [setMediaAssets, targetFileType]);
+  useEffect(() => {
+    const query = searchQuery.trim().toLowerCase();
 
-  // useEffect(() => {
-  //   const query = searchQuery.toLowerCase();
+    setMediaAssets(
+      allMediaAssets.filter((asset) => {
+        const assetType = asset.assetType ?? asset.type;
+        const matchesType =
+          targetFileType === "All" || assetType === targetFileType;
 
-  //   setMediaAssets(
-  //     getMediaAssets().filter(
-  //       (asset) =>
-  //         asset.name.toLowerCase().includes(query) ||
-  //         getAssetReferences(asset).some((reference) =>
-  //           reference.usage.toLowerCase().includes(query),
-  //         )
-  //           .toLowerCase()
-  //           .includes(query),
-  //     ),
-  //   );
-  // }, [searchQuery, setMediaAssets]);
+        if (!matchesType) return false;
+        if (!query) return true;
+
+        const referenceText = getAssetReferences(asset)
+          .map((reference) =>
+            [
+              reference.label,
+              reference.category,
+              reference.usage,
+              reference.role,
+              reference.field,
+            ]
+              .filter(Boolean)
+              .join(" "),
+          )
+          .join(" ");
+
+        return [
+          asset.name,
+          asset.originalName,
+          asset.fullPath,
+          asset.storage?.objectName,
+          asset.display?.title,
+          referenceText,
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase()
+          .includes(query);
+      }),
+    );
+  }, [allMediaAssets, searchQuery, setMediaAssets, targetFileType]);
 
   return {};
 }

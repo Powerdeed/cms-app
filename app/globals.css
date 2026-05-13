@@ -210,6 +210,10 @@ body {
   @apply flex gap-2.5 items-center p-2.5 md:p-5 border border-(--terciary-grey) rounded-[10px] bg-white;
 }
 
+.rounded-border {
+  @apply text-center px-2 py-1 rounded-[10px] border;
+}
+
 .vertical-layout__outer {
   @apply flex flex-col gap-5;
 }

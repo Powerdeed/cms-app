@@ -34,6 +34,13 @@ import DeleteAssetOptions from "@global components/layout/fileUploader/component
 export function MediaAssetsView() {
   const { state, actions } = useMediaAssets();
   const { uploaderState, uploaderActions } = useFileUploader();
+
+  const openUnassignedUpload = () => {
+    uploaderActions.pathSetter("assets/unassigned");
+    uploaderActions.updatePathSetters(undefined, "assets/unassigned");
+    uploaderActions.handleTargetAsset("new");
+  };
+
   return (
     <div className="relative page-layout">
       <FormWrapper
@@ -42,7 +49,7 @@ export function MediaAssetsView() {
         subtitleChildren={
           <Button
             buttonText="Upload Files"
-            clickAction={() => uploaderActions.handleTargetAsset("new")}
+            clickAction={openUnassignedUpload}
           />
         }
       >
@@ -71,14 +78,23 @@ export function MediaAssetsView() {
             subtitle={`${uploaderState.targetFileType === "All" ? "All Assets" : `${toCamelCase(uploaderState.targetFileType)}s`} (${state.mediaAssets.length})`}
             subtitleChildren={
               <div className="text-(terciary-grey) text-style__small-text">
-                Total Storage: {getTotalUsedSpace()} MB
+                Total Storage: {getTotalUsedSpace(state.allMediaAssets)} MB
               </div>
             }
           >
             <div className="min-h-50 max-h-300 overflow-y-auto section-scrollbar grid grid-cols-3 gap-5">
-              {state.mediaAssets.map((asset) => (
-                <AssetCard key={asset.name} asset={asset} />
-              ))}
+              {state.mediaAssets.length > 0 ? (
+                state.mediaAssets.map((asset) => (
+                  <AssetCard
+                    key={asset.id || asset.storage?.objectName}
+                    asset={asset}
+                  />
+                ))
+              ) : (
+                <div className="col-span-3 text-style__small-text text-(--secondary-grey)">
+                  No assets found
+                </div>
+              )}
             </div>
           </FormWrapper>
         </div>

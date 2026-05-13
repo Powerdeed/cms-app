@@ -65,6 +65,20 @@ export const toCamelCase = (word: string) =>
 export const createPathUrl = (paths: (string | undefined | null)[]) =>
   paths.filter(Boolean).join("/");
 
+export const toSafePathSegment = (value: string) =>
+  value
+    .trim()
+    .toLowerCase()
+    .replace(/\\/g, "/")
+    .split("/")
+    .filter(Boolean)
+    .join("-")
+    .replace(/&/g, "and")
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9._-]/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "") || "general";
+
 export const toSafeFileName = (fileName: string) =>
   fileName
     .trim()
@@ -83,16 +97,84 @@ const objectNameFolders: Record<FileType, string> = {
   video: "videos",
 };
 
+const getAssetUsageFolder = (category: string, fileType: FileType) => {
+  if (category === "projects" && fileType === "image") return "site-photos";
+
+  return objectNameFolders[fileType];
+};
+
+const createFeatureObjectName = (
+  featurePath: string,
+  assetId: string,
+  fileName: string,
+  fileType: FileType,
+) => {
+  const [category = "", firstPath = "", secondPath = ""] = featurePath
+    .split("/")
+    .filter(Boolean);
+  const safeFileName = toSafeFileName(fileName);
+  const fileFolder = getAssetUsageFolder(category, fileType);
+
+  if (category === "projects") {
+    return createPathUrl([
+      "projects",
+      "general",
+      toSafePathSegment(firstPath),
+      toSafePathSegment(secondPath || assetId),
+      fileFolder,
+      assetId,
+      safeFileName,
+    ]);
+  }
+
+  if (category === "services") {
+    return createPathUrl([
+      "services",
+      toSafePathSegment(firstPath),
+      fileFolder,
+      assetId,
+      safeFileName,
+    ]);
+  }
+
+  if (category === "assets") {
+    return createPathUrl([
+      "assets",
+      toSafePathSegment(firstPath || "unassigned"),
+      fileFolder,
+      assetId,
+      safeFileName,
+    ]);
+  }
+
+  return createPathUrl([
+    toSafePathSegment(category),
+    toSafePathSegment(firstPath),
+    toSafePathSegment(secondPath),
+    fileFolder,
+    assetId,
+    safeFileName,
+  ]);
+};
+
 export const createAssetObjectName = (
   assetId: string,
   fileName: string,
   fileType: FileType,
-) =>
-  createPathUrl([
+  featurePath = "",
+) => {
+  if (featurePath) {
+    return createFeatureObjectName(featurePath, assetId, fileName, fileType);
+  }
+
+  return createPathUrl([
+    "assets",
+    "unassigned",
     objectNameFolders[fileType],
     assetId,
     toSafeFileName(fileName),
   ]);
+};
 
 export const fileExtension = (fileName: string) =>
   fileName.includes(".") ? `.${fileName.split(".").pop()}` : "";

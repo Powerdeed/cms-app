@@ -24,7 +24,8 @@ export default function useAssetApi() {
 
   const { setIsAssetDeleting, setIsAssetDownloading, setAssetApiOnError } =
     uploaderApiStates;
-  const { setMediaAssets, setShowDeleteOptions } = mediaAssetsStates;
+  const { setAllMediaAssets, setMediaAssets, setShowDeleteOptions } =
+    mediaAssetsStates;
   const { setTargetAsset } = fileMetaStates;
 
   const handleDeletePopUp = (asset: Asset) => {
@@ -40,6 +41,9 @@ export default function useAssetApi() {
       setLoading: setIsAssetDeleting,
       setError: setAssetApiOnError,
       onSuccess() {
+        setAllMediaAssets((prev) =>
+          prev.filter((currentAsset) => currentAsset.id !== asset.id),
+        );
         setMediaAssets((prev) =>
           prev.filter((currentAsset) => currentAsset.id !== asset.id),
         );

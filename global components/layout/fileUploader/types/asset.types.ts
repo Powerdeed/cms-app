@@ -8,13 +8,6 @@ export type AssetUsagePaths = Record<string, string[]>;
 
 export type AssetLink = [assetId: string, fileName: string, fileUrl: string];
 
-export interface AssetRelationship {
-  entityType: string;
-  entityId: string;
-  field: string;
-  role: string;
-}
-
 export interface AssetReference {
   id: string;
   category: string;
@@ -23,7 +16,6 @@ export interface AssetReference {
   field?: string;
   role?: string;
   label?: string;
-  entityType?: string;
 }
 
 export type DeleteAssetReferenceAction = "block" | "unlink" | "force";
@@ -58,7 +50,6 @@ export interface Asset {
     title: string;
   };
 
-  relationships?: AssetRelationship[];
   references?: AssetReference[];
   status?: AssetStatus;
   isPublic?: boolean;

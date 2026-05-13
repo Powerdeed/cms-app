@@ -18,13 +18,14 @@ export default function useAssetsUpload() {
     throw new Error("useMediaAssets must be used within a MediaAssetsProvider");
   }
 
-  const { setMediaAssets } = mediaAssetsState;
+  const { setAllMediaAssets, setMediaAssets } = mediaAssetsState;
   const { targetAsset, setTargetAsset, setAssetMode } = fileMetadataState;
   const { setErrorUploadingFile } = processingContext;
   const { handleResetAssetStates } = useFileMetadataEditing();
 
   const handleSubmitMediaAsset = (asset: Asset) => {
     try {
+      setAllMediaAssets((prev) => [...prev, asset]);
       setMediaAssets((prev) => [...prev, asset]);
     } catch (error) {
       if (error instanceof Error) {
@@ -44,6 +45,11 @@ export default function useAssetsUpload() {
     if (!asset) return;
 
     try {
+      setAllMediaAssets((prev) =>
+        prev.map((currentAsset) =>
+          currentAsset.id === asset.id ? asset : currentAsset,
+        ),
+      );
       setMediaAssets((prev) =>
         prev.map((currentAsset) =>
           currentAsset.id === asset.id ? asset : currentAsset,
