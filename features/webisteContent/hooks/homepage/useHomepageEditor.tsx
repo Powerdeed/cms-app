@@ -8,6 +8,7 @@ import { homepageContext } from "../../context/homepage/homepageContext";
 
 import { Homepage } from "../../types/homePage.types";
 import { testimonialsContext } from "../../context/homepage/testimonialsContext";
+import { LinkedAsset } from "../../types/linkedAsset.types";
 
 export default function useHomePageEditor() {
   const homepageState = useContext(homepageContext);
@@ -32,7 +33,7 @@ export default function useHomePageEditor() {
   const updateHomePageData = (
     key: string,
     innerKey: keyof Homepage,
-    data: string | boolean,
+    data: string | boolean | LinkedAsset | null,
     section?: number,
   ) => {
     if (!homepage || !homepagePrev) return;

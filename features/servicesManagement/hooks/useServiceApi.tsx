@@ -153,18 +153,18 @@ export default function useServiceApi() {
     });
   };
 
-  const removeServiceImage = (imageId: string) => {
+  const removeServiceGalleryItem = (imageId: string) => {
     setSelectedService((prev) => {
       if (!prev) return prev;
 
-      return { ...prev, images: removeAssetLink(prev.images, imageId) };
+      return { ...prev, gallery: removeAssetLink(prev.gallery, imageId) };
     });
 
     resetAssetLinkingState();
   };
 
   const handleRemoveImageFromService = (imageId: string) => {
-    removeServiceImage(imageId);
+    removeServiceGalleryItem(imageId);
   };
 
   return {

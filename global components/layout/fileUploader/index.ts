@@ -25,6 +25,8 @@ export { default as SetPaths } from "./components/fileMetaEditor/SetPaths";
 export * from "./components/fileMetaEditor/SetPaths";
 export { default as AssetLookUp } from "./components/AssetLookUp";
 export * from "./components/AssetLookUp";
+export { default as RenderAsset } from "./components/RenderAsset";
+export * from "./components/RenderAsset";
 
 // hooks
 export { default as useFileUploaderApi } from "./hooks/useFileUploaderApi";

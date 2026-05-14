@@ -6,7 +6,7 @@ export const DEFAULT_PROJECT: Project = {
   name: "",
   description: "",
   featuredImage: "",
-  images: [],
+  gallery: [],
   status: "Ongoing",
   featured: false,
 };

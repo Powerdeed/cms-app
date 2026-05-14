@@ -1,6 +1,10 @@
 "use client";
 
 import { SectionTitle } from "@global components/ui/Title";
+import {
+  FileMetaEditor,
+  useFileUploader,
+} from "@global components/layout/fileUploader";
 
 import HomePage from "./homepage/HomePage";
 import ContactPage from "./contactpage/ContactPage";
@@ -13,9 +17,10 @@ import useWebsiteContent from "../hooks/useWebsiteContent";
 
 export default function WebsiteContentView() {
   const { state } = useWebsiteContent();
+  const { uploaderState, uploaderActions } = useFileUploader();
 
   return (
-    <div className="page-layout">
+    <div className="relative page-layout">
       <SectionTitle title={PAGE_META.title} subtitle={PAGE_META.subtitle} />
 
       <div className="flex-1 feature-container-vertical text-style__body">
@@ -37,6 +42,18 @@ export default function WebsiteContentView() {
         {state.activeSection === "About Page" && <AboutPage />}
         {state.activeSection === "Contact Page" && <ContactPage />}
       </div>
+
+      {uploaderState.selectedAssetId && (
+        <div
+          className="asset-handling-interface"
+          onClick={() => {
+            uploaderState.setSelectedAssetId("");
+            uploaderActions.handleResetAssetStates("cancel");
+          }}
+        >
+          <FileMetaEditor />
+        </div>
+      )}
     </div>
   );
 }

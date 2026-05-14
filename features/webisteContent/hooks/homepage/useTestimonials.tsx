@@ -5,6 +5,7 @@ import { useContext } from "react";
 import { isEqual } from "lodash";
 
 import { testimonialsContext } from "../../context/homepage/testimonialsContext";
+import { LinkedAsset } from "../../types/linkedAsset.types";
 
 export default function useTestimonials() {
   const testimonialsState = useContext(testimonialsContext);
@@ -21,7 +22,7 @@ export default function useTestimonials() {
 
   const updateTestimonial = (
     key: string,
-    data: string,
+    data: string | LinkedAsset,
     testimonialId: string,
   ) => {
     setEditedTestimonials((prev) =>

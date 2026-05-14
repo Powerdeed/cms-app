@@ -104,7 +104,7 @@ export function DeleteIconBtn({
 }) {
   return (
     <div
-      className={`text-(--secondary-red) cursor-pointer ${children && "flex items-center gap-2.5"}`}
+      className={`hover:text-(--secondary-red) text-(--primary-red)/80 cursor-pointer duration-300 ${children && "flex items-center gap-2.5"}`}
       onClick={deleteFunc}
     >
       <FontAwesomeIcon icon={["far", "trash-can"]} />

@@ -60,7 +60,7 @@ export default function useServiceEdit() {
     setSelectedService((prev) => {
       if (!prev) return prev;
 
-      return { ...prev, images: addAssetLink(prev.images, asset) };
+      return { ...prev, gallery: addAssetLink(prev.gallery, asset) };
     });
 
     resetAssetLinkingState();
@@ -86,7 +86,7 @@ export default function useServiceEdit() {
 
       return {
         ...prev,
-        images: renameAssetLink(prev.images, asset),
+        gallery: renameAssetLink(prev.gallery, asset),
       };
     });
 

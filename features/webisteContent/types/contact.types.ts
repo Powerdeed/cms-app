@@ -1,6 +1,8 @@
+import { LinkedAsset } from "./linkedAsset.types";
+
 export type Contacts = {
   Hero: {
-    image: string;
+    image: LinkedAsset;
     title: string;
     subtitle: string;
   };

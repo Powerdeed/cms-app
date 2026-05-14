@@ -60,6 +60,7 @@ export default function useProjectsApi() {
 
   const resetStates = (reason?: "new") => {
     setSelectedProject(reason === "new" ? DEFAULT_PROJECT : null);
+    setSelectedProjectPrev(reason === "new" ? DEFAULT_PROJECT : null);
     setisNewProject(reason === "new" ? true : false);
     setFeaturedState(false);
     setCompletedState(false);

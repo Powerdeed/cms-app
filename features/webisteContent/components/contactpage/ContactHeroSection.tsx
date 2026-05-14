@@ -2,7 +2,7 @@
 
 import { useContactPage } from "@features/webisteContent";
 import FormWrapper, { InputArea } from "@global components/layout/FormWrapper";
-import { ButtonLight } from "@global components/ui/Button";
+import LinkedAssetField from "../LinkedAssetField";
 
 export default function ContactHeroSection() {
   const { state, actions } = useContactPage();
@@ -11,16 +11,12 @@ export default function ContactHeroSection() {
 
   return (
     <FormWrapper subtitle="Hero Section">
-      <InputArea
+      <LinkedAssetField
         label="Hero Image"
-        val={state.contacts.Hero.image}
-        changeFunc={(val) => actions.updateByPath(["Hero", "image"], val)}
-      >
-        <ButtonLight
-          buttonText="Upload"
-          clickAction={actions.handleImageUpload}
-        />
-      </InputArea>
+        value={state.contacts.Hero.image}
+        uploadPath="contact/hero"
+        onChange={(asset) => actions.updateByPath(["Hero", "image"], asset)}
+      />
 
       <InputArea
         label="Hero Title"

@@ -12,11 +12,13 @@ import useProjects from "../hooks/useProjects";
 import { companyServices } from "@lib/constants/COMPANY_PROVISIONS";
 import {
   AssetLookUp,
-  getAssetLinkId,
+  getFeaturedImageLinkId,
   FileUploader,
-  isAssetLink,
+  isFeaturedImageLink,
+  RenderAsset,
   useFileUploader,
 } from "@global components/layout/fileUploader";
+import { truncateTxt } from "@globals";
 
 export default function EditProject() {
   const { state, actions } = useProjects();
@@ -29,14 +31,20 @@ export default function EditProject() {
   const [assetAddMode, setAssetAddMode] = useState<"existing" | "new" | null>(
     null,
   );
-  const [assetTarget, setAssetTarget] = useState<"featuredImage" | "images">(
-    "images",
+  const [assetTarget, setAssetTarget] = useState<"featuredImage" | "gallery">(
+    "gallery",
   );
 
   const openAssetAddMode = (
     mode: "existing" | "new",
-    target: "featuredImage" | "images",
+    target: "featuredImage" | "gallery",
   ) => {
+    if (assetAddMode === mode && assetTarget === target) {
+      setAssetAddMode(null);
+      uploaderActions.resetAssetLinkingState();
+      return;
+    }
+
     setAssetAddMode(mode);
     setAssetTarget(target);
 
@@ -124,18 +132,34 @@ export default function EditProject() {
           {state.selectedProject.featuredImage ? (
             <div className="flex items-center gap-2.5">
               <div
-                className="flex-1 p-2 bg-(--secondary-grey)/30 rounded-[10px] hover:bg-(--secondary-grey)/50 duration-300"
+                className="flex-1 overflow-hidden rounded-[10px] bg-(--secondary-grey)/30 hover:bg-(--secondary-grey)/50 duration-300"
                 onClick={() => {
-                  if (isAssetLink(state.selectedProject?.featuredImage)) {
+                  if (
+                    isFeaturedImageLink(state.selectedProject?.featuredImage)
+                  ) {
                     uploaderState.setSelectedAssetId(
-                      getAssetLinkId(state.selectedProject.featuredImage),
+                      getFeaturedImageLinkId(
+                        state.selectedProject.featuredImage,
+                      ),
                     );
                   }
                 }}
               >
-                {isAssetLink(state.selectedProject.featuredImage)
-                  ? state.selectedProject.featuredImage[1]
-                  : state.selectedProject.featuredImage}
+                {isFeaturedImageLink(state.selectedProject.featuredImage) ? (
+                  <div className="relative h-40">
+                    <RenderAsset asset={state.selectedProject.featuredImage} />
+                    <div className="absolute inset-x-0 bottom-0 bg-black/60 p-2 text-white text-style__small-text">
+                      {truncateTxt(
+                        state.selectedProject.featuredImage.fileName,
+                        100,
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="p-2">
+                    {state.selectedProject.featuredImage}
+                  </div>
+                )}
               </div>
 
               <DeleteIconBtn deleteFunc={actions.removeProjectFeaturedImage} />
@@ -147,12 +171,12 @@ export default function EditProject() {
           )}
           <div className="grid grid-cols-2 gap-2.5">
             <Button
-              buttonText="Use existing image"
+              buttonText="Replace using existing media"
               clickAction={() => openAssetAddMode("existing", "featuredImage")}
             />
 
             <Button
-              buttonText="Upload new image"
+              buttonText="Upload new media to replace"
               clickAction={() => openAssetAddMode("new", "featuredImage")}
             />
           </div>
@@ -176,35 +200,48 @@ export default function EditProject() {
         </div>
 
         <div className="flex flex-col gap-2.5 text-style__body">
-          Images
-          {state.selectedProject.images.map((image, index) => (
-            <div key={index} className="flex items-center gap-2.5">
-              <div
-                className="flex-1 p-2 bg-(--secondary-grey)/30 rounded-[10px] hover:bg-(--secondary-grey)/50 duration-300"
-                onClick={() => {
-                  uploaderState.setSelectedAssetId(image[0]);
-                }}
-              >
-                {image[1]}
-              </div>
+          Gallery
+          {state.selectedProject.gallery.length > 0 ? (
+            <div className="grid max-h-90 grid-cols-2 gap-2.5 overflow-y-auto pr-1">
+              {state.selectedProject.gallery.map((image) => (
+                <div
+                  key={image[0]}
+                  className="group relative h-40 cursor-pointer overflow-hidden rounded-[10px] border border-(--secondary-grey)/30 bg-(--secondary-grey)/10"
+                  onClick={() => uploaderState.setSelectedAssetId(image[0])}
+                >
+                  <RenderAsset asset={image} />
 
-              <DeleteIconBtn
-                deleteFunc={() => actions.removeProjectImage(image[0])}
-              />
+                  <div className="absolute inset-x-0 bottom-0 flex translate-y-full items-center gap-2 bg-black/60 p-2 text-white transition-transform duration-300 group-hover:translate-y-0">
+                    <div className="min-w-0 flex-1 text-style__small-text">
+                      {truncateTxt(image[1], 100)}
+                    </div>
+
+                    <div onClick={(event) => event.stopPropagation()}>
+                      <DeleteIconBtn
+                        deleteFunc={() => actions.removeProjectImage(image[0])}
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
+          ) : (
+            <div className="text-style__small-text text-(--secondary-grey)">
+              No gallery media selected
+            </div>
+          )}
           <div className="grid grid-cols-2 gap-2.5">
             <Button
-              buttonText="Use existing image"
-              clickAction={() => openAssetAddMode("existing", "images")}
+              buttonText="Add from existing media"
+              clickAction={() => openAssetAddMode("existing", "gallery")}
             />
 
             <Button
-              buttonText="Upload new image"
-              clickAction={() => openAssetAddMode("new", "images")}
+              buttonText="Upload new media"
+              clickAction={() => openAssetAddMode("new", "gallery")}
             />
           </div>
-          {assetTarget === "images" && assetAddMode === "existing" && (
+          {assetTarget === "gallery" && assetAddMode === "existing" && (
             <AssetLookUp
               label="Paste an existing file id"
               onFindSuccess={() => {
@@ -213,7 +250,7 @@ export default function EditProject() {
               }}
             />
           )}
-          {assetTarget === "images" && assetAddMode === "new" && (
+          {assetTarget === "gallery" && assetAddMode === "new" && (
             <FileUploader
               onAssetUploaded={(asset) => {
                 actions.linkUploadedProjectImage(asset);
@@ -267,6 +304,14 @@ export default function EditProject() {
             {state.isDeleting && <Loader />}
           </div>
         </div>
+
+        {state.error && (
+          <div className="text-(--primary-red)">
+            {state.error}
+            {state.error.includes("validation error") &&
+              `: one or more fields is missing.`}
+          </div>
+        )}
       </div>
     </div>
   );

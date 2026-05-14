@@ -8,12 +8,13 @@ import Toggle from "@global components/ui/Toggle";
 import {
   AssetLookUp,
   FileUploader,
+  RenderAsset,
   useFileUploader,
 } from "@global components/layout/fileUploader";
 
 import useService from "../hooks/useService";
 
-import { toPascalCase } from "@globals";
+import { toPascalCase, truncateTxt } from "@globals";
 
 export default function ServiceEditor() {
   const { state, actions } = useService();
@@ -23,6 +24,12 @@ export default function ServiceEditor() {
   );
 
   const openAssetAddMode = (mode: "existing" | "new") => {
+    if (assetAddMode === mode) {
+      setAssetAddMode(null);
+      uploaderActions.resetAssetLinkingState();
+      return;
+    }
+
     setAssetAddMode(mode);
 
     if (mode === "new") {
@@ -63,41 +70,54 @@ export default function ServiceEditor() {
           />
 
           <div className="vertical-layout__outer">
-            <div className="flex-1 text-style__body">Images</div>
-            {state.selectedService.images.map((image, idx) => (
-              <div key={idx} className="flex items-center gap-2.5">
-                <div
-                  className="flex-1 p-2 bg-(--secondary-grey)/30 rounded-[10px] hover:bg-(--secondary-grey)/50 duration-300"
-                  onClick={() => {
-                    uploaderState.setSelectedAssetId(image[0]);
-                  }}
-                >
-                  {image[1]}
-                </div>
+            <div className="flex-1 text-style__body">Gallery</div>
+            {state.selectedService.gallery.length > 0 ? (
+              <div className="grid max-h-90 grid-cols-2 gap-2.5 overflow-y-auto pr-1">
+                {state.selectedService.gallery.map((image) => (
+                  <div
+                    key={image[0]}
+                    className="group relative h-40 cursor-pointer overflow-hidden rounded-[10px] border border-(--secondary-grey)/30 bg-(--secondary-grey)/10"
+                    onClick={() => uploaderState.setSelectedAssetId(image[0])}
+                  >
+                    <RenderAsset asset={image} />
 
-                <DeleteIconBtn
-                  deleteFunc={() => {
-                    actions.handleRemoveImageFromService(image[0]);
-                  }}
-                />
+                    <div className="absolute inset-x-0 bottom-0 flex translate-y-full items-center gap-2 bg-black/60 p-2 text-white transition-transform duration-300 group-hover:translate-y-0">
+                      <div className="min-w-0 flex-1 text-style__small-text">
+                        {truncateTxt(image[1], 100)}
+                      </div>
+
+                      <div onClick={(event) => event.stopPropagation()}>
+                        <DeleteIconBtn
+                          deleteFunc={() => {
+                            actions.handleRemoveImageFromService(image[0]);
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
+            ) : (
+              <div className="text-style__small-text text-(--secondary-grey)">
+                No gallery media selected
+              </div>
+            )}
 
             <div className="grid grid-cols-2 gap-2.5">
               <Button
-                buttonText="Use existing image"
+                buttonText="Use existing media"
                 clickAction={() => openAssetAddMode("existing")}
               />
 
               <Button
-                buttonText="Upload new image"
+                buttonText="Upload new media"
                 clickAction={() => openAssetAddMode("new")}
               />
             </div>
 
             {assetAddMode === "existing" && (
               <AssetLookUp
-                label="Paste the image id"
+                label="Paste the media id"
                 onFindSuccess={() => {
                   actions.linkExistingServiceImage();
                   setAssetAddMode(null);

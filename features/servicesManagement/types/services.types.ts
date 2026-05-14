@@ -4,6 +4,6 @@ export interface Service {
   _id: string;
   name: string;
   description: string;
-  images: AssetLink[];
+  gallery: AssetLink[];
   status: boolean;
 }

@@ -71,10 +71,10 @@ global components/layout/fileUploader
   Services.
 
 features/projects
-  Project management. Project images are saved as asset links.
+  Project management. Project gallery media is saved as asset links.
 
 features/servicesManagement
-  Service management. Service images are saved as asset links.
+  Service management. Service gallery media is saved as asset links.
 
 features/webisteContent
   Homepage and website content management.
@@ -102,7 +102,12 @@ type AssetReference = {
 Feature documents store lightweight asset links for rendering:
 
 ```ts
-type AssetLink = [assetId: string, fileName: string, fileUrl: string];
+type AssetLink = [
+  assetId: string,
+  fileName: string,
+  fileUrl: string,
+  assetType: "image" | "video" | "document" | "diagram",
+];
 ```
 
 Projects and services update their local draft with asset links. The backend
@@ -138,4 +143,3 @@ assets/unassigned/documents/asset-789/manual.pdf
   and `storage.publicUrl`.
 - Delete defaults to `referenceAction=block`. Linked assets require unlink or
   force actions through the delete options modal.
-

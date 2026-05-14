@@ -11,6 +11,8 @@ export { default as NoProjectSelected } from "./components/NoProjectSelected";
 export * from "./components/NoProjectSelected";
 export { default as ProjectsView } from "./components/ProjectsView";
 export * from "./components/ProjectsView";
+export { default as ProjectCard } from "./components/ProjectCard";
+export * from "./components/ProjectCard";
 
 // constants
 export * from "./constants/defaultProject";

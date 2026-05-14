@@ -4,13 +4,11 @@ import FormWrapper, {
   InputArea,
   SeparatorLine,
 } from "@global components/layout/FormWrapper";
-import Button, {
-  DeleteIconBtn,
-  UploadIconBtn,
-} from "@global components/ui/Button";
+import Button, { DeleteIconBtn } from "@global components/ui/Button";
 import Loader from "@global components/ui/Loader";
 
 import useHomepage from "../../hooks/homepage/useHomepage";
+import LinkedAssetField from "../LinkedAssetField";
 
 export default function TestimonialsEditor() {
   const { state, actions } = useHomepage();
@@ -53,15 +51,21 @@ export default function TestimonialsEditor() {
             </div>
 
             <div className="flex gap-5">
-              <InputArea
-                label="Profile Image"
-                val={testimonial.profilePic}
-                changeFunc={(val) =>
-                  actions.updateTestimonial("profilePic", val, testimonial._id)
-                }
-              >
-                {/* <UploadIconBtn uploadFunc={actions.handleImageUpload} /> */}
-              </InputArea>
+              <div className="flex-1">
+                <LinkedAssetField
+                  label="Profile Image"
+                  value={testimonial.profilePic}
+                  uploadPath={`homepage/testimonials/${testimonial._id}`}
+                  onChange={(asset) => {
+                    if (!asset) return;
+                    actions.updateTestimonial(
+                      "profilePic",
+                      asset,
+                      testimonial._id,
+                    );
+                  }}
+                />
+              </div>
 
               <InputArea
                 label="Name"

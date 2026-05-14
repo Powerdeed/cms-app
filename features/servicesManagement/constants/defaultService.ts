@@ -4,6 +4,6 @@ export const DEFAULT_SERVICE: Service = {
   _id: "",
   name: "",
   description: "",
-  images: [],
+  gallery: [],
   status: false,
 };

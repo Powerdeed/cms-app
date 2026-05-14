@@ -45,11 +45,12 @@ export default function DeleteAssetOptions({
       </div>
 
       <div className="grid grid-cols-2 gap-2.5">
-        <ButtonLight
+        <ButtonLight buttonText="Force delete" clickAction={forceDelete} />
+
+        <ButtonRed
           buttonText="Unlink and delete"
           clickAction={unlinkAndDelete}
         />
-        <ButtonRed buttonText="Delete anyway" clickAction={forceDelete} />
       </div>
     </div>
   );

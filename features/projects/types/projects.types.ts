@@ -1,14 +1,17 @@
 import { companyServices } from "@lib/constants/COMPANY_PROVISIONS";
-import { AssetLink } from "@global components/layout/fileUploader";
+import {
+  AssetLink,
+  FeaturedImageLink,
+} from "@global components/layout/fileUploader";
 
-export type ProjectFeaturedImage = "" | string | AssetLink;
+export type ProjectFeaturedImage = "" | string | FeaturedImageLink;
 
 export interface FetchedProject {
   _id: string;
   category: (typeof companyServices)[number];
   name: string;
   featuredImage: ProjectFeaturedImage;
-  images: AssetLink[];
+  gallery: AssetLink[];
   description: string;
   status: "Ongoing" | "Completed";
   featured: boolean;
@@ -21,7 +24,7 @@ export interface Project {
   category: (typeof companyServices)[number];
   name: string;
   featuredImage: ProjectFeaturedImage;
-  images: AssetLink[];
+  gallery: AssetLink[];
   description: string;
   status: "Ongoing" | "Completed";
   featured: boolean;

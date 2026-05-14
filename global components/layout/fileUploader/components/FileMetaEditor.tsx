@@ -171,7 +171,8 @@ export default function FileMetaEditor({
                   : "Update asset"
               }
             >
-              {uploaderState.isAssetUploading && <Loader />}
+              {(uploaderState.isAssetUploading ||
+                uploaderState.isAssetUpdating) && <Loader />}
             </Button>
 
             {uploaderState.assetMode === "new" && (

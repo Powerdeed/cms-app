@@ -29,6 +29,8 @@ export { default as HomePage } from "./components/homepage/HomePage";
 export * from "./components/homepage/HomePage";
 export { default as TestimonialsEditor } from "./components/homepage/TestimonialsEditor";
 export * from "./components/homepage/TestimonialsEditor";
+export { default as LinkedAssetField } from "./components/LinkedAssetField";
+export * from "./components/LinkedAssetField";
 export { default as WebsiteContentView } from "./components/WebsiteContentView";
 export * from "./components/WebsiteContentView";
 
@@ -114,6 +116,7 @@ export * from "./services/testimonials";
 export * from "./types/aboutPage.types";
 export * from "./types/contact.types";
 export * from "./types/homePage.types";
+export * from "./types/linkedAsset.types";
 
 // utils
 export * from "./utils/conversions";

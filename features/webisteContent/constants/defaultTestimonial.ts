@@ -5,5 +5,10 @@ export const DEFAULT_TESTIMONIAL: NewTestimonial = {
   position: " ",
   industry: " ",
   testimonial: " ",
-  profilePic: " ",
+  profilePic: {
+    assetId: "placeholder-testimonial-profile",
+    fileName: "Placeholder profile image",
+    fileUrl: "/images/userIcon.jpg",
+    assetType: "image",
+  },
 };

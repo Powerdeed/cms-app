@@ -7,6 +7,7 @@ import { isEqual } from "lodash";
 import { contactpageContext } from "../../context/contactpage/contactpageContext";
 
 import { Contacts } from "../../types/contact.types";
+import { LinkedAsset } from "../../types/linkedAsset.types";
 
 export default function useContactPageEditor() {
   const contactpageState = useContext(contactpageContext);
@@ -18,7 +19,7 @@ export default function useContactPageEditor() {
 
   const updateByPath = (
     path: (string | number)[],
-    value: string | null | Record<string, string>,
+    value: string | null | LinkedAsset | Record<string, string>,
   ) =>
     setContacts((prev) => {
       if (!prev) return prev;
@@ -31,7 +32,7 @@ export default function useContactPageEditor() {
         current = (
           current as Record<
             string | number,
-            string | null | Record<string, string>
+            string | null | LinkedAsset | Record<string, string>
           >
         )[path[i] as string];
       }
@@ -39,7 +40,7 @@ export default function useContactPageEditor() {
       (
         current as Record<
           string | number,
-          string | null | Record<string, string>
+          string | null | LinkedAsset | Record<string, string>
         >
       )[path[path.length - 1] as string] = value;
 

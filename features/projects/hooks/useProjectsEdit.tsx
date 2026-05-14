@@ -12,23 +12,29 @@ import {
   AssetLink,
   FileMetadataContext,
   addAssetLink,
-  createAssetLink,
+  createFeaturedImageLink,
+  isFeaturedImageLink,
   removeAssetLink,
   renameAssetLink,
+  renameFeaturedImageLink,
   useAssetFeatureLinks,
 } from "@global components/layout/fileUploader";
+import { globalContext } from "@globals";
 
 export default function useProjectsEdit() {
+  const globalState = useContext(globalContext);
   const pContext = useContext(projectContext);
   const fileMetadataState = useContext(FileMetadataContext);
   const { resetAssetLinkingState } = useAssetFeatureLinks();
 
-  if (!pContext || !fileMetadataState)
-    throw new Error("projects context must be within a provider");
+  if (!pContext || !fileMetadataState || !globalState)
+    throw new Error("projects and global context must be within a provider");
 
   const {
-    selectedProjectPrev,
+    setSelectedCategory,
+    selectedProject,
     setSelectedProject,
+    selectedProjectPrev,
     setSelectedProjectPrev,
     isNewProject,
     setisNewProject,
@@ -38,6 +44,23 @@ export default function useProjectsEdit() {
     setCompletedState,
     setHasProjectChanged,
   } = pContext;
+
+  const { setUnsavedChanges } = globalState;
+
+  useEffect(() => {
+    const hasProjectChanged = !isEqual(selectedProject, selectedProjectPrev);
+
+    setHasProjectChanged(hasProjectChanged);
+    setUnsavedChanges(hasProjectChanged);
+  }, [
+    selectedProject,
+    selectedProjectPrev,
+    setHasProjectChanged,
+    setUnsavedChanges,
+  ]);
+
+  const handleSelectedCategory = (category: string) =>
+    setSelectedCategory((prev) => (prev === category ? "" : category));
 
   const handleSelectedProject = (p: Project) => {
     setisNewProject(false);
@@ -51,13 +74,13 @@ export default function useProjectsEdit() {
     setSelectedProject((prev) => {
       if (!prev) return prev;
 
-      return { ...prev, images: addAssetLink(prev.images, asset) };
+      return { ...prev, gallery: addAssetLink(prev.gallery, asset) };
     });
 
     resetAssetLinkingState();
   };
 
-  // Existing images only update the project draft. Asset references are rebuilt
+  // Existing gallery items only update the project draft. Asset references are rebuilt
   // by the backend after the project is saved.
   const linkExistingProjectImage = () => {
     if (!fileMetadataState.targetAsset) return;
@@ -73,7 +96,7 @@ export default function useProjectsEdit() {
     setSelectedProject((prev) => {
       if (!prev) return prev;
 
-      return { ...prev, featuredImage: createAssetLink(asset) };
+      return { ...prev, featuredImage: createFeaturedImageLink(asset) };
     });
 
     resetAssetLinkingState();
@@ -103,7 +126,7 @@ export default function useProjectsEdit() {
     setSelectedProject((prev) => {
       if (!prev) return prev;
 
-      return { ...prev, images: removeAssetLink(prev.images, assetId) };
+      return { ...prev, gallery: removeAssetLink(prev.gallery, assetId) };
     });
 
     resetAssetLinkingState();
@@ -147,15 +170,12 @@ export default function useProjectsEdit() {
     setSelectedProject((prev) => {
       if (!prev) return prev;
 
-      const featuredImage =
-        Array.isArray(prev.featuredImage) && prev.featuredImage[0] === asset.id
-          ? createAssetLink(asset)
-          : prev.featuredImage;
-
       return {
         ...prev,
-        featuredImage,
-        images: renameAssetLink(prev.images, asset),
+        featuredImage: isFeaturedImageLink(prev.featuredImage)
+          ? renameFeaturedImageLink(prev.featuredImage, asset)
+          : prev.featuredImage,
+        gallery: renameAssetLink(prev.gallery, asset),
       };
     });
 
@@ -176,6 +196,7 @@ export default function useProjectsEdit() {
 
   return {
     updateByPath,
+    handleSelectedCategory,
     handleSelectedProject,
     linkExistingProjectFeaturedImage,
     linkExistingProjectImage,

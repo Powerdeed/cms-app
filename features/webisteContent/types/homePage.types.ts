@@ -1,9 +1,11 @@
+import { LinkedAsset } from "./linkedAsset.types";
+
 export type NewTestimonial = {
   name: string;
   position: string;
   industry: string;
   testimonial: string;
-  profilePic: string;
+  profilePic: LinkedAsset;
 };
 
 export type Testimonial = {
@@ -12,19 +14,19 @@ export type Testimonial = {
   position: string;
   industry: string;
   testimonial: string;
-  profilePic: string;
+  profilePic: LinkedAsset;
 };
 
 export type Hero = {
   title: string;
   subtitle: string;
-  image: string;
+  image: LinkedAsset;
 };
 
 export type AboutIntro = {
   title: string;
   description: string;
-  image: string;
+  image: LinkedAsset;
   flipped: boolean;
 };
 

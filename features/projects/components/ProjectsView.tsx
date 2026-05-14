@@ -13,9 +13,11 @@ import {
   FileMetaEditor,
   useFileUploader,
 } from "@global components/layout/fileUploader";
+import { useGlobals } from "@globals";
 
 export default function ProjectsView() {
   const { state, actions } = useProjects();
+  const { globalActions } = useGlobals();
   const { uploaderState, uploaderActions } = useFileUploader();
 
   return (
@@ -26,7 +28,13 @@ export default function ProjectsView() {
         </div>
         <Button
           buttonText={"+ Add New Project"}
-          clickAction={() => actions.resetStates("new")}
+          clickAction={() => {
+            if (globalActions.hasUnsavedChanges) {
+              globalActions.showNotice();
+              return;
+            }
+            actions.resetStates("new");
+          }}
         />
       </div>
 

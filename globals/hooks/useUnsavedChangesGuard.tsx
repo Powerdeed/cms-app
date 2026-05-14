@@ -19,6 +19,7 @@ export default function useUnsavedChangesGuard() {
   }
 
   const hasUnsavedChanges = globalStates.unsavedChanges;
+
   const {
     unsavedChangesNoticeText,
     unsavedChangesNoticeVisible,

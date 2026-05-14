@@ -6,7 +6,19 @@ export type AssetStatus = "active" | "archived" | "deleted";
 
 export type AssetUsagePaths = Record<string, string[]>;
 
-export type AssetLink = [assetId: string, fileName: string, fileUrl: string];
+export type AssetLink = [
+  assetId: string,
+  fileName: string,
+  fileUrl: string,
+  assetType: FileType,
+];
+
+export interface FeaturedImageLink {
+  assetId: string;
+  fileName: string;
+  fileUrl: string;
+  assetType: FileType;
+}
 
 export interface AssetReference {
   id: string;

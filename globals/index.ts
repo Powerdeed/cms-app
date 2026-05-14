@@ -15,6 +15,7 @@ export * from "./conversions/urlConversions";
 export * from "./helper functions/currentDate";
 export * from "./helper functions/handleEmailFormat";
 export * from "./helper functions/typeCheckers";
+export * from "./helper functions/truncateTxt";
 
 // hooks
 export { default as useGlobals } from "./hooks/useGlobals";

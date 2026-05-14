@@ -4,9 +4,9 @@ import FormWrapper, {
   InputArea,
   SeparatorLine,
 } from "@global components/layout/FormWrapper";
-import { ButtonLight } from "@global components/ui/Button";
 
 import useHomepage from "../../hooks/homepage/useHomepage";
+import LinkedAssetField from "../LinkedAssetField";
 
 export default function HeroAndAboutEditor() {
   const { state, actions } = useHomepage();
@@ -23,16 +23,12 @@ export default function HeroAndAboutEditor() {
       </div>
 
       <FormWrapper subtitle="Hero Section">
-        <InputArea
+        <LinkedAssetField
           label="Hero Image"
-          val={state.homepage.hero.image}
-          changeFunc={(val) => actions.updateHomePageData("image", "hero", val)}
-        >
-          {/* <ButtonLight
-            buttonText="Upload"
-           clickAction={actions.handleImageUpload}
-          /> */}
-        </InputArea>
+          value={state.homepage.hero.image}
+          uploadPath="homepage/hero"
+          onChange={(asset) => actions.updateHomePageData("image", "hero", asset)}
+        />
 
         <InputArea
           label="Hero Title"
@@ -62,18 +58,14 @@ export default function HeroAndAboutEditor() {
             {index === 0 ? "right" : "left"}
           </em>
 
-          <InputArea
+          <LinkedAssetField
             label="Image"
-            val={about.image}
-            changeFunc={(val) =>
-              actions.updateHomePageData("image", "aboutIntro", val, index)
+            value={about.image}
+            uploadPath={`homepage/about-intro/${index + 1}`}
+            onChange={(asset) =>
+              actions.updateHomePageData("image", "aboutIntro", asset, index)
             }
-          >
-            {/* <ButtonLight
-              buttonText="Upload"
-              clickAction={actions.handleImageUpload}
-            /> */}
-          </InputArea>
+          />
 
           <InputArea
             label="Title"
