@@ -154,7 +154,7 @@ export default function ServiceEditor() {
                   actions.handleUploadServiceChanges();
                 }
               }}
-              disabled={state.isUploading}
+              disabled={state.isUploading || state.isDeleting}
             >
               {state.isUploading && <Loader />}
             </Button>
@@ -170,7 +170,7 @@ export default function ServiceEditor() {
                   actions.handleDeleteService();
                 }
               }}
-              disabled={state.isDeleting}
+              disabled={state.isUploading || state.isDeleting}
             >
               {state.isDeleting && <Loader />}
             </ButtonRed>

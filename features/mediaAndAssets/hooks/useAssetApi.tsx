@@ -22,10 +22,14 @@ export default function useAssetApi() {
   if (!uploaderApiStates || !mediaAssetsStates || !fileMetaStates)
     throw new Error("Context must be within a provider");
 
-  const { setIsAssetDeleting, setIsAssetDownloading, setAssetApiOnError } =
-    uploaderApiStates;
-  const { setAllMediaAssets, setMediaAssets, setShowDeleteOptions } =
-    mediaAssetsStates;
+  const { setAssetApiOnError } = uploaderApiStates;
+  const {
+    setAllMediaAssets,
+    setMediaAssets,
+    setShowDeleteOptions,
+    setDeletingAssetIds,
+    setDownloadingAssetIds,
+  } = mediaAssetsStates;
   const { setTargetAsset } = fileMetaStates;
 
   const handleDeletePopUp = (asset: Asset) => {
@@ -33,12 +37,35 @@ export default function useAssetApi() {
     setTargetAsset(asset);
   };
 
+  const updateActiveAssetIds = (
+    id: string,
+    isLoading: boolean,
+    setIds: React.Dispatch<React.SetStateAction<string[]>>,
+  ) => {
+    setIds((prev) => {
+      return isLoading
+        ? prev.includes(id)
+          ? prev
+          : [...prev, id]
+        : prev.filter((activeId) => activeId !== id);
+    });
+  };
+
   const handleDeleteAsset = async (
     asset: Asset,
     referenceAction: DeleteAssetReferenceAction = "block",
   ) => {
     await execute(() => deleteAsset(asset.id, referenceAction), {
-      setLoading: setIsAssetDeleting,
+      setLoading: (loading) => {
+        const isLoading =
+          typeof loading === "function" ? loading(false) : loading;
+
+        updateActiveAssetIds(
+          asset.id,
+          isLoading,
+          setDeletingAssetIds,
+        );
+      },
       setError: setAssetApiOnError,
       onSuccess() {
         setAllMediaAssets((prev) =>
@@ -72,7 +99,16 @@ export default function useAssetApi() {
 
   const handleDownloadAsset = async (asset: Asset) => {
     await execute(() => downloadAsset(asset), {
-      setLoading: setIsAssetDownloading,
+      setLoading: (loading) => {
+        const isLoading =
+          typeof loading === "function" ? loading(false) : loading;
+
+        updateActiveAssetIds(
+          asset.id,
+          isLoading,
+          setDownloadingAssetIds,
+        );
+      },
       setError: setAssetApiOnError,
       onSuccess: saveBlobToDownloads,
     });

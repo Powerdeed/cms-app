@@ -40,6 +40,7 @@ export default function VerifyEmail() {
         <Button
           buttonText="Back to login"
           clickAction={actions.handleRouteBackToLogin}
+          disabled={state.verifying || state.sendingCode}
           className="w-30"
         />
 
@@ -47,7 +48,7 @@ export default function VerifyEmail() {
           buttonText={
             state.timer === "00:00" ? "Resend code" : String(state.timer)
           }
-          disabled={state.timer !== "00:00"}
+          disabled={state.timer !== "00:00" || state.sendingCode}
           clickAction={() => {
             if (state.timer === "00:00") actions.handleCodeResend();
           }}

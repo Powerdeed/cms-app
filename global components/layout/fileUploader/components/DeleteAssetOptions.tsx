@@ -3,15 +3,18 @@
 import { ButtonLight, ButtonRed } from "@global components/ui/Button";
 import useFileUploader from "../hooks/useFileUploader";
 import { getAssetReferences, getReferenceLabel } from "../utils/references";
+import Loader from "@global components/ui/Loader";
 
 type DeleteAssetOptionsProps = {
   forceDelete: () => void;
   unlinkAndDelete: () => void;
+  isDeleting?: boolean;
 };
 
 export default function DeleteAssetOptions({
   forceDelete,
   unlinkAndDelete,
+  isDeleting = false,
 }: DeleteAssetOptionsProps) {
   const { uploaderState } = useFileUploader();
   const targetAsset = uploaderState.targetAsset;
@@ -45,12 +48,21 @@ export default function DeleteAssetOptions({
       </div>
 
       <div className="grid grid-cols-2 gap-2.5">
-        <ButtonLight buttonText="Force delete" clickAction={forceDelete} />
+        <ButtonLight
+          buttonText="Force delete"
+          clickAction={forceDelete}
+          disabled={isDeleting}
+        >
+          {isDeleting && <Loader />}
+        </ButtonLight>
 
         <ButtonRed
           buttonText="Unlink and delete"
           clickAction={unlinkAndDelete}
-        />
+          disabled={isDeleting}
+        >
+          {isDeleting && <Loader />}
+        </ButtonRed>
       </div>
     </div>
   );

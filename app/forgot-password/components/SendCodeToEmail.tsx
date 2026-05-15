@@ -16,10 +16,15 @@ export default function SendCodeToEmail() {
       <input
         className="input-style"
         value={state.email}
+        disabled={state.sendingCode}
         onChange={(e) => state.setEmail(e.target.value)}
       />
 
-      <Button buttonText="Send OTP" clickAction={actions.handleSendCodeToEmail}>
+      <Button
+        buttonText="Send OTP"
+        clickAction={actions.handleSendCodeToEmail}
+        disabled={state.sendingCode}
+      >
         {state.sendingCode && <Loader />}
       </Button>
 

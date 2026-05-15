@@ -53,7 +53,12 @@ export default function FileRenameAndUpload({
       </div>
 
       <div className="flex items-center gap-2.5">
-        <Button type="submit" className="flex-1" buttonText="Add File">
+        <Button
+          type="submit"
+          className="flex-1"
+          buttonText="Add File"
+          disabled={uploaderState.isAssetUploading}
+        >
           {uploaderState.isAssetUploading && <Loader />}
         </Button>
 
@@ -63,6 +68,7 @@ export default function FileRenameAndUpload({
           clickAction={() =>
             uploaderActions.handleResetAssetStates("re-upload")
           }
+          disabled={uploaderState.isAssetUploading}
         />
       </div>
     </form>

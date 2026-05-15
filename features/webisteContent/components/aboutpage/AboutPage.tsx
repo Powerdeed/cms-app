@@ -81,6 +81,12 @@ export default function AboutPage() {
               <Loader />
             )
           }
+          disabled={
+            state.loadingAboutUs ||
+            state.loadingCompanyStructure ||
+            state.updatingAboutUs ||
+            state.updatingCompanyStructure
+          }
         />
         <Button
           buttonText="Save All Changes"
@@ -88,6 +94,7 @@ export default function AboutPage() {
             actions.handleSaveAboutPage();
             actions.handlesaveCompanyStructure();
           }}
+          disabled={state.updatingAboutUs || state.updatingCompanyStructure}
         >
           {(state.updatingAboutUs || state.updatingCompanyStructure) && (
             <Loader />

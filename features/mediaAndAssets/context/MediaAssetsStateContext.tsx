@@ -9,6 +9,12 @@ type MediaAssetsState = {
   setAllMediaAssets: Dispatch<SetStateAction<Asset[]>>;
   mediaAssets: Asset[];
   setMediaAssets: Dispatch<SetStateAction<Asset[]>>;
+  fetchingMediaAssets: boolean;
+  setFetchingMediaAssets: Dispatch<SetStateAction<boolean>>;
+  deletingAssetIds: string[];
+  setDeletingAssetIds: Dispatch<SetStateAction<string[]>>;
+  downloadingAssetIds: string[];
+  setDownloadingAssetIds: Dispatch<SetStateAction<string[]>>;
 
   showDeleteOptions: boolean;
   setShowDeleteOptions: Dispatch<SetStateAction<boolean>>;

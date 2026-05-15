@@ -31,6 +31,8 @@ export default function FileMetaEditor({
   const { uploaderState, uploaderActions } = useFileUploader();
   const { globalActions } = useGlobals();
   const targetAsset = uploaderState.targetAsset;
+  const isSavingAsset =
+    uploaderState.isAssetUploading || uploaderState.isAssetUpdating;
 
   if (!targetAsset) return null;
 
@@ -170,9 +172,9 @@ export default function FileMetaEditor({
                   ? "Upload asset"
                   : "Update asset"
               }
+              disabled={isSavingAsset}
             >
-              {(uploaderState.isAssetUploading ||
-                uploaderState.isAssetUpdating) && <Loader />}
+              {isSavingAsset && <Loader />}
             </Button>
 
             {uploaderState.assetMode === "new" && (
@@ -181,6 +183,7 @@ export default function FileMetaEditor({
                 clickAction={() =>
                   uploaderActions.handleResetAssetStates("re-upload")
                 }
+                disabled={isSavingAsset}
               />
             )}
           </div>

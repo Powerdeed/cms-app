@@ -14,11 +14,16 @@ export default function MediaAssetsProvider({
 }) {
   const [allMediaAssets, setAllMediaAssets] = useState<Asset[]>([]);
   const [mediaAssets, setMediaAssets] = useState<Asset[]>([]);
+  const [fetchingMediaAssets, setFetchingMediaAssets] = useState(true);
+  const [deletingAssetIds, setDeletingAssetIds] = useState<string[]>([]);
+  const [downloadingAssetIds, setDownloadingAssetIds] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [showDeleteOptions, setShowDeleteOptions] = useState(false);
 
   useEffect(() => {
     const loadAssets = async () => {
+      setFetchingMediaAssets(true);
+
       try {
         const normalizedAssets = (await getAssets()).map(normalizeExistingAsset);
 
@@ -26,6 +31,8 @@ export default function MediaAssetsProvider({
         setMediaAssets(normalizedAssets);
       } catch (error) {
         console.error(error);
+      } finally {
+        setFetchingMediaAssets(false);
       }
     };
 
@@ -39,6 +46,12 @@ export default function MediaAssetsProvider({
         setAllMediaAssets,
         mediaAssets,
         setMediaAssets,
+        fetchingMediaAssets,
+        setFetchingMediaAssets,
+        deletingAssetIds,
+        setDeletingAssetIds,
+        downloadingAssetIds,
+        setDownloadingAssetIds,
         showDeleteOptions,
         setShowDeleteOptions,
       }}

@@ -21,7 +21,7 @@ export default function Button({
   return (
     <button
       type={type}
-      className={`bg-(--primary-blue) py-3 px-4 rounded-[10px] text-white hover:bg-(--secondary-blue) duration-300 text-style__small-text cursor-pointer ${className}`}
+      className={`bg-(--primary-blue) py-3 px-4 rounded-[10px] text-white hover:bg-(--secondary-blue) duration-300 text-style__small-text cursor-pointer disabled:cursor-not-allowed disabled:border-(--secondary-grey) disabled:bg-(--secondary-grey) disabled:text-white disabled:opacity-70 disabled:hover:bg-(--secondary-grey) ${className}`}
       onClick={clickAction}
       disabled={disabled}
     >
@@ -52,7 +52,7 @@ export function ButtonLight({
   return (
     <button
       type={type}
-      className={`border border-(--secondary-blue) py-2.75 px-4 rounded-[10px] text-(--primary-blue) bg-white hover:bg-(--terciary-grey)/40 duration-300 text-style__small-text cursor-pointer ${className}`}
+      className={`border border-(--secondary-blue) py-2.75 px-4 rounded-[10px] text-(--primary-blue) bg-white hover:bg-(--terciary-grey)/40 duration-300 text-style__small-text cursor-pointer disabled:cursor-not-allowed disabled:border-(--secondary-grey) disabled:bg-(--terciary-grey)/40 disabled:text-(--secondary-grey) disabled:opacity-70 disabled:hover:bg-(--terciary-grey)/40 ${className}`}
       onClick={clickAction}
       disabled={disabled}
     >
@@ -83,7 +83,7 @@ export function ButtonRed({
   return (
     <button
       type={type}
-      className={`bg-(--primary-red) py-3 px-4 rounded-[10px] text-white text-style__small-text cursor-pointer ${className}`}
+      className={`bg-(--primary-red) py-3 px-4 rounded-[10px] text-white text-style__small-text cursor-pointer disabled:cursor-not-allowed disabled:bg-(--secondary-grey) disabled:text-white disabled:opacity-70 ${className}`}
       onClick={clickAction}
       disabled={disabled}
     >

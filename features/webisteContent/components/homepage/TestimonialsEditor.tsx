@@ -22,6 +22,7 @@ export default function TestimonialsEditor() {
         <Button
           buttonText="+ Add Testimonial "
           clickAction={actions.handleAddTestimonial}
+          disabled={state.addingTestimonials}
         >
           {state.addingTestimonials && <Loader />}
         </Button>
@@ -54,13 +55,12 @@ export default function TestimonialsEditor() {
               <div className="flex-1">
                 <LinkedAssetField
                   label="Profile Image"
-                  value={testimonial.profilePic}
-                  uploadPath={`homepage/testimonials/${testimonial._id}`}
-                  onChange={(asset) => {
-                    if (!asset) return;
-                    actions.updateTestimonial(
-                      "profilePic",
-                      asset,
+                value={testimonial.profilePic}
+                uploadPath={`homepage/testimonials/${testimonial._id}`}
+                onChange={(asset) => {
+                  actions.updateTestimonial(
+                    "profilePic",
+                    asset,
                       testimonial._id,
                     );
                   }}

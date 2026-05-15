@@ -2,6 +2,7 @@
 
 // components
 import Button, { ButtonLight } from "@global components/ui/Button";
+import Loader from "@global components/ui/Loader";
 import SearchBar from "@global components/ui/SearchBar";
 import FormWrapper from "@global components/layout/FormWrapper";
 import {
@@ -34,6 +35,9 @@ import DeleteAssetOptions from "@global components/layout/fileUploader/component
 export function MediaAssetsView() {
   const { state, actions } = useMediaAssets();
   const { uploaderState, uploaderActions } = useFileUploader();
+  const isDeletingTargetAsset =
+    !!uploaderState.targetAsset &&
+    state.deletingAssetIds.includes(uploaderState.targetAsset.id);
 
   const openUnassignedUpload = () => {
     uploaderActions.pathSetter("assets/unassigned");
@@ -83,7 +87,11 @@ export function MediaAssetsView() {
             }
           >
             <div className="min-h-50 max-h-300 overflow-y-auto section-scrollbar grid grid-cols-3 gap-5">
-              {state.mediaAssets.length > 0 ? (
+              {state.fetchingMediaAssets ? (
+                <div className="col-span-3 flex min-h-50 items-center justify-center text-style__small-text text-(--secondary-grey)">
+                  <Loader loadingTxt="Loading assets" />
+                </div>
+              ) : state.mediaAssets.length > 0 ? (
                 state.mediaAssets.map((asset) => (
                   <AssetCard
                     key={asset.id || asset.storage?.objectName}
@@ -145,6 +153,7 @@ export function MediaAssetsView() {
               uploaderState.targetAsset &&
               actions.handleDeleteAsset(uploaderState.targetAsset, "unlink")
             }
+            isDeleting={isDeletingTargetAsset}
           />
         </div>
       )}

@@ -288,6 +288,7 @@ export default function EditProject() {
                   ? actions.handleAddNewProject
                   : actions.handleUpdateProject
               }
+              disabled={state.isUploading || state.isDeleting}
             />
             {state.isUploading && <Loader />}
           </div>
@@ -300,6 +301,7 @@ export default function EditProject() {
                   ? actions.resetStates
                   : actions.handleDeleteProject
               }
+              disabled={state.isUploading || state.isDeleting}
             />
             {state.isDeleting && <Loader />}
           </div>

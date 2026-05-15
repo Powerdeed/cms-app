@@ -28,14 +28,20 @@ type AssetCardProps = {
 };
 
 export default function AssetCard({ asset }: AssetCardProps) {
-  const { uploaderState, uploaderActions } = useFileUploader();
-  const { actions } = useMediaAssets();
+  const { uploaderActions } = useFileUploader();
+  const { state, actions } = useMediaAssets();
   const assetType = asset.assetType ?? asset.type ?? "image";
   const references = getAssetReferences(asset);
   const assetUsage =
-    references.map((reference) => reference.usage).filter(Boolean).join(", ") ||
-    "Not linked";
+    references
+      .map((reference) => reference.usage)
+      .filter(Boolean)
+      .join(", ") || "Not linked";
   const isLinked = references.length > 0;
+  const isDeletingThisAsset = state.deletingAssetIds.includes(asset.id);
+  const isDownloadingThisAsset = state.downloadingAssetIds.includes(asset.id);
+  const isOperatingOnThisAsset =
+    isDeletingThisAsset || isDownloadingThisAsset;
   const updatedAt = asset.updatedAt ?? asset.uploadDate ?? asset.createdAt;
 
   return (
@@ -92,9 +98,10 @@ export default function AssetCard({ asset }: AssetCardProps) {
         <ButtonLight
           buttonText="Download"
           clickAction={() => actions.handleDownloadAsset(asset)}
+          disabled={isOperatingOnThisAsset}
           icon={<FontAwesomeIcon icon={["fas", "download"]} />}
         >
-          {uploaderState.isAssetDownloading && <Loader />}
+          {isDownloadingThisAsset && <Loader />}
         </ButtonLight>
 
         <ButtonLight
@@ -104,8 +111,9 @@ export default function AssetCard({ asset }: AssetCardProps) {
               ? actions.handleDeletePopUp(asset)
               : actions.handleDeleteAsset(asset, "block")
           }
+          disabled={isOperatingOnThisAsset}
         >
-          {uploaderState.isAssetDeleting && <Loader />}
+          {isDeletingThisAsset && <Loader />}
         </ButtonLight>
       </div>
     </div>

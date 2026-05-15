@@ -41,11 +41,13 @@ export default function ContactPage() {
           buttonText="Reset Changes"
           clickAction={() => state.setRefreshContacts((prev) => !prev)}
           icon={state.loadingContacts && <Loader />}
+          disabled={state.loadingContacts || state.updatingContacts}
         />
 
         <Button
           buttonText="Save All Changes"
           clickAction={actions.saveAllChanges}
+          disabled={state.updatingContacts || state.loadingContacts}
         >
           {state.updatingContacts && <Loader />}
         </Button>

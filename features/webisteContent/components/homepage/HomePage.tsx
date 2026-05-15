@@ -9,6 +9,8 @@ import useHomePage from "../../hooks/homepage/useHomepage";
 
 export default function HomePage() {
   const { state, actions } = useHomePage();
+  const isSavingContent =
+    state.updatingHomepage || state.updatingTestimonials;
 
   return (
     <div className="text-style__body vertical-layout__outer">
@@ -36,6 +38,7 @@ export default function HomePage() {
             state.setRefreshFetchTestimonials((prev) => !prev);
           }}
           icon={actions.fetchingData && <Loader />}
+          disabled={actions.fetchingData || isSavingContent}
         />
 
         <Button
@@ -44,8 +47,9 @@ export default function HomePage() {
             actions.handleSaveHomepage();
             actions.handleSaveTestimonials();
           }}
+          disabled={isSavingContent || actions.fetchingData}
         >
-          {state.updatingHomepage && <Loader />}
+          {isSavingContent && <Loader />}
         </Button>
       </div>
 
