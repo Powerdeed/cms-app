@@ -24,15 +24,10 @@ export default function ServiceEditor() {
   );
 
   const openAssetAddMode = (mode: "existing" | "new") => {
-    if (assetAddMode === mode) {
-      setAssetAddMode(null);
-      uploaderActions.resetAssetLinkingState();
-      return;
-    }
+    const nextMode = assetAddMode === mode ? null : mode;
+    setAssetAddMode(nextMode);
 
-    setAssetAddMode(mode);
-
-    if (mode === "new") {
+    if (nextMode === "new") {
       uploaderActions.handleTargetAsset("new");
       return;
     }
@@ -71,7 +66,8 @@ export default function ServiceEditor() {
 
           <div className="vertical-layout__outer">
             <div className="flex-1 text-style__body">Gallery</div>
-            {state.selectedService.gallery.length > 0 ? (
+            {state.selectedService.gallery && // make sure there is an existing array first
+            state.selectedService.gallery.length > 0 ? (
               <div className="grid max-h-90 grid-cols-2 gap-2.5 overflow-y-auto pr-1">
                 {state.selectedService.gallery.map((image) => (
                   <div

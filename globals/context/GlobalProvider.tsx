@@ -3,7 +3,7 @@
 import { ReactNode, useState } from "react";
 
 import { globalContext } from "./GlobalContext";
-import { User } from "@globals/types/user.type";
+import { User } from "@app/profile/types/user.type";
 import { DEFAULT_UNSAVED_CHANGES_NOTICE } from "../constants/unsavedChangesNotice";
 
 export default function GlobalProvider({ children }: { children: ReactNode }) {
@@ -13,6 +13,8 @@ export default function GlobalProvider({ children }: { children: ReactNode }) {
   const [unsavedChangesNoticeText, setUnsavedChangesNoticeText] = useState(
     DEFAULT_UNSAVED_CHANGES_NOTICE,
   );
+
+  const [sideBarOpen, setSideBarOpen] = useState(true);
 
   const [user, setUser] = useState<User | null>(null);
 
@@ -25,6 +27,8 @@ export default function GlobalProvider({ children }: { children: ReactNode }) {
         setUnsavedChangesNoticeVisible,
         unsavedChangesNoticeText,
         setUnsavedChangesNoticeText,
+        sideBarOpen,
+        setSideBarOpen,
         user,
         setUser,
       }}

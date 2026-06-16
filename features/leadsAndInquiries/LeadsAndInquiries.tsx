@@ -9,7 +9,7 @@ const pageMeta = {
 
 export default function LeadsAndInquiries() {
   return (
-    <div className="page-layout">
+    <div className="uniform-page-display">
       <SectionTitle title={pageMeta.title} subtitle={pageMeta.subtitle} />
 
       <div className="flex flex-col md:flex-row gap-2.5 md:gap-5">

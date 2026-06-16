@@ -142,8 +142,8 @@ body {
   font-family: var(--font-family);
 }
 
-/********** TEXT STYLES **********/
-.page-layout {
+/********** PAGE STYLES **********/
+.uniform-page-display {
   @apply p-5 flex flex-col gap-5;
 }
 

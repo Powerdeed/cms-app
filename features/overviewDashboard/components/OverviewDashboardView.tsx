@@ -3,10 +3,7 @@
 import { IconName, IconPrefix } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import {
-  recentActivities,
-  stats,
-} from "@features/overviewDashboard";
+import { recentActivities, stats } from "@features/overviewDashboard";
 
 import { SectionTitle } from "@global components/ui/Title";
 
@@ -20,7 +17,7 @@ export function OverviewDashboardView() {
   const { state, graph } = useOverviewDashboard();
 
   return (
-    <main className="page-layout">
+    <main className="uniform-page-display">
       <SectionTitle
         title={PAGE_META_DATA.title}
         subtitle={PAGE_META_DATA.subtitle}

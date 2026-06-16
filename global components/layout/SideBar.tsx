@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconName } from "@fortawesome/fontawesome-svg-core";
 
 // Conversions
-import { convertLabelToLink } from "@globals";
+import { convertLabelToLink, useGlobals } from "@globals";
 import { convertLinkToLabel } from "@globals";
 
 // Constants
@@ -15,26 +15,34 @@ import { menuItems } from "@lib/constants/NAV_MENU_AND_LABELS";
 import { COMPANY_NAME } from "@lib/constants/COMPANY_NAME";
 
 const titleMeta = {
-  title: "PTR Command Center",
-  subtitle: "Operations Hub",
+  title: "Content Management System",
 };
 
 export default function SideBar() {
+  const { globalStates } = useGlobals();
   const currentMenu = convertLinkToLabel(usePathname().slice(1));
 
   return (
-    <aside className="fixed left-0 top-0 flex flex-col w-65 h-full bg-(--primary-blue) text-style__body text-(--terciary-grey)">
-      <div className="py-2.5 pl-5 h-20 flex items-center gap-2.5 border-b border-(--secondary-grey)">
-        <div className="w-10 h-10 bg-(--secondary-blue) rounded-[10px] grid items-center justify-center">
-          <FontAwesomeIcon
-            icon={["fas", "gear"]}
-            className="text-style__logo"
-          />
-        </div>
-        <div>
-          <h2 className="font-extrabold">{titleMeta.title}</h2>
-          <h3>{titleMeta.subtitle}</h3>
-        </div>
+    <aside
+      className={`fixed left-0 top-0 flex flex-col ${globalStates.sideBarOpen ? "w-65" : "w-15"} h-full bg-(--primary-blue) text-style__small-text text-(--terciary-grey)`}
+    >
+      <div className="p-2.5 pl-5 h-20 flex items-center gap-2.5 border-b border-(--secondary-grey)">
+        {globalStates.sideBarOpen && (
+          <div className="w-10 h-10 bg-(--secondary-blue) rounded-[10px] grid items-center justify-center">
+            <FontAwesomeIcon
+              icon={["fas", "gear"]}
+              className="text-style__logo"
+            />
+          </div>
+        )}
+
+        {globalStates.sideBarOpen && <h2>{titleMeta.title}</h2>}
+
+        <FontAwesomeIcon
+          icon={["fas", "arrow-right-from-bracket"]}
+          className={`text-style__body cursor-pointer ${globalStates.sideBarOpen ? "rotate-180" : ""}`}
+          onClick={() => globalStates.setSideBarOpen((prev) => !prev)}
+        />
       </div>
       <div className="flex-1 py-2.5 h-20 border-b border-(--secondary-grey)">
         <ul className="w-full h-full flex flex-col text-style__small-text overflow-y-scroll side-bar-scrollbar">
@@ -50,14 +58,14 @@ export default function SideBar() {
                 <div className="w-4">
                   <FontAwesomeIcon icon={["fas", item.icon as IconName]} />
                 </div>
-                <span>{item.label}</span>
+                {globalStates.sideBarOpen && <span>{item.label}</span>}
               </Link>
             </li>
           ))}
         </ul>
       </div>
-      <div className="text-style__small-text py-2.5 pl-5 h-20">
-        <div>{COMPANY_NAME}</div>
+      <div className="py-2.5 pl-5 h-20">
+        {globalStates.sideBarOpen && <div>{COMPANY_NAME}</div>}
         <div>v{process.env.NEXT_PUBLIC_APP_VERSION}</div>
       </div>
     </aside>

@@ -46,7 +46,7 @@ export function MediaAssetsView() {
   };
 
   return (
-    <div className="relative page-layout">
+    <div className="relative uniform-page-display">
       <FormWrapper
         title={PAGE_META.title}
         subtitle={PAGE_META.subtitle}

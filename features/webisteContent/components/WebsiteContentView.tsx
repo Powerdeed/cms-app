@@ -20,7 +20,7 @@ export default function WebsiteContentView() {
   const { uploaderState, uploaderActions } = useFileUploader();
 
   return (
-    <div className="relative page-layout">
+    <div className="relative uniform-page-display">
       <SectionTitle title={PAGE_META.title} subtitle={PAGE_META.subtitle} />
 
       <div className="flex-1 feature-container-vertical text-style__body">

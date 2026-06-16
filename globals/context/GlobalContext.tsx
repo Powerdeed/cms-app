@@ -1,6 +1,6 @@
 "use client";
 
-import { User } from "@globals/types/user.type";
+import { User } from "@app/profile/types/user.type";
 import { createContext, Dispatch, SetStateAction } from "react";
 
 export type UnsavedChangesNoticeText = {
@@ -17,7 +17,8 @@ type GlobalStates = {
   setUnsavedChangesNoticeText: Dispatch<
     SetStateAction<UnsavedChangesNoticeText>
   >;
-
+  sideBarOpen: boolean;
+  setSideBarOpen: Dispatch<SetStateAction<boolean>>;
   user: User | null;
   setUser: Dispatch<SetStateAction<User | null>>;
 };

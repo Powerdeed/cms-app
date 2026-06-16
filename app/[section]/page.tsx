@@ -5,7 +5,7 @@ import { use, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 // utils
-import { convertLinkToLabel } from "@globals";
+import { convertLinkToLabel, useGlobals } from "@globals";
 
 // constants
 import { MenuLabels } from "@lib/constants/NAV_MENU_AND_LABELS";
@@ -34,6 +34,7 @@ export default function Section({
   const { section } = use(params);
   const sectionLabel = convertLinkToLabel(decodeURIComponent(section));
   const router = useRouter();
+  const { globalStates } = useGlobals();
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
@@ -58,7 +59,11 @@ export default function Section({
 
   return (
     <ChartProvider>
-      <div className="pl-65 pt-15">{content}</div>
+      <div
+        className={`pt-15 page-with-panels ${globalStates.sideBarOpen ? "pl-65" : "pl-15"}`}
+      >
+        {content}
+      </div>
     </ChartProvider>
   );
 }

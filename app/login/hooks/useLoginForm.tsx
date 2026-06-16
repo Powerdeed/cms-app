@@ -2,7 +2,7 @@
 
 import { useContext } from "react";
 import { LoginContext } from "../context/LoginContext";
-import { UserCredentials } from "../types/userCredentials.types";
+import { UserCredentials } from "@app/profile";
 
 export default function useLoginForm() {
   const loginContext = useContext(LoginContext);

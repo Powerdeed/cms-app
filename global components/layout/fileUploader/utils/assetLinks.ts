@@ -9,8 +9,8 @@ export const isAssetLink = (assetLink: unknown): assetLink is AssetLink =>
 
 export const createAssetLink = (asset: Asset): AssetLink => [
   asset.id,
-  asset.name,
-  asset.storage?.publicUrl ?? asset.url ?? "",
+  asset.name || asset.originalName,
+  asset.storage?.publicUrl ?? asset.url ?? "no link found",
   asset.assetType ?? asset.type ?? "image",
 ];
 

@@ -1,9 +1,8 @@
-import { UserType } from "@app/login/types/userCredentials.types";
-
+import { User } from "@app/profile";
 import { apiRequest } from "@lib/api/apiRequest";
 
-export const getUserWithEmail = async (email: string): Promise<UserType> => {
-  const user = await apiRequest<UserType>({
+export const getUserWithEmail = async (email: string): Promise<User> => {
+  const user = await apiRequest<User>({
     method: "GET",
     url: `/users?email=${email}`,
   });

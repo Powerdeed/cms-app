@@ -1,7 +1,7 @@
 "use client";
 
 import { globalContext } from "@globals/context/GlobalContext";
-import { User } from "@globals/types/user.type";
+import { User } from "@app/profile/types/user.type";
 import { useContext, useEffect } from "react";
 
 export default function useUser() {

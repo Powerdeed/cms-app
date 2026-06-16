@@ -21,7 +21,7 @@ export default function ProjectsView() {
   const { uploaderState, uploaderActions } = useFileUploader();
 
   return (
-    <div className="page-layout">
+    <div className="uniform-page-display">
       <div className="flex items-center">
         <div className="flex-1">
           <SectionTitle title={PAGE_META.title} subtitle={PAGE_META.subtitle} />

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { LoginContext } from "./LoginContext";
-import { UserCredentials } from "../types/userCredentials.types";
+import { UserCredentials } from "@app/profile";
 
 export default function LoginProvider({
   children,

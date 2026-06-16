@@ -1,6 +1,7 @@
 "use client";
 
 import { ReactNode, useContext } from "react";
+import { useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import SearchBar from "@global components/ui/SearchBar";
@@ -9,16 +10,11 @@ import { SeparatorLine } from "../FormWrapper";
 import "@global components/icons/icons";
 
 import useNav from "./hooks/useNav";
-import { globalContext } from "@globals";
 import { useGlobals } from "@globals";
 
 export default function Nav() {
-  const {} = useGlobals();
-
-  const globalStates = useContext(globalContext);
-
-  if (!globalStates)
-    throw new Error("Global context must be within a provider");
+  const router = useRouter();
+  const { globalStates } = useGlobals();
 
   const { user } = globalStates;
 
@@ -33,7 +29,9 @@ export default function Nav() {
   } = useNav();
 
   return (
-    <nav className="fixed w-[calc(100vw-260px)] h-15 top-0 left-65 flex gap-2.5 items-center border-b border-(--terciary-grey) backdrop-blur shadow-[0_4px_6px_-1px_rgba(51,51,51,0.1)] py-2.5 px-5 text-style__body z-1">
+    <nav
+      className={`fixed h-15 top-0 ${globalStates.sideBarOpen ? "left-65  w-[calc(100vw-260px)]" : "left-15  w-[calc(100vw-70px)]"} flex gap-2.5 items-center border-b border-(--terciary-grey) backdrop-blur shadow-[0_4px_6px_-1px_rgba(51,51,51,0.1)] py-2.5 px-5 text-style__body z-1`}
+    >
       <SearchBar
         val={searchQuery}
         placeholder="Search leads, services, content..."
@@ -94,7 +92,9 @@ export default function Nav() {
           >
             <ProfileOption
               option="Profile"
-              action={() => {}}
+              action={() => {
+                router.push("/profile");
+              }}
               style="text-(--primary-blue)"
             >
               <FontAwesomeIcon icon={["far", "user"]} />
@@ -102,15 +102,30 @@ export default function Nav() {
 
             <SeparatorLine />
 
-            <ProfileOption option="Settings" action={() => {}}>
+            <ProfileOption
+              option="Settings"
+              action={() => {
+                router.push("/settings");
+              }}
+            >
               <FontAwesomeIcon icon={["fas", "gear"]} />
             </ProfileOption>
 
-            <ProfileOption option="Security" action={() => {}}>
+            <ProfileOption
+              option="Security"
+              action={() => {
+                router.push("/security");
+              }}
+            >
               <FontAwesomeIcon icon={["fas", "shield-halved"]} />
             </ProfileOption>
 
-            <ProfileOption option="Activity" action={() => {}}>
+            <ProfileOption
+              option="Activity"
+              action={() => {
+                router.push("/activity");
+              }}
+            >
               <FontAwesomeIcon icon={["fas", "chart-line"]} />
             </ProfileOption>
 

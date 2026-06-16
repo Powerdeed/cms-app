@@ -103,7 +103,29 @@ export default function useNewAsset() {
     if (assetMode !== "new") return;
     if (!computedTargetAsset) return;
 
-    setTargetAsset(computedTargetAsset);
+    setTargetAsset((prev) => {
+      if (!prev || prev.id !== computedTargetAsset.id) {
+        return computedTargetAsset;
+      }
+
+      return {
+        ...computedTargetAsset,
+        tags: prev.tags ?? computedTargetAsset.tags,
+        display: prev.display ?? computedTargetAsset.display,
+        references: prev.references ?? computedTargetAsset.references,
+        status: prev.status ?? computedTargetAsset.status,
+        isPublic: prev.isPublic ?? computedTargetAsset.isPublic,
+        storage: {
+          ...computedTargetAsset.storage,
+          publicUrl:
+            prev.storage?.publicUrl ?? computedTargetAsset.storage.publicUrl,
+          generation:
+            prev.storage?.generation ?? computedTargetAsset.storage.generation,
+        },
+        createdAt: prev.createdAt ?? computedTargetAsset.createdAt,
+        updatedAt: prev.updatedAt ?? computedTargetAsset.updatedAt,
+      };
+    });
   }, [assetMode, computedTargetAsset, setTargetAsset]);
 
   return {

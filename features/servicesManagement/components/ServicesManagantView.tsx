@@ -27,7 +27,7 @@ export function ServicesManagementView() {
   }, [resetAssetLinkingState]);
 
   return (
-    <div className="relative page-layout">
+    <div className="relative uniform-page-display">
       <div className="flex items-center">
         <div className="flex-1">
           <SectionTitle title={PAGE_META.title} subtitle={PAGE_META.subtitle} />

@@ -1,8 +1,7 @@
 "use client";
 
+import { UserCredentials } from "@app/profile";
 import { createContext, Dispatch } from "react";
-
-import { UserCredentials } from "../types/userCredentials.types";
 
 type LoginState = {
   // asset and meta

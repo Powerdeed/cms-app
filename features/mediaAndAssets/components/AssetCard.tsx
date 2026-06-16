@@ -40,8 +40,7 @@ export default function AssetCard({ asset }: AssetCardProps) {
   const isLinked = references.length > 0;
   const isDeletingThisAsset = state.deletingAssetIds.includes(asset.id);
   const isDownloadingThisAsset = state.downloadingAssetIds.includes(asset.id);
-  const isOperatingOnThisAsset =
-    isDeletingThisAsset || isDownloadingThisAsset;
+  const isOperatingOnThisAsset = isDeletingThisAsset || isDownloadingThisAsset;
   const updatedAt = asset.updatedAt ?? asset.uploadDate ?? asset.createdAt;
 
   return (

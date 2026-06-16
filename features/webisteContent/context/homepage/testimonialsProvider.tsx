@@ -38,6 +38,7 @@ export default function TestimonialsProvider({
 
   const [fetchingTestimonialsData, setFetchingTestimonialsData] =
     useState(false);
+
   return (
     <testimonialsContext.Provider
       value={{
