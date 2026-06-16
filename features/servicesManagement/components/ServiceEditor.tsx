@@ -66,7 +66,7 @@ export default function ServiceEditor() {
 
           <div className="vertical-layout__outer">
             <div className="flex-1 text-style__body">Gallery</div>
-            {state.selectedService.gallery && // make sure there is an existing array first
+            {state.selectedService.gallery &&
             state.selectedService.gallery.length > 0 ? (
               <div className="grid max-h-90 grid-cols-2 gap-2.5 overflow-y-auto pr-1">
                 {state.selectedService.gallery.map((image) => (
