@@ -1,4 +1,4 @@
-# PTR Command Center
+# PTR CMS (Content Management System)
 
 Admin command center for managing content on the PTR/PowerDeed client website.
 
