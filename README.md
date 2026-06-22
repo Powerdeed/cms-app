@@ -1,8 +1,8 @@
 # PTR CMS (Content Management System)
 
-Admin command center for managing content on the PTR/PowerDeed client website.
+CMS for managing content on the PTR/PowerDeed client website.
 
-The command center is where editors manage services, projects, homepage
+The cms is where editors manage services, projects, homepage
 content, testimonials, contacts, company structure, and media/assets. It talks
 to the backend API and prepares asset metadata before files are uploaded.
 
