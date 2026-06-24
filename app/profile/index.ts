@@ -14,6 +14,3 @@ export * from "./components/SignalCard";
 
 // constants
 export * from "./constants/PAGE_DATA";
-
-// types
-export * from "./types/user.type";

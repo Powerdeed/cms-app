@@ -3,7 +3,7 @@
 import { ReactNode, useState } from "react";
 
 import { globalContext } from "./GlobalContext";
-import { User } from "@app/profile/types/user.type";
+import { User } from "@globals/types/user.type";
 import { DEFAULT_UNSAVED_CHANGES_NOTICE } from "../constants/unsavedChangesNotice";
 
 export default function GlobalProvider({ children }: { children: ReactNode }) {
