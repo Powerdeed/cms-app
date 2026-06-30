@@ -4,7 +4,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 // components
-import Button, { ButtonLight } from "@global components/ui/Button";
+import Button from "@global components/ui/Button";
 import Loader from "@global components/ui/Loader";
 import { InputArea } from "@global components/layout/FormWrapper";
 
@@ -62,7 +62,8 @@ export default function FileRenameAndUpload({
           {uploaderState.isAssetUploading && <Loader />}
         </Button>
 
-        <ButtonLight
+        <Button
+          buttonType="light"
           className="flex-1"
           buttonText="re-upload"
           clickAction={() =>

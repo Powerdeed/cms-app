@@ -1,6 +1,6 @@
 "use client";
 
-import Button, { ButtonLight } from "@global components/ui/Button";
+import Button from "@global components/ui/Button";
 import Loader from "@global components/ui/Loader";
 import ContactHeroSection from "./ContactHeroSection";
 import ContactLocation from "./ContactLocation";
@@ -37,7 +37,8 @@ export default function ContactPage() {
       </div>
 
       <div className="flex gap-2.5 items-center justify-end">
-        <ButtonLight
+        <Button
+          buttonType="light"
           buttonText="Reset Changes"
           clickAction={() => state.setRefreshContacts((prev) => !prev)}
           icon={state.loadingContacts && <Loader />}

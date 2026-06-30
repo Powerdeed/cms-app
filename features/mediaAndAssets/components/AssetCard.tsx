@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 // components
 import { SeparatorLine } from "@global components/layout/FormWrapper";
-import { ButtonLight } from "@global components/ui/Button";
+import Button from "@global components/ui/Button";
 import {
   Asset,
   getAssetReferences,
@@ -94,16 +94,18 @@ export default function AssetCard({ asset }: AssetCardProps) {
         className="flex justify-between"
         onClick={(e) => e.stopPropagation()}
       >
-        <ButtonLight
+        <Button
+          buttonType="light"
           buttonText="Download"
           clickAction={() => actions.handleDownloadAsset(asset)}
           disabled={isOperatingOnThisAsset}
           icon={<FontAwesomeIcon icon={["fas", "download"]} />}
         >
           {isDownloadingThisAsset && <Loader />}
-        </ButtonLight>
+        </Button>
 
-        <ButtonLight
+        <Button
+          buttonType="light"
           buttonText="Delete"
           clickAction={() =>
             isLinked
@@ -113,7 +115,7 @@ export default function AssetCard({ asset }: AssetCardProps) {
           disabled={isOperatingOnThisAsset}
         >
           {isDeletingThisAsset && <Loader />}
-        </ButtonLight>
+        </Button>
       </div>
     </div>
   );

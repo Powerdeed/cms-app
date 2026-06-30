@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import Button, { ButtonRed, DeleteIconBtn } from "@global components/ui/Button";
+import Button, { Buttonize } from "@global components/ui/Button";
 import Loader from "@global components/ui/Loader";
 import Toggle from "@global components/ui/Toggle";
 import { InputArea } from "@global components/layout/FormWrapper";
@@ -162,7 +163,12 @@ export default function EditProject() {
                 )}
               </div>
 
-              <DeleteIconBtn deleteFunc={actions.removeProjectFeaturedImage} />
+              <Buttonize
+                clickFunc={actions.removeProjectFeaturedImage}
+                className="hover:text-(--secondary-red) text-(--primary-red)/80"
+              >
+                <FontAwesomeIcon icon={["far", "trash-can"]} />
+              </Buttonize>
             </div>
           ) : (
             <div className="text-style__small-text text-(--secondary-grey)">
@@ -217,9 +223,12 @@ export default function EditProject() {
                     </div>
 
                     <div onClick={(event) => event.stopPropagation()}>
-                      <DeleteIconBtn
-                        deleteFunc={() => actions.removeProjectImage(image[0])}
-                      />
+                      <Buttonize
+                        clickFunc={() => actions.removeProjectImage(image[0])}
+                        className="hover:text-(--secondary-red) text-(--primary-red)/80"
+                      >
+                        <FontAwesomeIcon icon={["far", "trash-can"]} />
+                      </Buttonize>
                     </div>
                   </div>
                 </div>
@@ -294,7 +303,8 @@ export default function EditProject() {
           </div>
 
           <div className="flex gap-2.5 items-center">
-            <ButtonRed
+            <Button
+              buttonType="red"
               buttonText={state.isNewProject ? "Cancel" : "Delete Project"}
               clickAction={
                 state.isNewProject

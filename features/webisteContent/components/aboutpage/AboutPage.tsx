@@ -1,6 +1,6 @@
 "use client";
 
-import Button, { ButtonLight } from "@global components/ui/Button";
+import Button from "@global components/ui/Button";
 import Loader from "@global components/ui/Loader";
 import FormWrapper from "@global components/layout/FormWrapper";
 
@@ -40,7 +40,8 @@ export default function AboutPage() {
         title="Company Structure"
         subtitle=""
         subtitleChildren={
-          <ButtonLight
+          <Button
+            buttonType="light"
             buttonText="+ Add Level"
             clickAction={actions.addHierarchyLevel}
           />
@@ -70,7 +71,8 @@ export default function AboutPage() {
       </div>
 
       <div className="flex gap-2.5 items-center justify-end">
-        <ButtonLight
+        <Button
+          buttonType="light"
           buttonText="Reset Changes"
           clickAction={() => {
             state.setRefreshAboutpage((prev) => !prev);

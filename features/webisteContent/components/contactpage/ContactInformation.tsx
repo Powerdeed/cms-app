@@ -2,7 +2,8 @@
 
 import FormField from "./FormField";
 import FormWrapper from "@global components/layout/FormWrapper";
-import Button, { DeleteIconBtn } from "@global components/ui/Button";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Button, { Buttonize } from "@global components/ui/Button";
 
 import useContactPage from "../../hooks/contactpage/useContactPage";
 
@@ -50,14 +51,17 @@ export default function ContactInformation() {
                     styling="defaultStyle"
                   />
 
-                  <DeleteIconBtn
-                    deleteFunc={() =>
+                  <Buttonize
+                    clickFunc={() =>
                       actions.handleDeleteContactInfo(
                         contactType as keyof Contacts["ContactInformation"],
                         idx,
                       )
                     }
-                  />
+                    className="hover:text-(--secondary-red) text-(--primary-red)/80"
+                  >
+                    <FontAwesomeIcon icon={["far", "trash-can"]} />
+                  </Buttonize>
                 </div>
               ))}
             </div>

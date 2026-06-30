@@ -6,7 +6,8 @@ import FormWrapper, {
   InputArea,
   SeparatorLine,
 } from "@global components/layout/FormWrapper";
-import { ButtonLight, DeleteIconBtn } from "@global components/ui/Button";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Button, { Buttonize } from "@global components/ui/Button";
 
 export default function CompanyStructureEditor() {
   const { state, actions } = useAboutPage();
@@ -19,9 +20,12 @@ export default function CompanyStructureEditor() {
       keyVal={level.id}
       subtitle={`Level ${level.id}`}
       subtitleChildren={
-        <DeleteIconBtn
-          deleteFunc={() => actions.deleteHierarchyLevel(level.id)}
-        />
+        <Buttonize
+          clickFunc={() => actions.deleteHierarchyLevel(level.id)}
+          className="hover:text-(--secondary-red) text-(--primary-red)/80"
+        >
+          <FontAwesomeIcon icon={["far", "trash-can"]} />
+        </Buttonize>
       }
     >
       <InputArea
@@ -33,7 +37,8 @@ export default function CompanyStructureEditor() {
       <FormWrapper
         subtitle="Positions"
         subtitleChildren={
-          <ButtonLight
+          <Button
+            buttonType="light"
             buttonText="+ Add Position"
             clickAction={() => actions.addLevelPosition(level.id)}
           />
@@ -49,9 +54,12 @@ export default function CompanyStructureEditor() {
               actions.updateStructure(level.id, level.levelName, index, val)
             }
           >
-            <DeleteIconBtn
-              deleteFunc={() => actions.deleteLevelPosition(level.id, index)}
-            />
+            <Buttonize
+              clickFunc={() => actions.deleteLevelPosition(level.id, index)}
+              className="hover:text-(--secondary-red) text-(--primary-red)/80"
+            >
+              <FontAwesomeIcon icon={["far", "trash-can"]} />
+            </Buttonize>
           </InputArea>
         ))}
       </FormWrapper>

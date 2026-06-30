@@ -4,7 +4,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 // components
-import Button, { ButtonLight } from "@global components/ui/Button";
+import Button from "@global components/ui/Button";
 import Loader from "@global components/ui/Loader";
 import MetaWrapper from "./fileMetaEditor/MetaWrapper";
 import EditorField from "./fileMetaEditor/EditorField";
@@ -178,7 +178,8 @@ export default function FileMetaEditor({
             </Button>
 
             {uploaderState.assetMode === "new" && (
-              <ButtonLight
+              <Button
+                buttonType="light"
                 buttonText="re-upload"
                 clickAction={() =>
                   uploaderActions.handleResetAssetStates("re-upload")

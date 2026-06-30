@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { DeleteIconBtn } from "@global components/ui/Button";
+import { Buttonize } from "@global components/ui/Button";
 import {
   Asset,
   AssetLookUp,
@@ -85,7 +86,14 @@ export default function LinkedAssetField({
             )}
           </button>
 
-          {value && <DeleteIconBtn deleteFunc={() => onChange(null)} />}
+          {value && (
+            <Buttonize
+              clickFunc={() => onChange(null)}
+              className="hover:text-(--secondary-red) text-(--primary-red)/80"
+            >
+              <FontAwesomeIcon icon={["far", "trash-can"]} />
+            </Buttonize>
+          )}
         </div>
 
         <select

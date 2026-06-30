@@ -1,6 +1,6 @@
 "use client";
 
-import Button, { ButtonLight } from "@global components/ui/Button";
+import Button from "@global components/ui/Button";
 import Loader from "@global components/ui/Loader";
 import HeroAndAboutEditor from "./HeroAndAboutEditor";
 import TestimonialsEditor from "./TestimonialsEditor";
@@ -31,7 +31,8 @@ export default function HomePage() {
       )}
 
       <div className="flex gap-2.5 items-center justify-end">
-        <ButtonLight
+        <Button
+          buttonType="light"
           buttonText="Reset Changes"
           clickAction={() => {
             state.setRefreshFetchHomepage((prev) => !prev);

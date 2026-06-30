@@ -1,7 +1,7 @@
 "use client";
 
 // components
-import Button, { ButtonLight } from "@global components/ui/Button";
+import Button from "@global components/ui/Button";
 import Loader from "@global components/ui/Loader";
 import SearchBar from "@global components/ui/SearchBar";
 import FormWrapper from "@global components/layout/FormWrapper";
@@ -65,7 +65,8 @@ export function MediaAssetsView() {
           />
 
           {["All", ...supportedFileTypes].map((category) => (
-            <ButtonLight
+            <Button
+              buttonType="light"
               key={category}
               buttonText={category}
               clickAction={() =>
@@ -110,7 +111,7 @@ export function MediaAssetsView() {
 
       {uploaderState.assetMode && (
         <div
-          className="asset-handling-interface"
+          className="overlay"
           onClick={() => uploaderActions.handleResetAssetStates("cancel")}
         >
           <div

@@ -1,6 +1,6 @@
 "use client";
 
-import { ButtonLight, ButtonRed } from "@global components/ui/Button";
+import Button from "@global components/ui/Button";
 import useFileUploader from "../hooks/useFileUploader";
 import { getAssetReferences, getReferenceLabel } from "../utils/references";
 import Loader from "@global components/ui/Loader";
@@ -48,21 +48,23 @@ export default function DeleteAssetOptions({
       </div>
 
       <div className="grid grid-cols-2 gap-2.5">
-        <ButtonLight
+        <Button
+          buttonType="light"
           buttonText="Force delete"
           clickAction={forceDelete}
           disabled={isDeleting}
         >
           {isDeleting && <Loader />}
-        </ButtonLight>
+        </Button>
 
-        <ButtonRed
+        <Button
+          buttonType="red"
           buttonText="Unlink and delete"
           clickAction={unlinkAndDelete}
           disabled={isDeleting}
         >
           {isDeleting && <Loader />}
-        </ButtonRed>
+        </Button>
       </div>
     </div>
   );

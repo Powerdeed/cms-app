@@ -56,7 +56,7 @@ export function ServicesManagementView() {
 
       {uploaderState.selectedAssetId && (
         <div
-          className="asset-handling-interface"
+          className="overlay"
           onClick={() => {
             uploaderState.setSelectedAssetId("");
             uploaderActions.handleResetAssetStates("cancel");

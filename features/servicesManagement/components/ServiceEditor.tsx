@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Button, { ButtonRed, DeleteIconBtn } from "@global components/ui/Button";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Button, { Buttonize } from "@global components/ui/Button";
 import Loader from "@global components/ui/Loader";
 import { InputArea } from "@global components/layout/FormWrapper";
 import Toggle from "@global components/ui/Toggle";
@@ -83,11 +84,14 @@ export default function ServiceEditor() {
                       </div>
 
                       <div onClick={(event) => event.stopPropagation()}>
-                        <DeleteIconBtn
-                          deleteFunc={() => {
+                        <Buttonize
+                          clickFunc={() => {
                             actions.handleRemoveImageFromService(image[0]);
                           }}
-                        />
+                          className="hover:text-(--secondary-red) text-(--primary-red)/80"
+                        >
+                          <FontAwesomeIcon icon={["far", "trash-can"]} />
+                        </Buttonize>
                       </div>
                     </div>
                   </div>
@@ -155,7 +159,8 @@ export default function ServiceEditor() {
               {state.isUploading && <Loader />}
             </Button>
 
-            <ButtonRed
+            <Button
+              buttonType="red"
               buttonText={
                 state.isNewService ? "Ignore Service" : "Delete Service"
               }
@@ -169,7 +174,7 @@ export default function ServiceEditor() {
               disabled={state.isUploading || state.isDeleting}
             >
               {state.isDeleting && <Loader />}
-            </ButtonRed>
+            </Button>
           </div>
 
           {state.error && (

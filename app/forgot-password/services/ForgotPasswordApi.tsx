@@ -1,4 +1,4 @@
-import { User } from "@app/profile";
+import { User } from "@globals";
 import { apiRequest } from "@lib/api/apiRequest";
 
 export const getUserWithEmail = async (email: string): Promise<User> => {

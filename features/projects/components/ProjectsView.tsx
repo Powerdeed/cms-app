@@ -48,7 +48,7 @@ export default function ProjectsView() {
 
       {uploaderState.selectedAssetId && (
         <div
-          className="asset-handling-interface"
+          className="overlay"
           onClick={() => {
             uploaderState.setSelectedAssetId("");
             uploaderActions.handleResetAssetStates("cancel");

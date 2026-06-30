@@ -7,7 +7,8 @@ import FormWrapper, {
   InputArea,
   SeparatorLine,
 } from "@global components/layout/FormWrapper";
-import { ButtonLight, DeleteIconBtn } from "@global components/ui/Button";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Button, { Buttonize } from "@global components/ui/Button";
 
 import useAboutPage from "../../hooks/aboutPage/useAboutPage";
 
@@ -74,7 +75,8 @@ export default function OverviewSubsectionEditor() {
           keyVal={index}
           subtitle={title}
           subtitleChildren={
-            <ButtonLight
+            <Button
+              buttonType="light"
               buttonText="+ Add Item"
               clickAction={() => actions.handleDescriptionArray("add", index)}
             />
@@ -87,11 +89,14 @@ export default function OverviewSubsectionEditor() {
                 val={reason}
                 changeFunc={(val) => actions.updateDescription(val, index, [i])}
               >
-                <DeleteIconBtn
-                  deleteFunc={() =>
+                <Buttonize
+                  clickFunc={() =>
                     actions.handleDescriptionArray("delete", index, i)
                   }
-                />
+                  className="hover:text-(--secondary-red) text-(--primary-red)/80"
+                >
+                  <FontAwesomeIcon icon={["far", "trash-can"]} />
+                </Buttonize>
               </InputArea>
             </div>
           ))}
@@ -108,7 +113,8 @@ export default function OverviewSubsectionEditor() {
           keyVal={index}
           subtitle={title}
           subtitleChildren={
-            <ButtonLight
+            <Button
+              buttonType="light"
               buttonText="+ Add Item"
               clickAction={() => actions.handleDescriptionArray("add", index)}
             />
@@ -130,11 +136,14 @@ export default function OverviewSubsectionEditor() {
                     actions.updateDescription(val, index, [i, 1])
                   }
                 />
-                <DeleteIconBtn
-                  deleteFunc={() =>
+                <Buttonize
+                  clickFunc={() =>
                     actions.handleDescriptionArray("delete", index, i)
                   }
-                />
+                  className="hover:text-(--secondary-red) text-(--primary-red)/80"
+                >
+                  <FontAwesomeIcon icon={["far", "trash-can"]} />
+                </Buttonize>
               </InputArea>
             </div>
           ))}

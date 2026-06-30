@@ -1,6 +1,7 @@
 "use client";
 
-import Button, { DeleteIconBtn } from "@global components/ui/Button";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Button, { Buttonize } from "@global components/ui/Button";
 import FormWrapper, { InputArea } from "@global components/layout/FormWrapper";
 
 import { useContactPage } from "@features/webisteContent";
@@ -40,7 +41,12 @@ export default function SocialMedia() {
             />
           </div>
 
-          <DeleteIconBtn deleteFunc={() => actions.handleDeleteSocials(idx)} />
+          <Buttonize
+            clickFunc={() => actions.handleDeleteSocials(idx)}
+            className="hover:text-(--secondary-red) text-(--primary-red)/80"
+          >
+            <FontAwesomeIcon icon={["far", "trash-can"]} />
+          </Buttonize>
         </div>
       ))}
     </FormWrapper>
