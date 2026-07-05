@@ -29,3 +29,6 @@ export * from "./hooks/useClipboard";
 
 //types
 export * from "./types/user.type";
+
+// permissions
+export * from "./permissions";

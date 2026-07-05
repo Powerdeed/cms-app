@@ -21,7 +21,7 @@ import { WebsiteContent } from "@features/webisteContent";
 import { Projects } from "@features/projects";
 import { ServicesManagement } from "@features/servicesManagement";
 import { LeadsAndInquiries } from "@features/leadsAndInquiries";
-import { OverviewDashboard } from "@features/overviewDashboard";
+import { Dashboard } from "@features/dashboard";
 
 // component
 import { ChartProvider } from "@global components/layout/charts/context/ChartProvider";
@@ -42,7 +42,7 @@ export default function Section({
   }, [router]);
 
   const sectionMap: Record<MenuLabels, React.ReactNode> = {
-    "Dashboard Overview": <OverviewDashboard />,
+    Dashboard: <Dashboard />,
     "Leads & Inquiries": <LeadsAndInquiries />,
     "Services Management": <ServicesManagement />,
     Projects: <Projects />,

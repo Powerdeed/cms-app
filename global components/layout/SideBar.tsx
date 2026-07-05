@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconName } from "@fortawesome/fontawesome-svg-core";
 
 // Conversions
-import { convertLabelToLink, useGlobals } from "@globals";
+import { convertLabelToLink, hasPermission, useGlobals } from "@globals";
 import { convertLinkToLabel } from "@globals";
 
 // Constants
@@ -21,6 +21,9 @@ const titleMeta = {
 export default function SideBar() {
   const { globalStates } = useGlobals();
   const currentMenu = convertLinkToLabel(usePathname().slice(1));
+  const visibleMenuItems = menuItems.filter((item) =>
+    hasPermission(globalStates.user, item.requiredPermission),
+  );
 
   return (
     <aside
@@ -46,7 +49,7 @@ export default function SideBar() {
       </div>
       <div className="flex-1 py-2.5 h-20 border-b border-(--secondary-grey)">
         <ul className="w-full h-full flex flex-col text-style__small-text overflow-y-scroll side-bar-scrollbar">
-          {menuItems.map((item) => (
+          {visibleMenuItems.map((item) => (
             <li key={item.label}>
               <Link
                 href={convertLabelToLink(item.label)}

@@ -10,13 +10,18 @@ import { SeparatorLine } from "../FormWrapper";
 import "@global components/icons/icons";
 
 import useNav from "./hooks/useNav";
-import { useGlobals } from "@globals";
+import { hasPermission, PERMISSIONS, useGlobals } from "@globals";
 
 export default function Nav() {
   const router = useRouter();
   const { globalStates } = useGlobals();
 
   const { user } = globalStates;
+  const canManageUsers = hasPermission(user, PERMISSIONS.CMS_USERS_MANAGE);
+  const canManageSettings = hasPermission(
+    user,
+    PERMISSIONS.CMS_SETTINGS_MANAGE,
+  );
 
   const {
     searchQuery,
@@ -51,7 +56,7 @@ export default function Nav() {
             className="text-(--primary-grey)"
           />
 
-          {user?.role === "admin" && (
+          {canManageUsers && (
             <div className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs">
               3
             </div>
@@ -102,14 +107,16 @@ export default function Nav() {
 
             <SeparatorLine />
 
-            <ProfileOption
-              option="Settings"
-              action={() => {
-                router.push("/settings");
-              }}
-            >
-              <FontAwesomeIcon icon={["fas", "gear"]} />
-            </ProfileOption>
+            {canManageSettings && (
+              <ProfileOption
+                option="Settings"
+                action={() => {
+                  router.push("/settings");
+                }}
+              >
+                <FontAwesomeIcon icon={["fas", "gear"]} />
+              </ProfileOption>
+            )}
 
             <ProfileOption
               option="Security"

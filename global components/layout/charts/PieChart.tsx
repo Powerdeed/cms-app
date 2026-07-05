@@ -14,6 +14,16 @@ import { type PieProps } from "./context/ChartContext";
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
 export default function PieChart({ labels, pieData }: PieProps) {
+  const hasData = pieData?.some((value) => value > 0);
+
+  if (!hasData) {
+    return (
+      <div className="grid h-full place-items-center text-style__small-text text-(--primary-grey)">
+        No inquiry source data yet
+      </div>
+    );
+  }
+
   const data = {
     labels: labels,
     datasets: [
@@ -57,6 +67,8 @@ export default function PieChart({ labels, pieData }: PieProps) {
           // 2. Calculate percentage
           const dataset = context.dataset.data as number[];
           const total = dataset.reduce((acc, val) => acc + val, 0);
+          if (total === 0) return `${label}\n0%`;
+
           const percentage = ((value / total) * 100).toFixed(1) + "%";
 
           return `${label}\n${percentage}`;
@@ -75,7 +87,7 @@ export default function PieChart({ labels, pieData }: PieProps) {
           label: function (context: TooltipItem<"pie">) {
             const label = context.label || "";
             const value = context.raw ?? 0;
-            return `${label}: ${value} users`;
+            return `${label}: ${value} inquiries`;
           },
         },
       },

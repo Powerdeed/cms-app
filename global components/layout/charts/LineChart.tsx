@@ -113,7 +113,7 @@ export default function LineGraph({
           label: (context) => {
             const label = context.dataset.label || "";
             const value = context.formattedValue;
-            return `${label}: ${value}%`;
+            return `${label}: ${value}`;
           },
         },
       },
@@ -136,7 +136,7 @@ export default function LineGraph({
         },
         ticks: {
           ...(scales?.y?.ticks || {}),
-          stepSize: 7,
+          stepSize: Math.max(Math.ceil((scales?.y?.max ?? 5) / 4), 1),
           font: {
             size: isMobile ? 12 : 14,
           },

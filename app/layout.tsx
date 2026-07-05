@@ -22,21 +22,21 @@ const openSans = Open_Sans({
 
 export const metadata: Metadata = {
   title: {
-    default: "PTR Command Center",
-    template: "%s | PTR Command Center", // Template for child pages
+    default: "PTR CMS",
+    template: "%s | PTR CMS", // Template for child pages
   },
-  description: "A command center to edit PTR-Powerdeed website.",
-  keywords: ["Powerdeed", "command center"],
+  description: "A content management system to edit PTR-Powerdeed website.",
+  keywords: ["Powerdeed", "cms"],
   other: {
     "app-version": "1.0.0",
   },
   // You can also define specific Open Graph, Twitter, etc. metadata here
   openGraph: {
-    title: "PTR Command Center",
-    description: "A command center to edit PTR-Powerdeed website.",
+    title: "PTR CMS",
+    description: "A content management system to edit PTR-Powerdeed website.",
     type: "website",
-    url: "https://ptr-command-center.vercel.app/",
-    siteName: "PTR Command Center",
+    url: "https://cms.powerdeed.co.ke",
+    siteName: "PTR CMS",
     locale: "en_US",
   },
 };

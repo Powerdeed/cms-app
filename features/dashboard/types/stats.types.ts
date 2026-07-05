@@ -2,7 +2,7 @@ export type Stats = {
   label: string;
   value: string;
   change: string;
-  changeDirection: string;
+  changeDirection: "up" | "down" | "neutral";
   icon: string[];
   iconColor: string;
 };
