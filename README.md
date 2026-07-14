@@ -48,17 +48,48 @@ compiled.
 
 ## Environment
 
-The app expects the backend base URL in:
+The app talks to two backend services. CMS content requests use:
 
 ```txt
-NEXT_PUBLIC_API_BASE_URL
+NEXT_PUBLIC_CMS_API_BASE_URL
 ```
 
-The Axios client appends `/api/v1`, so the value should be the server origin:
+Identity/session requests use:
 
 ```txt
-NEXT_PUBLIC_API_BASE_URL=http://localhost:5500
+NEXT_PUBLIC_AUTH_API_BASE_URL
 ```
+
+Both Axios clients append `/api/v1`, so the values should be service origins:
+
+```txt
+NEXT_PUBLIC_CMS_API_BASE_URL=http://localhost:5500
+NEXT_PUBLIC_AUTH_API_BASE_URL=http://localhost:3000
+NEXT_PUBLIC_AUTH_URL=http://localhost:3001/login
+NEXT_PUBLIC_KEYCLOAK_URL=http://localhost:8081
+NEXT_PUBLIC_KEYCLOAK_REALM=powerdeed
+NEXT_PUBLIC_KEYCLOAK_CLIENT_ID=cms-app
+```
+
+## Authentication
+
+CMS does not own a login page or forgot-password flow.
+
+Unauthenticated API calls redirect to auth-app. Auth-app starts the Keycloak
+login flow, identity-service creates the HttpOnly session cookie, and CMS calls
+both backends with `withCredentials: true`.
+
+Use these clients:
+
+```txt
+lib/api/axios.ts
+  CMS content API client. Uses NEXT_PUBLIC_CMS_API_BASE_URL.
+
+lib/api/identityAxios.ts
+  Identity/session API client. Uses NEXT_PUBLIC_AUTH_API_BASE_URL.
+```
+
+Logout calls identity-service first, then redirects to Keycloak logout.
 
 ## Important Areas
 

@@ -1,16 +1,17 @@
+import { getAuthRedirect } from "@app/auth";
 import axios from "axios";
 
 const getApiBaseUrl = () => {
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.trim();
+  const baseUrl = process.env.NEXT_PUBLIC_CMS_API_BASE_URL?.trim();
 
   if (!baseUrl) {
-    throw new Error("NEXT_PUBLIC_API_BASE_URL is required.");
+    throw new Error("NEXT_PUBLIC_CMS_API_BASE_URL is required.");
   }
 
   try {
     return new URL(baseUrl).origin;
   } catch {
-    throw new Error("NEXT_PUBLIC_API_BASE_URL must be a valid URL.");
+    throw new Error("NEXT_PUBLIC_CMS_API_BASE_URL must be a valid URL.");
   }
 };
 
@@ -24,12 +25,12 @@ export const api = axios.create({
 
 api.interceptors.response.use(
   (response) => response,
-  (err) => {
+  async (err) => {
     if (typeof window !== "undefined" && err.response?.status === 401) {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
       localStorage.removeItem("user");
-      window.location.href = "/login";
+      window.location.href = getAuthRedirect();
     }
 
     return Promise.reject(err);
@@ -46,11 +47,5 @@ api.interceptors.request.use((config) => {
     delete config.headers["content-type"];
   }
 
-  if (typeof window !== "undefined") {
-    const token = localStorage.getItem("accessToken");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-  }
   return config;
 });

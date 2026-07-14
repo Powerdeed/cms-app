@@ -1,19 +1,22 @@
 "use client";
 
+import { useAuthStates } from "@app/auth";
+
 import useClipboard from "./useClipboard";
 import useGlobalStates from "./useGlobalStates";
 import useUnsavedChangesGuard from "./useUnsavedChangesGuard";
-import useUser from "./useUser";
 
 export default function useGlobals() {
+  // states
   const states = useGlobalStates();
+  const userStates = useAuthStates();
 
+  // actions
   const clipboard = useClipboard();
-  const user = useUser();
   const changes = useUnsavedChangesGuard();
 
   return {
-    globalStates: { ...states },
-    globalActions: { ...user, ...changes, ...clipboard },
+    globalStates: { ...states, ...userStates },
+    globalActions: { ...changes, ...clipboard },
   };
 }

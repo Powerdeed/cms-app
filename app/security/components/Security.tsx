@@ -6,8 +6,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { useGlobals } from "@globals";
 import { SectionTitle } from "@global components/ui/Title";
-import { getSessions } from "@app/login/services/authUser";
-import { UserSession } from "@app/profile";
+import { getAuthRedirect, type UserSession } from "@app/auth";
+import { getSessions } from "@app/auth/services/authUser";
 
 import {
   SECURITY_CHECKS,
@@ -70,7 +70,7 @@ export default function Security() {
           </div>
 
           <Link
-            href="/forgot-password"
+            href={getAuthRedirect()}
             className="flex items-center justify-between rounded-[10px] bg-(--primary-blue) px-4 py-3 text-style__small-text text-white duration-200 hover:bg-(--secondary-blue)"
           >
             Reset password

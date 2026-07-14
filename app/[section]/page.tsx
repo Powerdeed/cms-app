@@ -1,8 +1,7 @@
 "use client";
 
 // modules
-import { use, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { use } from "react";
 
 // utils
 import { convertLinkToLabel, useGlobals } from "@globals";
@@ -33,13 +32,7 @@ export default function Section({
 }) {
   const { section } = use(params);
   const sectionLabel = convertLinkToLabel(decodeURIComponent(section));
-  const router = useRouter();
   const { globalStates } = useGlobals();
-
-  useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    if (!token) router.push("/login");
-  }, [router]);
 
   const sectionMap: Record<MenuLabels, React.ReactNode> = {
     Dashboard: <Dashboard />,

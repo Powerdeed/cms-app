@@ -1,39 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-
-import { logOutUser } from "@app/login/services/authUser";
-import { ApiError } from "@lib/api/utils/apiError";
+import { useContext } from "react";
+import { navContext } from "../context/navContext";
 
 export default function useNav() {
-  const router = useRouter();
+  const navStates = useContext(navContext);
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [profileOptions, setProfileOptions] = useState(false);
-  const [openNotifications, setOpenNotifications] = useState(false);
+  if (!navStates) throw new Error("Nav states must be within a provider");
 
-  const handleLogout = async () => {
-    try {
-      await logOutUser();
-
-      localStorage.clear();
-
-      router.push("/login");
-    } catch (err: unknown) {
-      if (err instanceof ApiError) {
-        console.error(err.message);
-      }
-    }
-  };
-
-  return {
-    searchQuery,
-    setSearchQuery,
-    profileOptions,
-    openNotifications,
-    setOpenNotifications,
-    setProfileOptions,
-    handleLogout,
-  };
+  return { navStates };
 }

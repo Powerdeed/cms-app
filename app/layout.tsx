@@ -9,6 +9,7 @@ import Nav from "@global components/layout/nav/Nav";
 import SideBar from "@global components/layout/SideBar";
 import { GlobalProvider, UnsavedChangesGuard } from "@globals";
 import { FileUploaderProvider } from "@global components/layout/fileUploader";
+import { AuthorizationProvider } from "@app/auth";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta-sans",
@@ -53,17 +54,19 @@ export default function RootLayout({
       >
         <SpeedInsights />
 
-        <GlobalProvider>
-          <FileUploaderProvider>
-            <Nav />
+        <AuthorizationProvider>
+          <GlobalProvider>
+            <FileUploaderProvider>
+              <Nav />
 
-            <SideBar />
+              <SideBar />
 
-            <UnsavedChangesGuard />
+              <UnsavedChangesGuard />
 
-            {children}
-          </FileUploaderProvider>
-        </GlobalProvider>
+              {children}
+            </FileUploaderProvider>
+          </GlobalProvider>
+        </AuthorizationProvider>
       </body>
     </html>
   );

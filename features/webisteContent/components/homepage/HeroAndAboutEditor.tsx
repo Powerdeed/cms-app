@@ -27,7 +27,9 @@ export default function HeroAndAboutEditor() {
           label="Hero Image"
           value={state.homepage.hero.image}
           uploadPath="homepage/hero"
-          onChange={(asset) => actions.updateHomePageData("image", "hero", asset)}
+          onChange={(asset) =>
+            actions.updateHomePageData("image", "hero", asset)
+          }
         />
 
         <InputArea

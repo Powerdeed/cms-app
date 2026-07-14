@@ -7,8 +7,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconName } from "@fortawesome/fontawesome-svg-core";
 
 // Conversions
-import { convertLabelToLink, hasPermission, useGlobals } from "@globals";
-import { convertLinkToLabel } from "@globals";
+import { convertLabelToLink, convertLinkToLabel, useGlobals } from "@globals";
+import { hasPermission } from "@app/auth";
 
 // Constants
 import { menuItems } from "@lib/constants/NAV_MENU_AND_LABELS";

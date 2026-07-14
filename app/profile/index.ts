@@ -16,4 +16,4 @@ export * from "./components/SignalCard";
 export * from "./constants/PAGE_DATA";
 
 // types
-export * from "@globals/types/user.type";
+export * from "@app/auth";

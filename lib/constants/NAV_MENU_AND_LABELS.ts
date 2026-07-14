@@ -1,4 +1,5 @@
-import { PERMISSIONS, type UserPermission } from "@globals";
+import { PERMISSIONS } from "../../app/auth/constants/permissions";
+import type { UserPermission } from "../../app/auth/types/user.type";
 
 export const menuItems = [
   {

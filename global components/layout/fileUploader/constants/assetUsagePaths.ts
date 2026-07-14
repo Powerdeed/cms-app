@@ -15,28 +15,30 @@ type CompanyStructureUsagePath = {
 };
 
 export const usagePaths: Promise<AssetUsagePaths> = (async () => {
-  const companyStructure = await apiRequest<{
-    structure: CompanyStructureUsagePath[];
-  }>({
-    method: "GET",
-    url: "/company-structure",
-  });
-  const projects = await apiRequest<ProjectUsagePath[]>({
-    method: "GET",
-    url: "/projects",
-  });
+  // const companyStructure = await apiRequest<{
+  //   structure: CompanyStructureUsagePath[];
+  // }>({
+  //   method: "GET",
+  //   url: "/company-structure",
+  // });
+  // const projects = await apiRequest<ProjectUsagePath[]>({
+  //   method: "GET",
+  //   url: "/projects",
+  // });
 
-  return {
-    "home page": ["Hero", "about top", "about bottom"],
-    services: companyServices,
-    "about structure": (companyStructure.structure || []).flatMap(
-      ({ levelName, positions }) =>
-        positions.map((position) => `${levelName}-${position}`),
-    ),
-    "about certificates": [],
-    projects: (projects || []).map(
-      ({ category, name }) => `${category}-${name}`,
-    ),
-    "contact page": ["Hero"],
-  };
+  // return {
+  //   "home page": ["Hero", "about top", "about bottom"],
+  //   services: companyServices,
+  //   "about structure": (companyStructure.structure || []).flatMap(
+  //     ({ levelName, positions }) =>
+  //       positions.map((position) => `${levelName}-${position}`),
+  //   ),
+  //   "about certificates": [],
+  //   projects: (projects || []).map(
+  //     ({ category, name }) => `${category}-${name}`,
+  //   ),
+  //   "contact page": ["Hero"],
+  // };
+
+  return {};
 })();

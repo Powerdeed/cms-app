@@ -1,12 +1,13 @@
 "use client";
 
-import { ReactNode, useState } from "react";
+import { ReactNode, useContext, useState } from "react";
 
 import { globalContext } from "./GlobalContext";
-import { User } from "@globals/types/user.type";
 import { DEFAULT_UNSAVED_CHANGES_NOTICE } from "../constants/unsavedChangesNotice";
+import { userContext } from "@app/auth";
 
 export default function GlobalProvider({ children }: { children: ReactNode }) {
+  const authStates = useContext(userContext);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
   const [unsavedChangesNoticeVisible, setUnsavedChangesNoticeVisible] =
     useState(false);
@@ -15,8 +16,6 @@ export default function GlobalProvider({ children }: { children: ReactNode }) {
   );
 
   const [sideBarOpen, setSideBarOpen] = useState(true);
-
-  const [user, setUser] = useState<User | null>(null);
 
   return (
     <globalContext.Provider
@@ -29,8 +28,7 @@ export default function GlobalProvider({ children }: { children: ReactNode }) {
         setUnsavedChangesNoticeText,
         sideBarOpen,
         setSideBarOpen,
-        user,
-        setUser,
+        user: authStates?.user ?? null,
       }}
     >
       {children}
