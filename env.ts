@@ -10,9 +10,6 @@ export const KEYCLOAK_REALM =
 export const KEYCLOAK_CLIENT_ID =
   process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_ID || "cms-app";
 
-export const AUTH_API_BASE_URL =
-  process.env.NEXT_PUBLIC_AUTH_API_BASE_URL?.trim() || "http://localhost:3000";
-
 export const IDENTITY_API_BASE_URL =
   process.env.NEXT_PUBLIC_IDENTITY_API_BASE_URL?.trim() ||
-  "http://localhost:8081";
+  "http://localhost:3000";

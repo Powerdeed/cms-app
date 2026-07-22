@@ -57,16 +57,16 @@ NEXT_PUBLIC_CMS_API_BASE_URL
 Identity/session requests use:
 
 ```txt
-NEXT_PUBLIC_AUTH_API_BASE_URL
+NEXT_PUBLIC_IDENTITY_API_BASE_URL
 ```
 
 Both Axios clients append `/api/v1`, so the values should be service origins:
 
 ```txt
 NEXT_PUBLIC_CMS_API_BASE_URL=http://localhost:5500
-NEXT_PUBLIC_AUTH_API_BASE_URL=http://localhost:3000
+NEXT_PUBLIC_IDENTITY_API_BASE_URL=http://localhost:3000
 NEXT_PUBLIC_AUTH_URL=http://localhost:3001/login
-NEXT_PUBLIC_KEYCLOAK_URL=http://localhost:8081
+NEXT_PUBLIC_KEYCLOAK_URL=https://keycloak.powerdeed.co.ke
 NEXT_PUBLIC_KEYCLOAK_REALM=powerdeed
 NEXT_PUBLIC_KEYCLOAK_CLIENT_ID=cms-app
 ```
@@ -86,7 +86,7 @@ lib/api/axios.ts
   CMS content API client. Uses NEXT_PUBLIC_CMS_API_BASE_URL.
 
 lib/api/identityAxios.ts
-  Identity/session API client. Uses NEXT_PUBLIC_AUTH_API_BASE_URL.
+  Identity/session API client. Uses NEXT_PUBLIC_IDENTITY_API_BASE_URL.
 ```
 
 Logout calls identity-service first, then redirects to Keycloak logout.
